@@ -26,14 +26,46 @@ class CountdownTimer extends ConsumerStatefulWidget {
 
 class _CountdownTimerState extends ConsumerState<CountdownTimer> {
   Timer? _timer;
+  // الوقت المتبقي يُخزن هنا — الـ setState يعيد بناء هذا الويدجت فقط
+  // Remaining time stored here — setState rebuilds only this widget
+  Duration _remaining = Duration.zero;
+  double _progress = 0.0;
 
   @override
   void initState() {
     super.initState();
     // تحديث كل ثانية / Tick every second
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-      if (mounted) setState(() {});
+      if (!mounted) return;
+      final DailyPrayerTimes? daily = ref.read(prayerTimesProvider).valueOrNull;
+      if (daily == null) return;
+      _recompute(daily);
+      setState(() {});
     });
+  }
+
+  /// حساب المتبقي والتقدم من بيانات اليوم / Compute remaining + progress
+  void _recompute(DailyPrayerTimes daily) {
+    final DateTime now = DateTime.now();
+    final PrayerTime? next = daily.nextPrayer(now);
+    if (next == null) {
+      _remaining = Duration.zero;
+      _progress = 1.0;
+      return;
+    }
+    _remaining = next.time.difference(now);
+    final List<PrayerTime> passed = daily.times
+        .where((PrayerTime pt) => pt.time.isBefore(now))
+        .toList();
+    final DateTime? previousTime = passed.isEmpty ? null : passed.last.time;
+    final Duration totalSpan = previousTime == null
+        ? const Duration(hours: 6)
+        : next.time.difference(previousTime);
+    _progress = totalSpan.inSeconds <= 0
+        ? 0.0
+        : 1.0 -
+            (_remaining.inSeconds / max(totalSpan.inSeconds, 1))
+                .clamp(0.0, 1.0);
   }
 
   @override
@@ -55,6 +87,8 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
         child: Center(child: Text(l10n.tr('error'))),
       ),
       data: (DailyPrayerTimes daily) {
+        // إعادة الحساب عند تغير البيانات (وليس كل ثانية) / recompute on data change only
+        _recompute(daily);
         final PrayerTime? next = daily.nextPrayer(DateTime.now());
         if (next == null) {
           return GlassCard(
@@ -65,21 +99,8 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
             ),
           );
         }
-        final Duration remaining = next.time.difference(DateTime.now());
-        // نسبة التقدم: من الصلاة السابقة إلى القادمة / progress from prev to next prayer
-        final List<PrayerTime> passed = daily.times
-            .where((PrayerTime pt) => pt.time.isBefore(DateTime.now()))
-            .toList();
-        final DateTime? previousTime =
-            passed.isEmpty ? null : passed.last.time;
-        final Duration totalSpan = previousTime == null
-            ? const Duration(hours: 6)
-            : next.time.difference(previousTime);
-        final double progress = totalSpan.inSeconds <= 0
-            ? 0.0
-            : 1.0 -
-                (remaining.inSeconds / max(totalSpan.inSeconds, 1))
-                    .clamp(0.0, 1.0);
+        final Duration remaining = _remaining;
+        final double progress = _progress;
 
         return GlassCard(
           child: Column(

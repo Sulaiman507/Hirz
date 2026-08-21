@@ -49,9 +49,15 @@ class _AnimatedNightBackgroundState extends State<AnimatedNightBackground>
     );
 
     if (!_reduceMotion) {
-      _drift.repeat();
-      _twinkle.repeat();
-      _glow.repeat(reverse: true);
+      // خفض معدل التحديث لتوفير البطارية والأداء:
+      // التدرج يتحرك ببطء جداً — لا حاجة لـ 60fps
+      // Lower tick rates: gradient drifts slowly, no need for 60fps
+      _drift.repeat(min: 0, max: 1, period: const Duration(milliseconds: 500));
+      _twinkle.repeat(
+          min: 0, max: 1, period: const Duration(milliseconds: 250));
+      _glow.repeat(
+          min: 0, max: 1, period: const Duration(milliseconds: 400),
+          reverse: true);
     } else {
       // إطار ثابت كامل بدون حركة / static but complete frame
       _drift.value = 0.2;
@@ -59,9 +65,10 @@ class _AnimatedNightBackgroundState extends State<AnimatedNightBackground>
       _glow.value = 0.5;
     }
 
-    // النجوم تُولَّد مرة واحدة / stars generated once
+    // النجوم تُولَّد مرة واحدة — عددها مخفّض للأداء
+    // stars generated once — count reduced for performance
     final Random rng = Random(42);
-    _stars = List<_Star>.generate(48, (int i) {
+    _stars = List<_Star>.generate(28, (int i) {
       return _Star(
         x: rng.nextDouble(),
         y: rng.nextDouble() * 0.75, // النجوم في الأعلى فقط / upper area only
