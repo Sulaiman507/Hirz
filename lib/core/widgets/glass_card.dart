@@ -24,50 +24,56 @@ class GlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final Widget card = ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      // ملاحظة: طبقة blur واحدة هنا — ضمن ميزانية GPU
-      // Note: single blur layer here — within GPU budget
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            // زجاج داكن/فاتح حسب الوضع / dark/light glass per mode
-            color: isDark
-                ? Colors.white.withOpacity(0.06)
-                : Colors.white.withOpacity(0.55),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: const Color(0xFFD4AF37)
-                  .withOpacity(isDark ? 0.28 : 0.45),
-              width: 1,
-            ),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: <Color>[
-                Colors.white.withOpacity(isDark ? 0.10 : 0.35),
-                Colors.white.withOpacity(isDark ? 0.03 : 0.15),
+    // RepaintBoundary يحبس طبقة الـ blur داخل حدود البطاقة —
+    // بدونها يختفي البلور عند التمرير (إعادة تركيب الطبقات في الـ ListView)
+    // RepaintBoundary pins the blur layer inside the card bounds —
+    // without it the blur vanishes on scroll (layer recomposition in ListView)
+    final Widget card = RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        // ملاحظة: طبقة blur واحدة هنا — ضمن ميزانية GPU
+        // Note: single blur layer here — within GPU budget
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+              // زجاج داكن/فاتح حسب الوضع / dark/light glass per mode
+              color: isDark
+                  ? Colors.white.withOpacity(0.06)
+                  : Colors.white.withOpacity(0.55),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: const Color(0xFFD4AF37)
+                    .withOpacity(isDark ? 0.28 : 0.45),
+                width: 1,
+              ),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[
+                  Colors.white.withOpacity(isDark ? 0.10 : 0.35),
+                  Colors.white.withOpacity(isDark ? 0.03 : 0.15),
+                ],
+              ),
+              boxShadow: <BoxShadow>[
+                // ظل عميق للفصل عن الخلفية / deep shadow for separation
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.35 : 0.12),
+                  blurRadius: 24,
+                  offset: const Offset(0, 10),
+                ),
+                // وهج داخلي علوي — الضوء يلامس المادة
+                // inner top glow — light catching the material
+                BoxShadow(
+                  color: Colors.white.withOpacity(isDark ? 0.06 : 0.5),
+                  blurRadius: 1,
+                  offset: const Offset(0, -1),
+                ),
               ],
             ),
-            boxShadow: <BoxShadow>[
-              // ظل عميق للفصل عن الخلفية / deep shadow for separation
-              BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.35 : 0.12),
-                blurRadius: 24,
-                offset: const Offset(0, 10),
-              ),
-              // وهج داخلي علوي — الضوء يلامس المادة
-              // inner top glow — light catching the material
-              BoxShadow(
-                color: Colors.white.withOpacity(isDark ? 0.06 : 0.5),
-                blurRadius: 1,
-                offset: const Offset(0, -1),
-              ),
-            ],
+            child: child,
           ),
-          child: child,
         ),
       ),
     );
