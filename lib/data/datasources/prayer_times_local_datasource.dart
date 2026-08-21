@@ -33,15 +33,18 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
         : adhan.Madhab.shafi;
     params.highLatitudeRule = adhan.HighLatitudeRule.middle_of_the_night;
 
-    // adhan تُرجع الأوقات بالتوقيت العالمي — نحولها لتوقيت المدينة
-    // adhan returns UTC times; shift to the city's fixed offset
-    final adhan.PrayerTimes raw = adhan.PrayerTimes(
+    // مصنع utcOffset يعيد: التوقيت العالمي + إزاحة المدينة بشكل حتمي
+    // (المصنع الافتراضي يحوّل لتوقيت الجهاز — يسبب إزاحة مزدوجة)
+    // The utcOffset factory returns UTC + city offset deterministically
+    // (the default factory converts to device-local time — double shift)
+    final Duration offset =
+        Duration(minutes: (city.timezoneOffsetHours * 60).round());
+    final adhan.PrayerTimes raw = adhan.PrayerTimes.utcOffset(
       coordinates,
       adhan.DateComponents.from(date),
       params,
+      offset,
     );
-    final Duration offset =
-        Duration(minutes: (city.timezoneOffsetHours * 60).round());
 
     DateTime toLocal(DateTime utcTime) => utcTime.add(offset);
 
