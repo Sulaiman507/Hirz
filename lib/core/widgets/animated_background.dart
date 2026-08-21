@@ -16,9 +16,14 @@ class AnimatedNightBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _NightPainter(isDark: isDark),
-      child: const SizedBox.expand(),
+    // ClipRect + SizedBox.expand يثبتان حجم الكانفاس مهما تحرك المحتوى
+    // ClipRect + expand pin the canvas size regardless of scroll
+    return ClipRect(
+      child: CustomPaint(
+        painter: _NightPainter(isDark: isDark),
+        size: Size.infinite,
+        child: const SizedBox.expand(),
+      ),
     );
   }
 }
