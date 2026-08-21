@@ -75,15 +75,13 @@ class _NightPainter extends CustomPainter {
       ).createShader(glowRect);
     canvas.drawOval(glowRect, glowPaint);
 
-    // ── النجوم الذهبية — المنطقة العلوية فقط / Gold stars — top area only ──
-    // السبب: البطاقات الزجاجية شبه شفافة — النجوم خلفها تظهر/تختفي مع التمرير
-    // Reason: glass cards are translucent; stars behind them flicker on scroll
+    // ── النجوم الذهبية موزعة على الشاشة / Gold stars across the screen ──
+    // بذرة ثابتة = نفس التوزيع الجميل كل مرة / fixed seed = same nice layout
     final Random rng = Random(42);
     final Paint starPaint = Paint()..style = PaintingStyle.fill;
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 28; i++) {
       final double x = rng.nextDouble();
-      // النجوم أعلى الشاشة فقط — فوق منطقة القائمة / top 30% only, above the list
-      final double y = rng.nextDouble() * 0.30;
+      final double y = rng.nextDouble() * 0.75;
       final double radius = 0.6 + rng.nextDouble() * 1.4;
       final double alpha = 0.25 + rng.nextDouble() * 0.55;
       starPaint.color =

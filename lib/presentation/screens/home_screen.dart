@@ -101,6 +101,10 @@ class HomeScreen extends ConsumerWidget {
               ),
               data: (DailyPrayerTimes daily) {
                 final PrayerTime? next = daily.nextPrayer(DateTime.now());
+                // بدون fadeIn لكل بطاقة — كان يسبب "ترسب" النجوم عند التمرير
+                // (البطاقة شفافة أثناء الأنيميشن فتظهر النجوم خلفها فجأة)
+                // No per-card fadeIn — it made stars appear through the
+                // translucent card during animation, then "settle"
                 return Column(
                   children: <Widget>[
                     for (final PrayerTime pt in daily.times)
@@ -112,9 +116,6 @@ class HomeScreen extends ConsumerWidget {
                           use24Hour: settings.use24HourFormat,
                           languageCode: settings.languageCode,
                         ),
-                      ).animate().fadeIn(
-                        duration: 350.ms,
-                        delay: (daily.times.indexOf(pt) * 60).ms,
                       ),
                   ],
                 );
