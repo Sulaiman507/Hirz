@@ -1,6 +1,8 @@
-// العدّاد التنازلي الدائري الفاخر / Luxury circular countdown ring
-// حلقة ذهبية تدور حول الوقت المتبقي + أرقام tabular لا تقفز
-// Gold progress ring around remaining time + tabular figures
+// حلقة العدّاد الذهبية — بدون أنيميشن مستمر / Gold countdown ring — no continuous animation
+// TweenAnimationBuilder كان يعيد الأنيميشن عند كل rebuild (كل ثانية) = تكلفة إطارية
+// TweenAnimationBuilder re-animated on every second-tick = per-frame cost
+// الآن: رسم مباشر، يتحدث فقط عندما تتغير القيمة فعلياً
+// Now: direct paint, updates only when the value actually changes
 
 import 'dart:math';
 
@@ -25,23 +27,13 @@ class CircularCountdownRing extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return TweenAnimationBuilder<double>(
-      tween: Tween<double>(begin: 0, end: progress.clamp(0.0, 1.0)),
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.easeOutCubic,
-      builder: (BuildContext context, double animatedProgress, Widget? _) {
-        return SizedBox(
-          width: size,
-          height: size,
-          child: CustomPaint(
-            painter: _RingPainter(
-              progress: animatedProgress,
-              isDark: isDark,
-            ),
-            child: Center(child: child),
-          ),
-        );
-      },
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CustomPaint(
+        painter: _RingPainter(progress: progress.clamp(0.0, 1.0), isDark: isDark),
+        child: Center(child: child),
+      ),
     );
   }
 }
@@ -96,10 +88,11 @@ class _RingPainter extends CustomPainter {
       center.dx + radius * cos(endAngle),
       center.dy + radius * sin(endAngle),
     );
-    final Paint dotPaint = Paint()
-      ..color = const Color(0xFFD4AF37)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
-    canvas.drawCircle(endOffset, 5, dotPaint);
+    // طبقة blur واحدة صغيرة فقط للنقطة / single small blur layer for the dot
+    final Paint dotGlow = Paint()
+      ..color = const Color(0xFFD4AF37).withOpacity(0.5)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+    canvas.drawCircle(endOffset, 6, dotGlow);
     canvas.drawCircle(
       endOffset,
       4,

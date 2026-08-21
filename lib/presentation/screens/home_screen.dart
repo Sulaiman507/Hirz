@@ -57,9 +57,12 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: Stack(
         children: <Widget>[
-          // الخلفية الليلية المتحركة / Animated night background
+          // الخلفية الليلية — RepaintBoundary يمنع إعادة رسمها عند التمرير
+          // Night background — RepaintBoundary prevents repaint on scroll
           Positioned.fill(
-            child: AnimatedNightBackground(isDark: settings.isDarkMode),
+            child: RepaintBoundary(
+              child: AnimatedNightBackground(isDark: settings.isDarkMode),
+            ),
           ),
           SafeArea(
             child: ListView(

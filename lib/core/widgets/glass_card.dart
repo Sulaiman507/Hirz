@@ -29,7 +29,7 @@ class GlassCard extends StatelessWidget {
       // ملاحظة: طبقة blur واحدة هنا — ضمن ميزانية GPU
       // Note: single blur layer here — within GPU budget
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Container(
           padding: padding,
           decoration: BoxDecoration(

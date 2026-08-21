@@ -1,154 +1,37 @@
-// خلفية ليلية متحركة — Canvas / Animated night background via CustomPaint
-// تدرج كحلي يتنفس + نجوم ذهبية خافتة + نبض ضوء ناعم
-// Breathing navy gradient + faint gold stars + soft glow pulse
-// ميزانية GPU: ≤3 طبقات blur، الجزيئات تُنشأ مرة واحدة فقط
-// GPU budget: ≤3 blur layers, particles generated once
+// خلفية ليلية فاخرة — ثابتة للأداء / Luxury night background — static for performance
+// تدرج كحلي عميق + نجوم ذهبية — تُرسم مرة واحدة فقط (صفر تكلفة إطارية)
+// Deep navy gradient + gold stars — painted ONCE (zero per-frame cost)
+// السبب: BackdropFilter فوق خلفية متحركة = إعادة بلور مستمرة = لاج شديد
+// Why: BackdropFilter over an animated background = constant re-blur = heavy jank
 
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
-/// خلفية متحركة للشاشة الرئيسية / Animated app background
-class AnimatedNightBackground extends StatefulWidget {
+/// خلفية ليلية ثابتة تُرسم مرة واحدة / Static night background, painted once
+class AnimatedNightBackground extends StatelessWidget {
   final bool isDark;
 
   const AnimatedNightBackground({super.key, required this.isDark});
 
   @override
-  State<AnimatedNightBackground> createState() =>
-      _AnimatedNightBackgroundState();
-}
-
-class _AnimatedNightBackgroundState extends State<AnimatedNightBackground>
-    with TickerProviderStateMixin {
-  late final AnimationController _drift; // انجراف التدرج / gradient drift
-  late final AnimationController _twinkle; // وميض النجوم / star twinkle
-  late final AnimationController _glow; // نبض الضوء / glow pulse
-  late List<_Star> _stars;
-  bool _reduceMotion = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // احترام إعداد تقليل الحركة / Respect reduced-motion accessibility
-    _reduceMotion = SchedulerBinding
-        .instance.platformDispatcher.accessibilityFeatures.reduceMotion;
-
-    _drift = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 20),
-    );
-    _twinkle = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    );
-    _glow = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    );
-
-    if (!_reduceMotion) {
-      // خفض معدل التحديث لتوفير البطارية والأداء:
-      // التدرج يتحرك ببطء جداً — لا حاجة لـ 60fps
-      // Lower tick rates: gradient drifts slowly, no need for 60fps
-      _drift.repeat(min: 0, max: 1, period: const Duration(milliseconds: 500));
-      _twinkle.repeat(
-          min: 0, max: 1, period: const Duration(milliseconds: 250));
-      _glow.repeat(
-          min: 0, max: 1, period: const Duration(milliseconds: 400),
-          reverse: true);
-    } else {
-      // إطار ثابت كامل بدون حركة / static but complete frame
-      _drift.value = 0.2;
-      _twinkle.value = 0.5;
-      _glow.value = 0.5;
-    }
-
-    // النجوم تُولَّد مرة واحدة — عددها مخفّض للأداء
-    // stars generated once — count reduced for performance
-    final Random rng = Random(42);
-    _stars = List<_Star>.generate(28, (int i) {
-      return _Star(
-        x: rng.nextDouble(),
-        y: rng.nextDouble() * 0.75, // النجوم في الأعلى فقط / upper area only
-        radius: 0.6 + rng.nextDouble() * 1.4,
-        phase: rng.nextDouble(),
-        speed: 0.5 + rng.nextDouble(),
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _drift.dispose();
-    _twinkle.dispose();
-    _glow.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: Listenable.merge(<Listenable>[_drift, _twinkle, _glow]),
-      builder: (BuildContext context, Widget? _) {
-        return CustomPaint(
-          painter: _NightPainter(
-            drift: _drift.value,
-            twinkle: _twinkle.value,
-            glow: _glow.value,
-            stars: _stars,
-            isDark: widget.isDark,
-          ),
-          child: const SizedBox.expand(),
-        );
-      },
+    return CustomPaint(
+      painter: _NightPainter(isDark: isDark),
+      child: const SizedBox.expand(),
     );
   }
-}
-
-/// نجمة واحدة / A single star particle
-class _Star {
-  final double x;
-  final double y;
-  final double radius;
-  final double phase;
-  final double speed;
-
-  const _Star({
-    required this.x,
-    required this.y,
-    required this.radius,
-    required this.phase,
-    required this.speed,
-  });
 }
 
 /// الرسّام — يرسم التدرج والنجوم والتوهج / Painter: gradient + stars + glow
 class _NightPainter extends CustomPainter {
-  final double drift;
-  final double twinkle;
-  final double glow;
-  final List<_Star> stars;
   final bool isDark;
 
-  _NightPainter({
-    required this.drift,
-    required this.twinkle,
-    required this.glow,
-    required this.stars,
-    required this.isDark,
-  });
+  _NightPainter({required this.isDark});
 
   @override
   void paint(Canvas canvas, Size size) {
-    // ── التدرج الكحلي المتنفس / Breathing navy gradient ──
-    // نقطة المركز تنجرف ببطء مع drift / center drifts slowly
-    final Offset center = Offset(
-      size.width * (0.5 + 0.15 * sin(drift * 2 * pi)),
-      size.height * (0.25 + 0.1 * cos(drift * 2 * pi)),
-    );
-
+    // ── التدرج الكحلي العميق / Deep navy gradient ──
     final List<Color> colors = isDark
         ? <Color>[
             const Color(0xFF0A1128), // كحلي عميق / deep navy
@@ -163,10 +46,7 @@ class _NightPainter extends CustomPainter {
 
     final Paint gradientPaint = Paint()
       ..shader = RadialGradient(
-        center: Alignment(
-          (center.dx / size.width) * 2 - 1,
-          (center.dy / size.height) * 2 - 1,
-        ),
+        center: const Alignment(-0.2, -0.6),
         radius: 1.4,
         colors: colors,
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
@@ -175,8 +55,7 @@ class _NightPainter extends CustomPainter {
       gradientPaint,
     );
 
-    // ── توهج ذهبي نابض أعلى الشاشة / Pulsing gold glow at top ──
-    final double glowAlpha = (isDark ? 0.10 : 0.18) * (0.6 + 0.4 * glow);
+    // ── توهج ذهبي ناعم أعلى الشاشة / Soft gold glow at top ──
     final Rect glowRect = Rect.fromCenter(
       center: Offset(size.width * 0.5, -size.height * 0.15),
       width: size.width * 1.6,
@@ -185,34 +64,32 @@ class _NightPainter extends CustomPainter {
     final Paint glowPaint = Paint()
       ..shader = RadialGradient(
         colors: <Color>[
-          const Color(0xFFD4AF37).withOpacity(glowAlpha),
+          const Color(0xFFD4AF37).withOpacity(isDark ? 0.10 : 0.18),
           const Color(0xFFD4AF37).withOpacity(0),
         ],
       ).createShader(glowRect);
     canvas.drawOval(glowRect, glowPaint);
 
-    // ── النجوم الذهبية الوامضة / Twinkling gold stars ──
+    // ── النجوم الذهبية بأحجام وشفافيات متنوعة / Gold stars, varied sizes ──
+    // بذرة ثابتة = نفس التوزيع الجميل كل مرة / fixed seed = same nice layout
+    final Random rng = Random(42);
     final Paint starPaint = Paint()..style = PaintingStyle.fill;
-    for (final _Star star in stars) {
-      // كل نجمة تومض بطورها الخاص / each star twinkles on its own phase
-      final double a =
-          0.25 + 0.55 * (0.5 + 0.5 * sin((twinkle + star.phase) * 2 * pi));
+    for (int i = 0; i < 28; i++) {
+      final double x = rng.nextDouble();
+      final double y = rng.nextDouble() * 0.75;
+      final double radius = 0.6 + rng.nextDouble() * 1.4;
+      final double alpha = 0.25 + rng.nextDouble() * 0.55;
       starPaint.color =
-          const Color(0xFFE8C96A).withOpacity(isDark ? a : a * 0.45);
+          const Color(0xFFE8C96A).withOpacity(isDark ? alpha : alpha * 0.45);
       canvas.drawCircle(
-        Offset(star.x * size.width, star.y * size.height),
-        star.radius,
+        Offset(x * size.width, y * size.height),
+        radius,
         starPaint,
       );
     }
   }
 
   @override
-  bool shouldRepaint(_NightPainter oldDelegate) {
-    // يعيد الرسم فقط عند تغير القيم الفعلية / repaint only when values change
-    return oldDelegate.drift != drift ||
-        oldDelegate.twinkle != twinkle ||
-        oldDelegate.glow != glow ||
-        oldDelegate.isDark != isDark;
-  }
+  bool shouldRepaint(_NightPainter oldDelegate) =>
+      oldDelegate.isDark != isDark;
 }
