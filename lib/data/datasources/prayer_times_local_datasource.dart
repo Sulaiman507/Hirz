@@ -33,10 +33,10 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
         : adhan.Madhab.shafi;
     params.highLatitudeRule = adhan.HighLatitudeRule.middle_of_the_night;
 
-    // مصنع utcOffset يعيد: التوقيت العالمي + إزاحة المدينة بشكل حتمي
-    // (المصنع الافتراضي يحوّل لتوقيت الجهاز — يسبب إزاحة مزدوجة)
-    // The utcOffset factory returns UTC + city offset deterministically
-    // (the default factory converts to device-local time — double shift)
+    // مصنع utcOffset يعيد الأوقات جاهزة بتوقيت المدينة (UTC + الإزاحة)
+    // لا نضيف الإزاحة مرة أخرى هنا — كانت تسبب إزاحة مزدوجة (+3 ساعات مثلاً)
+    // The utcOffset factory already returns city-local times (UTC + offset).
+    // Do NOT shift again — that caused the +3h double-offset bug.
     final Duration offset =
         Duration(minutes: (city.timezoneOffsetHours * 60).round());
     final adhan.PrayerTimes raw = adhan.PrayerTimes.utcOffset(
@@ -46,10 +46,7 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
       offset,
     );
 
-    DateTime toLocal(DateTime utcTime) => utcTime.add(offset);
-
-    PrayerTime build(Prayer prayer, DateTime utcTime) {
-      final DateTime time = toLocal(utcTime);
+    PrayerTime build(Prayer prayer, DateTime time) {
       final String key = prayer.name; // fajr..isha
       final int iqamahMinutes = settings.iqamahOffsets[key] ?? 15;
       return PrayerTime(
