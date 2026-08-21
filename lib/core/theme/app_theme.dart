@@ -46,6 +46,8 @@ abstract class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
+      // خط Amiri الفاخر للعناوين / Luxury Amiri font for display text
+      fontFamily: 'Amiri',
       appBarTheme: AppBarTheme(
         backgroundColor:
             isDark ? Colors.transparent : scheme.surface.withOpacity(0.85),
