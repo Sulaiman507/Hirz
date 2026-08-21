@@ -65,8 +65,6 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
           );
         }
         final Duration remaining = next.time.difference(DateTime.now());
-        final String languageCode =
-            ref.watch(settingsProvider).valueOrNull?.languageCode ?? 'ar';
         return GlassCard(
           child: Column(
             children: <Widget>[

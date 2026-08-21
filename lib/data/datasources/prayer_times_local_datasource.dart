@@ -1,6 +1,8 @@
 // مصدر بيانات المواقيت — غلاف adhan / Prayer times datasource: adhan wrapper
 // ملاحظة: adhan مستوردة بـ prefix لتجنب تعارض الأسماء مع domain
 // Note: adhan imported with prefix to avoid name clashes with domain
+// أسماء adhan الفعلية snake_case: umm_al_qura, middle_of_the_night...
+// Actual adhan enum names are snake_case
 
 import 'package:adhan/adhan.dart' as adhan;
 
@@ -20,28 +22,31 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     required DateTime date,
     required AppSettings settings,
   }) async {
-    final coordinates = adhan.Coordinates(city.latitude, city.longitude);
-    final params = _parametersFor(settings.method);
+    final adhan.Coordinates coordinates =
+        adhan.Coordinates(city.latitude, city.longitude);
+    final adhan.CalculationParameters params = _parametersFor(settings.method);
 
     // المذهب (معامل العصر) + قاعدة خطوط العرض العليا
     // Madhab (Asr factor) and the high-latitude rule
-    params.madhab =
-        settings.madhab == Madhab.hanafi ? adhan.Madhab.hanafi : adhan.Madhab.shafi;
-    params.highLatitudeRule = adhan.HighLatitudeRule.middleOfTheNight;
+    params.madhab = settings.madhab == Madhab.hanafi
+        ? adhan.Madhab.hanafi
+        : adhan.Madhab.shafi;
+    params.highLatitudeRule = adhan.HighLatitudeRule.middle_of_the_night;
 
     // adhan تُرجع الأوقات بالتوقيت العالمي — نحولها لتوقيت المدينة
     // adhan returns UTC times; shift to the city's fixed offset
-    final raw = adhan.PrayerTimes(
+    final adhan.PrayerTimes raw = adhan.PrayerTimes(
       coordinates,
       adhan.DateComponents.from(date),
       params,
     );
-    final offset = Duration(minutes: (city.timezoneOffsetHours * 60).round());
+    final Duration offset =
+        Duration(minutes: (city.timezoneOffsetHours * 60).round());
 
     DateTime toLocal(DateTime utcTime) => utcTime.add(offset);
 
     PrayerTime build(Prayer prayer, DateTime utcTime) {
-      final time = toLocal(utcTime);
+      final DateTime time = toLocal(utcTime);
       final String key = prayer.name; // fajr..isha
       final int iqamahMinutes = settings.iqamahOffsets[key] ?? 15;
       return PrayerTime(
@@ -64,19 +69,20 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     );
   }
 
-  /// مطابقة طريقة الحساب إلى adhan / Map our method enum to adhan's
+  /// مطابقة طريقة الحساب إلى adhan (أسماء snake_case)
+  /// Map our method enum to adhan's (snake_case names)
   adhan.CalculationParameters _parametersFor(CalculationMethod method) {
     switch (method) {
       case CalculationMethod.ummAlQura:
-        return adhan.CalculationMethod.ummAlQura.getParameters();
+        return adhan.CalculationMethod.umm_al_qura.getParameters();
       case CalculationMethod.muslimWorldLeague:
-        return adhan.CalculationMethod.muslimWorldLeague.getParameters();
+        return adhan.CalculationMethod.muslim_world_league.getParameters();
       case CalculationMethod.egyptian:
         return adhan.CalculationMethod.egyptian.getParameters();
       case CalculationMethod.karachi:
         return adhan.CalculationMethod.karachi.getParameters();
       case CalculationMethod.northAmerica:
-        return adhan.CalculationMethod.northAmerica.getParameters();
+        return adhan.CalculationMethod.north_america.getParameters();
       case CalculationMethod.turkey:
         return adhan.CalculationMethod.turkey.getParameters();
       case CalculationMethod.qatar:
