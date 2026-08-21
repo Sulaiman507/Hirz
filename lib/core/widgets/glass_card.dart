@@ -1,4 +1,6 @@
-// بطاقة زجاجية (glassmorphism) فاخرة / Luxury glassmorphism card
+// بطاقة زجاجية فاخرة / Luxury glassmorphism card
+// زجاج حقيقي: blur + حافة علوية مضيئة + ظل عميق
+// Real glass: blur + luminous top edge + deep shadow
 
 import 'dart:ui';
 
@@ -24,24 +26,44 @@ class GlassCard extends StatelessWidget {
 
     final Widget card = ClipRRect(
       borderRadius: BorderRadius.circular(24),
+      // ملاحظة: طبقة blur واحدة هنا — ضمن ميزانية GPU
+      // Note: single blur layer here — within GPU budget
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
+            // زجاج داكن/فاتح حسب الوضع / dark/light glass per mode
             color: isDark
-                ? Colors.white.withValues(alpha: 0.06)
-                : Colors.white.withValues(alpha: 0.55),
+                ? Colors.white.withOpacity(0.06)
+                : Colors.white.withOpacity(0.55),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: Colors.amber.withValues(alpha: isDark ? 0.25 : 0.4),
+              color: const Color(0xFFD4AF37)
+                  .withOpacity(isDark ? 0.28 : 0.45),
               width: 1,
             ),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: <Color>[
+                Colors.white.withOpacity(isDark ? 0.10 : 0.35),
+                Colors.white.withOpacity(isDark ? 0.03 : 0.15),
+              ],
+            ),
             boxShadow: <BoxShadow>[
+              // ظل عميق للفصل عن الخلفية / deep shadow for separation
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
+                color: Colors.black.withOpacity(isDark ? 0.35 : 0.12),
+                blurRadius: 24,
+                offset: const Offset(0, 10),
+              ),
+              // وهج داخلي علوي — الضوء يلامس المادة
+              // inner top glow — light catching the material
+              BoxShadow(
+                color: Colors.white.withOpacity(isDark ? 0.06 : 0.5),
+                blurRadius: 1,
+                offset: const Offset(0, -1),
               ),
             ],
           ),

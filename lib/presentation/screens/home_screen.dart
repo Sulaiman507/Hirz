@@ -42,6 +42,7 @@ class HomeScreen extends ConsumerWidget {
     );
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(l10n.tr('appName')),
         actions: <Widget>[
