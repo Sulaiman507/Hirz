@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/widgets/animated_background.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/city.dart';
 import '../../domain/entities/prayer_time.dart';
@@ -53,10 +54,16 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: <Widget>[
+      body: Stack(
+        children: <Widget>[
+          // الخلفية الليلية المتحركة / Animated night background
+          Positioned.fill(
+            child: AnimatedNightBackground(isDark: settings.isDarkMode),
+          ),
+          SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: <Widget>[
             // التاريخ الهجري والميلادي / Hijri + Gregorian date
             DateHeader(
               date: DateTime.now(),
@@ -111,6 +118,8 @@ class HomeScreen extends ConsumerWidget {
             ),
           ],
         ),
+          ),
+        ],
       ),
     );
   }
