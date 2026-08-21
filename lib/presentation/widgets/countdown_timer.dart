@@ -13,7 +13,6 @@ import '../../core/utils/time_formatter.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../providers/prayer_providers.dart';
-import '../providers/settings_providers.dart';
 
 /// عدّاد تنازلي يتحدث كل ثانية / Updates every second
 class CountdownTimer extends ConsumerStatefulWidget {
