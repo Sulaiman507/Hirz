@@ -2,6 +2,7 @@
 // الحالة الوحيدة التي نستخدم فيها setState (Timer) / The only setState use (Timer)
 
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import '../../core/utils/time_formatter.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../providers/prayer_providers.dart';
+import 'circular_countdown_ring.dart';
 
 /// عدّاد تنازلي يتحدث كل ثانية / Updates every second
 class CountdownTimer extends ConsumerStatefulWidget {
@@ -64,6 +66,21 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
           );
         }
         final Duration remaining = next.time.difference(DateTime.now());
+        // نسبة التقدم: من الصلاة السابقة إلى القادمة / progress from prev to next prayer
+        final List<PrayerTime> passed = daily.times
+            .where((PrayerTime pt) => pt.time.isBefore(DateTime.now()))
+            .toList();
+        final DateTime? previousTime =
+            passed.isEmpty ? null : passed.last.time;
+        final Duration totalSpan = previousTime == null
+            ? const Duration(hours: 6)
+            : next.time.difference(previousTime);
+        final double progress = totalSpan.inSeconds <= 0
+            ? 0.0
+            : 1.0 -
+                (remaining.inSeconds / max(totalSpan.inSeconds, 1))
+                    .clamp(0.0, 1.0);
+
         return GlassCard(
           child: Column(
             children: <Widget>[
@@ -80,25 +97,38 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                       fontWeight: FontWeight.bold,
                     ),
               ),
-              const SizedBox(height: 8),
-              // HH:MM:SS — الوقت المتبقي / Remaining time
-              Text(
-                formatDuration(remaining.isNegative ? Duration.zero : remaining),
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontFeatures: const <FontFeature>[
-                        FontFeature.tabularFigures(),
-                      ],
+              const SizedBox(height: 16),
+              // الحلقة الذهبية حول الوقت المتبقي / Gold ring around remaining time
+              CircularCountdownRing(
+                progress: progress,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    // HH:MM:SS — الوقت المتبقي بأرقام tabular
+                    // Remaining time with tabular figures (no layout shift)
+                    Text(
+                      formatDuration(
+                          remaining.isNegative ? Duration.zero : remaining),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontFeatures: const <FontFeature>[
+                              FontFeature.tabularFigures(),
+                            ],
+                          ),
                     ),
-              ),
-              Text(
-                l10n.tr('timeRemaining'),
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.6),
+                    Text(
+                      l10n.tr('timeRemaining'),
+                      style:
+                          Theme.of(context).textTheme.labelMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface
+                                    .withOpacity(0.6),
+                              ),
                     ),
+                  ],
+                ),
               ),
             ],
           ),
