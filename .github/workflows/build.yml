@@ -1,0 +1,38 @@
+name: Build Hirz APK
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable }
+      - name: Scaffold project
+        run: |
+          flutter create -t app --org dev.hirz --project-name hirz scaffold
+          rm -rf scaffold/lib scaffold/test
+          cp -r lib scaffold/lib
+          cp -r assets scaffold/assets
+          cp pubspec.yaml analysis_options.yaml scaffold/
+          mkdir -p scaffold/test && cp -r test/. scaffold/test/
+      - name: Get dependencies
+        working-directory: scaffold
+        run: flutter pub get
+      - name: Analyze
+        working-directory: scaffold
+        run: flutter analyze --no-fatal-infos
+      - name: Test
+        working-directory: scaffold
+        run: flutter test
+      - name: Build APK
+        working-directory: scaffold
+        run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hirz-release-apk
+          path: scaffold/build/app/outputs/flutter-apk/app-release.apk
