@@ -1,1 +1,1372 @@
-[]
+[
+ {
+  "id": "sa_makkah",
+  "nameEn": "Makkah",
+  "nameAr": "مكة المكرمة",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 21.4225,
+  "longitude": 39.8262,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_madinah",
+  "nameEn": "Madinah",
+  "nameAr": "المدينة المنورة",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 24.4686,
+  "longitude": 39.6142,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_riyadh",
+  "nameEn": "Riyadh",
+  "nameAr": "الرياض",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 24.7136,
+  "longitude": 46.6753,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_jeddah",
+  "nameEn": "Jeddah",
+  "nameAr": "جدة",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 21.4858,
+  "longitude": 39.1925,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_dammam",
+  "nameEn": "Dammam",
+  "nameAr": "الدمام",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 26.4207,
+  "longitude": 50.0888,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_taif",
+  "nameEn": "Taif",
+  "nameAr": "الطائف",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 21.2703,
+  "longitude": 40.4158,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_tabuk",
+  "nameEn": "Tabuk",
+  "nameAr": "تبوك",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 28.3835,
+  "longitude": 36.5662,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_abha",
+  "nameEn": "Abha",
+  "nameAr": "أبها",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 18.2465,
+  "longitude": 42.5117,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_buraydah",
+  "nameEn": "Buraydah",
+  "nameAr": "بريدة",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 26.326,
+  "longitude": 43.975,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sa_ahsa",
+  "nameEn": "Al-Ahsa",
+  "nameAr": "الأحساء",
+  "countryEn": "Saudi Arabia",
+  "countryAr": "السعودية",
+  "latitude": 25.3833,
+  "longitude": 49.5833,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "ae_abudhabi",
+  "nameEn": "Abu Dhabi",
+  "nameAr": "أبوظبي",
+  "countryEn": "UAE",
+  "countryAr": "الإمارات",
+  "latitude": 24.4539,
+  "longitude": 54.3773,
+  "timezoneOffsetHours": 4
+ },
+ {
+  "id": "ae_dubai",
+  "nameEn": "Dubai",
+  "nameAr": "دبي",
+  "countryEn": "UAE",
+  "countryAr": "الإمارات",
+  "latitude": 25.2048,
+  "longitude": 55.2708,
+  "timezoneOffsetHours": 4
+ },
+ {
+  "id": "ae_sharjah",
+  "nameEn": "Sharjah",
+  "nameAr": "الشارقة",
+  "countryEn": "UAE",
+  "countryAr": "الإمارات",
+  "latitude": 25.3463,
+  "longitude": 55.4209,
+  "timezoneOffsetHours": 4
+ },
+ {
+  "id": "qa_doha",
+  "nameEn": "Doha",
+  "nameAr": "الدوحة",
+  "countryEn": "Qatar",
+  "countryAr": "قطر",
+  "latitude": 25.2854,
+  "longitude": 51.531,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "kw_kuwaitcity",
+  "nameEn": "Kuwait City",
+  "nameAr": "مدينة الكويت",
+  "countryEn": "Kuwait",
+  "countryAr": "الكويت",
+  "latitude": 29.3759,
+  "longitude": 47.9774,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "bh_manama",
+  "nameEn": "Manama",
+  "nameAr": "المنامة",
+  "countryEn": "Bahrain",
+  "countryAr": "البحرين",
+  "latitude": 26.2285,
+  "longitude": 50.586,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "om_muscat",
+  "nameEn": "Muscat",
+  "nameAr": "مسقط",
+  "countryEn": "Oman",
+  "countryAr": "عُمان",
+  "latitude": 23.588,
+  "longitude": 58.3829,
+  "timezoneOffsetHours": 4
+ },
+ {
+  "id": "om_salalah",
+  "nameEn": "Salalah",
+  "nameAr": "صلالة",
+  "countryEn": "Oman",
+  "countryAr": "عُمان",
+  "latitude": 17.0151,
+  "longitude": 54.0924,
+  "timezoneOffsetHours": 4
+ },
+ {
+  "id": "ye_sanaa",
+  "nameEn": "Sanaa",
+  "nameAr": "صنعاء",
+  "countryEn": "Yemen",
+  "countryAr": "اليمن",
+  "latitude": 15.3694,
+  "longitude": 44.191,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "ye_aden",
+  "nameEn": "Aden",
+  "nameAr": "عدن",
+  "countryEn": "Yemen",
+  "countryAr": "اليمن",
+  "latitude": 12.7855,
+  "longitude": 45.0187,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "jo_amman",
+  "nameEn": "Amman",
+  "nameAr": "عمّان",
+  "countryEn": "Jordan",
+  "countryAr": "الأردن",
+  "latitude": 31.9539,
+  "longitude": 35.9106,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "sy_damascus",
+  "nameEn": "Damascus",
+  "nameAr": "دمشق",
+  "countryEn": "Syria",
+  "countryAr": "سوريا",
+  "latitude": 33.5138,
+  "longitude": 36.2765,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "lb_beirut",
+  "nameEn": "Beirut",
+  "nameAr": "بيروت",
+  "countryEn": "Lebanon",
+  "countryAr": "لبنان",
+  "latitude": 33.8938,
+  "longitude": 35.5018,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "ps_gaza",
+  "nameEn": "Gaza",
+  "nameAr": "غزة",
+  "countryEn": "Palestine",
+  "countryAr": "فلسطين",
+  "latitude": 31.5017,
+  "longitude": 34.4668,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "ps_jerusalem",
+  "nameEn": "Jerusalem",
+  "nameAr": "القدس",
+  "countryEn": "Palestine",
+  "countryAr": "فلسطين",
+  "latitude": 31.7683,
+  "longitude": 35.2137,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "iq_baghdad",
+  "nameEn": "Baghdad",
+  "nameAr": "بغداد",
+  "countryEn": "Iraq",
+  "countryAr": "العراق",
+  "latitude": 33.3152,
+  "longitude": 44.3661,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "iq_basra",
+  "nameEn": "Basra",
+  "nameAr": "البصرة",
+  "countryEn": "Iraq",
+  "countryAr": "العراق",
+  "latitude": 30.5081,
+  "longitude": 47.7835,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "eg_cairo",
+  "nameEn": "Cairo",
+  "nameAr": "القاهرة",
+  "countryEn": "Egypt",
+  "countryAr": "مصر",
+  "latitude": 30.0444,
+  "longitude": 31.2357,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "eg_alexandria",
+  "nameEn": "Alexandria",
+  "nameAr": "الإسكندرية",
+  "countryEn": "Egypt",
+  "countryAr": "مصر",
+  "latitude": 31.2001,
+  "longitude": 29.9187,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "sd_khartoum",
+  "nameEn": "Khartoum",
+  "nameAr": "الخرطوم",
+  "countryEn": "Sudan",
+  "countryAr": "السودان",
+  "latitude": 15.5007,
+  "longitude": 32.5599,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "ly_tripoli",
+  "nameEn": "Tripoli",
+  "nameAr": "طرابلس",
+  "countryEn": "Libya",
+  "countryAr": "ليبيا",
+  "latitude": 32.8872,
+  "longitude": 13.1913,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "ly_benghazi",
+  "nameEn": "Benghazi",
+  "nameAr": "بنغازي",
+  "countryEn": "Libya",
+  "countryAr": "ليبيا",
+  "latitude": 32.1167,
+  "longitude": 20.0667,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "tn_tunis",
+  "nameEn": "Tunis",
+  "nameAr": "تونس",
+  "countryEn": "Tunisia",
+  "countryAr": "تونس",
+  "latitude": 36.8065,
+  "longitude": 10.1815,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "dz_algiers",
+  "nameEn": "Algiers",
+  "nameAr": "الجزائر",
+  "countryEn": "Algeria",
+  "countryAr": "الجزائر",
+  "latitude": 36.7538,
+  "longitude": 3.0588,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "dz_oran",
+  "nameEn": "Oran",
+  "nameAr": "وهران",
+  "countryEn": "Algeria",
+  "countryAr": "الجزائر",
+  "latitude": 35.6971,
+  "longitude": -0.6308,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "ma_rabat",
+  "nameEn": "Rabat",
+  "nameAr": "الرباط",
+  "countryEn": "Morocco",
+  "countryAr": "المغرب",
+  "latitude": 34.0209,
+  "longitude": -6.8416,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "ma_casablanca",
+  "nameEn": "Casablanca",
+  "nameAr": "الدار البيضاء",
+  "countryEn": "Morocco",
+  "countryAr": "المغرب",
+  "latitude": 33.5731,
+  "longitude": -7.5898,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "mr_nouakchott",
+  "nameEn": "Nouakchott",
+  "nameAr": "نواكشوط",
+  "countryEn": "Mauritania",
+  "countryAr": "موريتانيا",
+  "latitude": 18.0735,
+  "longitude": -15.9582,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "so_mogadishu",
+  "nameEn": "Mogadishu",
+  "nameAr": "مقديشو",
+  "countryEn": "Somalia",
+  "countryAr": "الصومال",
+  "latitude": 2.0469,
+  "longitude": 45.3182,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "dj_djibouti",
+  "nameEn": "Djibouti City",
+  "nameAr": "جيبوتي",
+  "countryEn": "Djibouti",
+  "countryAr": "جيبوتي",
+  "latitude": 11.5721,
+  "longitude": 43.1456,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "km_moroni",
+  "nameEn": "Moroni",
+  "nameAr": "موروني",
+  "countryEn": "Comoros",
+  "countryAr": "جزر القمر",
+  "latitude": -11.6989,
+  "longitude": 43.2551,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "tr_istanbul",
+  "nameEn": "Istanbul",
+  "nameAr": "إسطنبول",
+  "countryEn": "Turkey",
+  "countryAr": "تركيا",
+  "latitude": 41.0082,
+  "longitude": 28.9784,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "tr_ankara",
+  "nameEn": "Ankara",
+  "nameAr": "أنكرة",
+  "countryEn": "Turkey",
+  "countryAr": "تركيا",
+  "latitude": 39.9334,
+  "longitude": 32.8597,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "ir_tehran",
+  "nameEn": "Tehran",
+  "nameAr": "طهران",
+  "countryEn": "Iran",
+  "countryAr": "إيران",
+  "latitude": 35.6892,
+  "longitude": 51.389,
+  "timezoneOffsetHours": 3.5
+ },
+ {
+  "id": "ir_mashhad",
+  "nameEn": "Mashhad",
+  "nameAr": "مشهد",
+  "countryEn": "Iran",
+  "countryAr": "إيران",
+  "latitude": 36.2605,
+  "longitude": 59.6168,
+  "timezoneOffsetHours": 3.5
+ },
+ {
+  "id": "af_kabul",
+  "nameEn": "Kabul",
+  "nameAr": "كابل",
+  "countryEn": "Afghanistan",
+  "countryAr": "أفغانستان",
+  "latitude": 34.5553,
+  "longitude": 69.2075,
+  "timezoneOffsetHours": 4.5
+ },
+ {
+  "id": "pk_karachi",
+  "nameEn": "Karachi",
+  "nameAr": "كراتشي",
+  "countryEn": "Pakistan",
+  "countryAr": "باكستان",
+  "latitude": 24.8607,
+  "longitude": 67.0011,
+  "timezoneOffsetHours": 5
+ },
+ {
+  "id": "pk_lahore",
+  "nameEn": "Lahore",
+  "nameAr": "لاهور",
+  "countryEn": "Pakistan",
+  "countryAr": "باكستان",
+  "latitude": 31.5204,
+  "longitude": 74.3587,
+  "timezoneOffsetHours": 5
+ },
+ {
+  "id": "pk_islamabad",
+  "nameEn": "Islamabad",
+  "nameAr": "إسلام آباد",
+  "countryEn": "Pakistan",
+  "countryAr": "باكستان",
+  "latitude": 33.6844,
+  "longitude": 73.0479,
+  "timezoneOffsetHours": 5
+ },
+ {
+  "id": "bd_dhaka",
+  "nameEn": "Dhaka",
+  "nameAr": "دكا",
+  "countryEn": "Bangladesh",
+  "countryAr": "بنغلاديش",
+  "latitude": 23.8103,
+  "longitude": 90.4125,
+  "timezoneOffsetHours": 6
+ },
+ {
+  "id": "mv_male",
+  "nameEn": "Male",
+  "nameAr": "ماليه",
+  "countryEn": "Maldives",
+  "countryAr": "المالديف",
+  "latitude": 4.1755,
+  "longitude": 73.5093,
+  "timezoneOffsetHours": 5
+ },
+ {
+  "id": "in_delhi",
+  "nameEn": "Delhi",
+  "nameAr": "دلهي",
+  "countryEn": "India",
+  "countryAr": "الهند",
+  "latitude": 28.6139,
+  "longitude": 77.209,
+  "timezoneOffsetHours": 5.5
+ },
+ {
+  "id": "in_mumbai",
+  "nameEn": "Mumbai",
+  "nameAr": "مومباي",
+  "countryEn": "India",
+  "countryAr": "الهند",
+  "latitude": 19.076,
+  "longitude": 72.8777,
+  "timezoneOffsetHours": 5.5
+ },
+ {
+  "id": "in_hyderabad",
+  "nameEn": "Hyderabad",
+  "nameAr": "حيدر آباد",
+  "countryEn": "India",
+  "countryAr": "الهند",
+  "latitude": 17.385,
+  "longitude": 78.4867,
+  "timezoneOffsetHours": 5.5
+ },
+ {
+  "id": "lk_colombo",
+  "nameEn": "Colombo",
+  "nameAr": "كولومبو",
+  "countryEn": "Sri Lanka",
+  "countryAr": "سريلانكا",
+  "latitude": 6.9271,
+  "longitude": 79.8612,
+  "timezoneOffsetHours": 5.5
+ },
+ {
+  "id": "np_kathmandu",
+  "nameEn": "Kathmandu",
+  "nameAr": "كاتماندو",
+  "countryEn": "Nepal",
+  "countryAr": "نيبال",
+  "latitude": 27.7172,
+  "longitude": 85.324,
+  "timezoneOffsetHours": 5.75
+ },
+ {
+  "id": "my_kualalumpur",
+  "nameEn": "Kuala Lumpur",
+  "nameAr": "كوالالمبور",
+  "countryEn": "Malaysia",
+  "countryAr": "ماليزيا",
+  "latitude": 3.139,
+  "longitude": 101.6869,
+  "timezoneOffsetHours": 8
+ },
+ {
+  "id": "sg_singapore",
+  "nameEn": "Singapore",
+  "nameAr": "سنغافورة",
+  "countryEn": "Singapore",
+  "countryAr": "سنغافورة",
+  "latitude": 1.3521,
+  "longitude": 103.8198,
+  "timezoneOffsetHours": 8
+ },
+ {
+  "id": "id_jakarta",
+  "nameEn": "Jakarta",
+  "nameAr": "جاكرتا",
+  "countryEn": "Indonesia",
+  "countryAr": "إندونيسيا",
+  "latitude": -6.2088,
+  "longitude": 106.8456,
+  "timezoneOffsetHours": 7
+ },
+ {
+  "id": "id_surabaya",
+  "nameEn": "Surabaya",
+  "nameAr": "سورابايا",
+  "countryEn": "Indonesia",
+  "countryAr": "إندونيسيا",
+  "latitude": -7.2575,
+  "longitude": 112.7521,
+  "timezoneOffsetHours": 7
+ },
+ {
+  "id": "ph_manila",
+  "nameEn": "Manila",
+  "nameAr": "مانيلا",
+  "countryEn": "Philippines",
+  "countryAr": "الفلبين",
+  "latitude": 14.5995,
+  "longitude": 120.9842,
+  "timezoneOffsetHours": 8
+ },
+ {
+  "id": "th_bangkok",
+  "nameEn": "Bangkok",
+  "nameAr": "بانكوك",
+  "countryEn": "Thailand",
+  "countryAr": "تايلاند",
+  "latitude": 13.7563,
+  "longitude": 100.5018,
+  "timezoneOffsetHours": 7
+ },
+ {
+  "id": "vn_hanoi",
+  "nameEn": "Hanoi",
+  "nameAr": "هانوي",
+  "countryEn": "Vietnam",
+  "countryAr": "فيتنام",
+  "latitude": 21.0278,
+  "longitude": 105.8342,
+  "timezoneOffsetHours": 7
+ },
+ {
+  "id": "cn_beijing",
+  "nameEn": "Beijing",
+  "nameAr": "بكين",
+  "countryEn": "China",
+  "countryAr": "الصين",
+  "latitude": 39.9042,
+  "longitude": 116.4074,
+  "timezoneOffsetHours": 8
+ },
+ {
+  "id": "cn_shanghai",
+  "nameEn": "Shanghai",
+  "nameAr": "شنغهاي",
+  "countryEn": "China",
+  "countryAr": "الصين",
+  "latitude": 31.2304,
+  "longitude": 121.4737,
+  "timezoneOffsetHours": 8
+ },
+ {
+  "id": "cn_xian",
+  "nameEn": "Xi'an",
+  "nameAr": "شيآن",
+  "countryEn": "China",
+  "countryAr": "الصين",
+  "latitude": 34.3416,
+  "longitude": 108.9398,
+  "timezoneOffsetHours": 8
+ },
+ {
+  "id": "jp_tokyo",
+  "nameEn": "Tokyo",
+  "nameAr": "طوكيو",
+  "countryEn": "Japan",
+  "countryAr": "اليابان",
+  "latitude": 35.6762,
+  "longitude": 139.6503,
+  "timezoneOffsetHours": 9
+ },
+ {
+  "id": "kr_seoul",
+  "nameEn": "Seoul",
+  "nameAr": "سيول",
+  "countryEn": "South Korea",
+  "countryAr": "كوريا الجنوبية",
+  "latitude": 37.5665,
+  "longitude": 126.978,
+  "timezoneOffsetHours": 9
+ },
+ {
+  "id": "mn_ulaanbaatar",
+  "nameEn": "Ulaanbaatar",
+  "nameAr": "أولان باتور",
+  "countryEn": "Mongolia",
+  "countryAr": "منغوليا",
+  "latitude": 47.8864,
+  "longitude": 106.9057,
+  "timezoneOffsetHours": 8
+ },
+ {
+  "id": "kz_astana",
+  "nameEn": "Astana",
+  "nameAr": "أستانة",
+  "countryEn": "Kazakhstan",
+  "countryAr": "كازاخستان",
+  "latitude": 51.1694,
+  "longitude": 71.4491,
+  "timezoneOffsetHours": 5
+ },
+ {
+  "id": "uz_tashkent",
+  "nameEn": "Tashkent",
+  "nameAr": "طشقند",
+  "countryEn": "Uzbekistan",
+  "countryAr": "أوزبكستان",
+  "latitude": 41.2995,
+  "longitude": 69.2401,
+  "timezoneOffsetHours": 5
+ },
+ {
+  "id": "kg_bishkek",
+  "nameEn": "Bishkek",
+  "nameAr": "بشكيك",
+  "countryEn": "Kyrgyzstan",
+  "countryAr": "قرغيزستان",
+  "latitude": 42.8746,
+  "longitude": 74.5698,
+  "timezoneOffsetHours": 6
+ },
+ {
+  "id": "tj_dushanbe",
+  "nameEn": "Dushanbe",
+  "nameAr": "دوشانبه",
+  "countryEn": "Tajikistan",
+  "countryAr": "طاجيكستان",
+  "latitude": 38.5598,
+  "longitude": 68.787,
+  "timezoneOffsetHours": 5
+ },
+ {
+  "id": "tm_ashgabat",
+  "nameEn": "Ashgabat",
+  "nameAr": "عشق آباد",
+  "countryEn": "Turkmenistan",
+  "countryAr": "تركمانستان",
+  "latitude": 37.9601,
+  "longitude": 58.3261,
+  "timezoneOffsetHours": 5
+ },
+ {
+  "id": "az_baku",
+  "nameEn": "Baku",
+  "nameAr": "باكو",
+  "countryEn": "Azerbaijan",
+  "countryAr": "أذربيجان",
+  "latitude": 40.4093,
+  "longitude": 49.8671,
+  "timezoneOffsetHours": 4
+ },
+ {
+  "id": "am_yerevan",
+  "nameEn": "Yerevan",
+  "nameAr": "يريفان",
+  "countryEn": "Armenia",
+  "countryAr": "أرمينيا",
+  "latitude": 40.1792,
+  "longitude": 44.4991,
+  "timezoneOffsetHours": 4
+ },
+ {
+  "id": "ge_tbilisi",
+  "nameEn": "Tbilisi",
+  "nameAr": "تبليسي",
+  "countryEn": "Georgia",
+  "countryAr": "جورجيا",
+  "latitude": 41.7151,
+  "longitude": 44.8271,
+  "timezoneOffsetHours": 4
+ },
+ {
+  "id": "ru_moscow",
+  "nameEn": "Moscow",
+  "nameAr": "موسكو",
+  "countryEn": "Russia",
+  "countryAr": "روسيا",
+  "latitude": 55.7558,
+  "longitude": 37.6173,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "ru_kazan",
+  "nameEn": "Kazan",
+  "nameAr": "قازان",
+  "countryEn": "Russia",
+  "countryAr": "روسيا",
+  "latitude": 55.7963,
+  "longitude": 49.1088,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "gb_london",
+  "nameEn": "London",
+  "nameAr": "لندن",
+  "countryEn": "United Kingdom",
+  "countryAr": "بريطانيا",
+  "latitude": 51.5074,
+  "longitude": -0.1278,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "gb_birmingham",
+  "nameEn": "Birmingham",
+  "nameAr": "برمنغهام",
+  "countryEn": "United Kingdom",
+  "countryAr": "بريطانيا",
+  "latitude": 52.4862,
+  "longitude": -1.8904,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "fr_paris",
+  "nameEn": "Paris",
+  "nameAr": "باريس",
+  "countryEn": "France",
+  "countryAr": "فرنسا",
+  "latitude": 48.8566,
+  "longitude": 2.3522,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "de_berlin",
+  "nameEn": "Berlin",
+  "nameAr": "برلين",
+  "countryEn": "Germany",
+  "countryAr": "ألمانيا",
+  "latitude": 52.52,
+  "longitude": 13.405,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "de_frankfurt",
+  "nameEn": "Frankfurt",
+  "nameAr": "فرانكفورت",
+  "countryEn": "Germany",
+  "countryAr": "ألمانيا",
+  "latitude": 50.1109,
+  "longitude": 8.6821,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "es_madrid",
+  "nameEn": "Madrid",
+  "nameAr": "مدريد",
+  "countryEn": "Spain",
+  "countryAr": "إسبانيا",
+  "latitude": 40.4168,
+  "longitude": -3.7038,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "it_rome",
+  "nameEn": "Rome",
+  "nameAr": "روما",
+  "countryEn": "Italy",
+  "countryAr": "إيطاليا",
+  "latitude": 41.9028,
+  "longitude": 12.4964,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "it_milan",
+  "nameEn": "Milan",
+  "nameAr": "ميلانو",
+  "countryEn": "Italy",
+  "countryAr": "إيطاليا",
+  "latitude": 45.4642,
+  "longitude": 9.19,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "nl_amsterdam",
+  "nameEn": "Amsterdam",
+  "nameAr": "أمستردام",
+  "countryEn": "Netherlands",
+  "countryAr": "هولندا",
+  "latitude": 52.3676,
+  "longitude": 4.9041,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "be_brussels",
+  "nameEn": "Brussels",
+  "nameAr": "بروكسل",
+  "countryEn": "Belgium",
+  "countryAr": "بلجيكا",
+  "latitude": 50.8503,
+  "longitude": 4.3517,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "ch_zurich",
+  "nameEn": "Zurich",
+  "nameAr": "زيورخ",
+  "countryEn": "Switzerland",
+  "countryAr": "سويسرا",
+  "latitude": 47.3769,
+  "longitude": 8.5417,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "at_vienna",
+  "nameEn": "Vienna",
+  "nameAr": "فيينا",
+  "countryEn": "Austria",
+  "countryAr": "النمسا",
+  "latitude": 48.2082,
+  "longitude": 16.3738,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "pt_lisbon",
+  "nameEn": "Lisbon",
+  "nameAr": "لشبونة",
+  "countryEn": "Portugal",
+  "countryAr": "البرتغال",
+  "latitude": 38.7223,
+  "longitude": -9.1393,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "ie_dublin",
+  "nameEn": "Dublin",
+  "nameAr": "دبلن",
+  "countryEn": "Ireland",
+  "countryAr": "إيرلندا",
+  "latitude": 53.3498,
+  "longitude": -6.2603,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "se_stockholm",
+  "nameEn": "Stockholm",
+  "nameAr": "ستوكهولم",
+  "countryEn": "Sweden",
+  "countryAr": "السويد",
+  "latitude": 59.3293,
+  "longitude": 18.0686,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "no_oslo",
+  "nameEn": "Oslo",
+  "nameAr": "أوسلو",
+  "countryEn": "Norway",
+  "countryAr": "النرويج",
+  "latitude": 59.9139,
+  "longitude": 10.7522,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "dk_copenhagen",
+  "nameEn": "Copenhagen",
+  "nameAr": "كوبنهاغن",
+  "countryEn": "Denmark",
+  "countryAr": "الدنمارك",
+  "latitude": 55.6761,
+  "longitude": 12.5683,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "fi_helsinki",
+  "nameEn": "Helsinki",
+  "nameAr": "هلسنكي",
+  "countryEn": "Finland",
+  "countryAr": "فنلندا",
+  "latitude": 60.1699,
+  "longitude": 24.9384,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "pl_warsaw",
+  "nameEn": "Warsaw",
+  "nameAr": "وارسو",
+  "countryEn": "Poland",
+  "countryAr": "بولندا",
+  "latitude": 52.2297,
+  "longitude": 21.0122,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "cz_prague",
+  "nameEn": "Prague",
+  "nameAr": "براغ",
+  "countryEn": "Czech Republic",
+  "countryAr": "التشيك",
+  "latitude": 50.0755,
+  "longitude": 14.4378,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "hu_budapest",
+  "nameEn": "Budapest",
+  "nameAr": "بودابست",
+  "countryEn": "Hungary",
+  "countryAr": "هنغاريا",
+  "latitude": 47.4979,
+  "longitude": 19.0402,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "ro_bucharest",
+  "nameEn": "Bucharest",
+  "nameAr": "بوخارست",
+  "countryEn": "Romania",
+  "countryAr": "رومانيا",
+  "latitude": 44.4268,
+  "longitude": 26.1025,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "gr_athens",
+  "nameEn": "Athens",
+  "nameAr": "أثينا",
+  "countryEn": "Greece",
+  "countryAr": "اليونان",
+  "latitude": 37.9838,
+  "longitude": 23.7275,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "ua_kyiv",
+  "nameEn": "Kyiv",
+  "nameAr": "كييف",
+  "countryEn": "Ukraine",
+  "countryAr": "أوكرانيا",
+  "latitude": 50.4501,
+  "longitude": 30.5234,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "bg_sofia",
+  "nameEn": "Sofia",
+  "nameAr": "صوفيا",
+  "countryEn": "Bulgaria",
+  "countryAr": "بلغاريا",
+  "latitude": 42.6977,
+  "longitude": 23.3219,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "us_newyork",
+  "nameEn": "New York",
+  "nameAr": "نيويورك",
+  "countryEn": "USA",
+  "countryAr": "أمريكا",
+  "latitude": 40.7128,
+  "longitude": -74.006,
+  "timezoneOffsetHours": -5
+ },
+ {
+  "id": "us_chicago",
+  "nameEn": "Chicago",
+  "nameAr": "شيكاغو",
+  "countryEn": "USA",
+  "countryAr": "أمريكا",
+  "latitude": 41.8781,
+  "longitude": -87.6298,
+  "timezoneOffsetHours": -6
+ },
+ {
+  "id": "us_houston",
+  "nameEn": "Houston",
+  "nameAr": "هيوستن",
+  "countryEn": "USA",
+  "countryAr": "أمريكا",
+  "latitude": 29.7604,
+  "longitude": -95.3698,
+  "timezoneOffsetHours": -6
+ },
+ {
+  "id": "us_losangeles",
+  "nameEn": "Los Angeles",
+  "nameAr": "لوس أنجلوس",
+  "countryEn": "USA",
+  "countryAr": "أمريكا",
+  "latitude": 34.0522,
+  "longitude": -118.2437,
+  "timezoneOffsetHours": -8
+ },
+ {
+  "id": "us_dearbourn",
+  "nameEn": "Dearborn",
+  "nameAr": "ديربورن",
+  "countryEn": "USA",
+  "countryAr": "أمريكا",
+  "latitude": 42.3223,
+  "longitude": -83.1763,
+  "timezoneOffsetHours": -5
+ },
+ {
+  "id": "us_washington",
+  "nameEn": "Washington DC",
+  "nameAr": "واشنطن",
+  "countryEn": "USA",
+  "countryAr": "أمريكا",
+  "latitude": 38.9072,
+  "longitude": -77.0369,
+  "timezoneOffsetHours": -5
+ },
+ {
+  "id": "ca_toronto",
+  "nameEn": "Toronto",
+  "nameAr": "تورنتو",
+  "countryEn": "Canada",
+  "countryAr": "كندا",
+  "latitude": 43.6532,
+  "longitude": -79.3832,
+  "timezoneOffsetHours": -5
+ },
+ {
+  "id": "ca_montreal",
+  "nameEn": "Montreal",
+  "nameAr": "مونتريال",
+  "countryEn": "Canada",
+  "countryAr": "كندا",
+  "latitude": 45.5019,
+  "longitude": -73.5674,
+  "timezoneOffsetHours": -5
+ },
+ {
+  "id": "ca_vancouver",
+  "nameEn": "Vancouver",
+  "nameAr": "فانكوفر",
+  "countryEn": "Canada",
+  "countryAr": "كندا",
+  "latitude": 49.2827,
+  "longitude": -123.1207,
+  "timezoneOffsetHours": -8
+ },
+ {
+  "id": "mx_mexicocity",
+  "nameEn": "Mexico City",
+  "nameAr": "مكسيكو سيتي",
+  "countryEn": "Mexico",
+  "countryAr": "المكسيك",
+  "latitude": 19.4326,
+  "longitude": -99.1332,
+  "timezoneOffsetHours": -6
+ },
+ {
+  "id": "br_saopaulo",
+  "nameEn": "São Paulo",
+  "nameAr": "ساو باولو",
+  "countryEn": "Brazil",
+  "countryAr": "البرازيل",
+  "latitude": -23.5505,
+  "longitude": -46.6333,
+  "timezoneOffsetHours": -3
+ },
+ {
+  "id": "br_riodejaneiro",
+  "nameEn": "Rio de Janeiro",
+  "nameAr": "ريو دي جانيرو",
+  "countryEn": "Brazil",
+  "countryAr": "البرازيل",
+  "latitude": -22.9068,
+  "longitude": -43.1729,
+  "timezoneOffsetHours": -3
+ },
+ {
+  "id": "ar_buenosaires",
+  "nameEn": "Buenos Aires",
+  "nameAr": "بوينس آيرس",
+  "countryEn": "Argentina",
+  "countryAr": "الأرجنتين",
+  "latitude": -34.6037,
+  "longitude": -58.3816,
+  "timezoneOffsetHours": -3
+ },
+ {
+  "id": "cl_santiago",
+  "nameEn": "Santiago",
+  "nameAr": "سانتياغو",
+  "countryEn": "Chile",
+  "countryAr": "تشيلي",
+  "latitude": -33.4489,
+  "longitude": -70.6693,
+  "timezoneOffsetHours": -4
+ },
+ {
+  "id": "co_bogota",
+  "nameEn": "Bogotá",
+  "nameAr": "بوغوتا",
+  "countryEn": "Colombia",
+  "countryAr": "كولومبيا",
+  "latitude": 4.711,
+  "longitude": -74.0721,
+  "timezoneOffsetHours": -5
+ },
+ {
+  "id": "pe_lima",
+  "nameEn": "Lima",
+  "nameAr": "ليما",
+  "countryEn": "Peru",
+  "countryAr": "بيرو",
+  "latitude": -12.0464,
+  "longitude": -77.0428,
+  "timezoneOffsetHours": -5
+ },
+ {
+  "id": "ng_lagos",
+  "nameEn": "Lagos",
+  "nameAr": "لاغوس",
+  "countryEn": "Nigeria",
+  "countryAr": "نيجيريا",
+  "latitude": 6.5244,
+  "longitude": 3.3792,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "ng_abuja",
+  "nameEn": "Abuja",
+  "nameAr": "أبوجا",
+  "countryEn": "Nigeria",
+  "countryAr": "نيجيريا",
+  "latitude": 9.0765,
+  "longitude": 7.3986,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "ke_nairobi",
+  "nameEn": "Nairobi",
+  "nameAr": "نيروبي",
+  "countryEn": "Kenya",
+  "countryAr": "كينيا",
+  "latitude": -1.2921,
+  "longitude": 36.8219,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "et_addisababa",
+  "nameEn": "Addis Ababa",
+  "nameAr": "أديس أبابا",
+  "countryEn": "Ethiopia",
+  "countryAr": "إثيوبيا",
+  "latitude": 9.032,
+  "longitude": 38.7469,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "tz_daressalaam",
+  "nameEn": "Dar es Salaam",
+  "nameAr": "دار السلام",
+  "countryEn": "Tanzania",
+  "countryAr": "تنزانيا",
+  "latitude": -6.7924,
+  "longitude": 39.2083,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "ug_kampala",
+  "nameEn": "Kampala",
+  "nameAr": "كمبالا",
+  "countryEn": "Uganda",
+  "countryAr": "أوغندا",
+  "latitude": 0.3476,
+  "longitude": 32.5825,
+  "timezoneOffsetHours": 3
+ },
+ {
+  "id": "gh_accra",
+  "nameEn": "Accra",
+  "nameAr": "أكرا",
+  "countryEn": "Ghana",
+  "countryAr": "غانا",
+  "latitude": 5.6037,
+  "longitude": -0.187,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "sn_dakar",
+  "nameEn": "Dakar",
+  "nameAr": "داكار",
+  "countryEn": "Senegal",
+  "countryAr": "السنغال",
+  "latitude": 14.7167,
+  "longitude": -17.4677,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "ci_abidjan",
+  "nameEn": "Abidjan",
+  "nameAr": "أبيدجان",
+  "countryEn": "Ivory Coast",
+  "countryAr": "ساحل العاج",
+  "latitude": 5.36,
+  "longitude": -4.0083,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "za_johannesburg",
+  "nameEn": "Johannesburg",
+  "nameAr": "جوهانسبرغ",
+  "countryEn": "South Africa",
+  "countryAr": "جنوب أفريقيا",
+  "latitude": -26.2041,
+  "longitude": 28.0473,
+  "timezoneOffsetHours": 2
+ },
+ {
+  "id": "cm_yaounde",
+  "nameEn": "Yaoundé",
+  "nameAr": "ياونده",
+  "countryEn": "Cameroon",
+  "countryAr": "الكاميرون",
+  "latitude": 3.848,
+  "longitude": 11.5021,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "ml_bamako",
+  "nameEn": "Bamako",
+  "nameAr": "باماكو",
+  "countryEn": "Mali",
+  "countryAr": "مالي",
+  "latitude": 12.6392,
+  "longitude": -8.0029,
+  "timezoneOffsetHours": 0
+ },
+ {
+  "id": "ne_niamey",
+  "nameEn": "Niamey",
+  "nameAr": "نيامي",
+  "countryEn": "Niger",
+  "countryAr": "النيجر",
+  "latitude": 13.5127,
+  "longitude": 2.1128,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "td_ndjamena",
+  "nameEn": "N'Djamena",
+  "nameAr": "نجامينا",
+  "countryEn": "Chad",
+  "countryAr": "تشاد",
+  "latitude": 12.1348,
+  "longitude": 15.0557,
+  "timezoneOffsetHours": 1
+ },
+ {
+  "id": "au_sydney",
+  "nameEn": "Sydney",
+  "nameAr": "سيدني",
+  "countryEn": "Australia",
+  "countryAr": "أستراليا",
+  "latitude": -33.8688,
+  "longitude": 151.2093,
+  "timezoneOffsetHours": 10
+ },
+ {
+  "id": "au_melbourne",
+  "nameEn": "Melbourne",
+  "nameAr": "ملبورن",
+  "countryEn": "Australia",
+  "countryAr": "أستراليا",
+  "latitude": -37.8136,
+  "longitude": 144.9631,
+  "timezoneOffsetHours": 10
+ },
+ {
+  "id": "nz_auckland",
+  "nameEn": "Auckland",
+  "nameAr": "أوكلاند",
+  "countryEn": "New Zealand",
+  "countryAr": "نيوزيلندا",
+  "latitude": -36.8485,
+  "longitude": 174.7633,
+  "timezoneOffsetHours": 12
+ }
+]
