@@ -43,7 +43,12 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      // الوضع الليلي: AppBar يغطي أعلى الصورة / dark: bar covers image top
       appBar: AppBar(
+        backgroundColor: settings.isDarkMode
+            ? const Color(0xFF0A1128)
+            : AppColors.offWhite,
+        scrolledUnderElevation: 0,
         title: Text(l10n.tr('appName')),
         actions: <Widget>[
           IconButton(
