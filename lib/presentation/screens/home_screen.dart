@@ -132,12 +132,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               data: (City city) => _CityButton(city: city),
             ),
             const SizedBox(height: 16),
-            // العدّاد التنازلي / Countdown
-            const CountdownTimer().animate().fadeIn(duration: 500.ms).scale(
-                  begin: const Offset(0.97, 0.97),
-                  end: const Offset(1, 1),
-                  duration: 400.ms,
-                ),
+            // العدّاد التنازلي — بدون animate: كان يعيد الأنيميشن مع كل tick
+            // Countdown — no animate wrapper: re-animated on every second tick
+            const CountdownTimer(),
             const SizedBox(height: 20),
             // قائمة المواقيت / Prayer times list
             timesAsync.when(
