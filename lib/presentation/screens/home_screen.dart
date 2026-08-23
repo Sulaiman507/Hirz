@@ -136,9 +136,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Text(l10n.tr('error')),
               ),
               data: (DailyPrayerTimes daily) {
-                final PrayerTime? next = daily.nextPrayer(DateTime.now());
-                // بدون fadeIn لكل بطاقة — يسبب وميضاً عند دخول الشاشة
-                // No per-card fadeIn — it flickered when scrolling into view
+                final DateTime now = DateTime.now();
+                final PrayerTime? next = daily.nextPrayer(now);
+                // الصلاة الحالية = آخر صلاة دخل وقتها / current = last begun
+                final PrayerTime? current = daily.currentPrayer(now);
                 return Column(
                   children: <Widget>[
                     for (final PrayerTime pt in daily.times)
@@ -147,6 +148,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: PrayerCard(
                           prayerTime: pt,
                           isNext: next != null && next.prayer == pt.prayer,
+                          isCurrent: current != null &&
+                              current.prayer == pt.prayer,
                           use24Hour: settings.use24HourFormat,
                           languageCode: settings.languageCode,
                         ),

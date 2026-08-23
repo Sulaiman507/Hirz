@@ -89,5 +89,7 @@
  "loading": "Loading...",
  "error": "An error occurred",
  "adhan": "Adhan",
- "methodAuto": "Auto (per city)"
+ "methodAuto": "Auto (per city)",
+ "badgeCurrent": "CURRENT",
+ "badgeNext": "NEXT"
 }

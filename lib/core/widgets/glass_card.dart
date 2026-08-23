@@ -15,12 +15,16 @@ class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
   final VoidCallback? onTap;
+  // لون خلفية بديل (مثلاً بيج للحالية) — null = الزجاج الافتراضي
+  // optional backdrop override (e.g. beige for current) — null = default glass
+  final Color? backgroundColor;
 
   const GlassCard({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(20),
     this.onTap,
+    this.backgroundColor,
   });
 
   @override
@@ -33,11 +37,11 @@ class GlassCard extends StatelessWidget {
       child: Container(
         padding: padding,
         decoration: BoxDecoration(
-          // زجاج مائل للون النص المعاكس — يبرز فوق الخلفية الجديدة
-          // glass tinted toward the inverted text color — pops on new bg
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.10)
-              : Colors.white.withValues(alpha: 0.65),
+          // زجاج مائل — أو لون بديل إن قُدّم / tinted glass or explicit color
+          color: backgroundColor ??
+              (isDark
+                  ? Colors.white.withValues(alpha: 0.10)
+                  : Colors.white.withValues(alpha: 0.65)),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: const Color(0xFFD4AF37)
