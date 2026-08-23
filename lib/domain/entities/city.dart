@@ -10,7 +10,8 @@ class City {
   final String countryAr;
   final double latitude;
   final double longitude;
-  final double timezoneOffsetHours; // إزاحة UTC ثابتة (offline) / Fixed UTC offset (offline)
+  final double timezoneOffsetHours; // إزاحة شتوية احتياطية / Fallback winter offset
+  final String? timezoneId; // معرف IANA لحساب DST / IANA id for DST-aware offset
   final bool isCustom; // مدينة أدخلها المستخدم يدوياً / Manually entered city
 
   const City({
@@ -22,6 +23,7 @@ class City {
     required this.latitude,
     required this.longitude,
     required this.timezoneOffsetHours,
+    this.timezoneId,
     this.isCustom = false,
   });
 }

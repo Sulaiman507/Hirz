@@ -7,7 +7,8 @@
   "countryAr": "السعودية",
   "latitude": 21.4225,
   "longitude": 39.8262,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_madinah",
@@ -17,7 +18,8 @@
   "countryAr": "السعودية",
   "latitude": 24.4686,
   "longitude": 39.6142,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_riyadh",
@@ -27,7 +29,8 @@
   "countryAr": "السعودية",
   "latitude": 24.7136,
   "longitude": 46.6753,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_jeddah",
@@ -37,7 +40,8 @@
   "countryAr": "السعودية",
   "latitude": 21.4858,
   "longitude": 39.1925,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_dammam",
@@ -47,7 +51,8 @@
   "countryAr": "السعودية",
   "latitude": 26.4207,
   "longitude": 50.0888,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_taif",
@@ -57,7 +62,8 @@
   "countryAr": "السعودية",
   "latitude": 21.2703,
   "longitude": 40.4158,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_tabuk",
@@ -67,7 +73,8 @@
   "countryAr": "السعودية",
   "latitude": 28.3835,
   "longitude": 36.5662,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_abha",
@@ -77,7 +84,8 @@
   "countryAr": "السعودية",
   "latitude": 18.2465,
   "longitude": 42.5117,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_buraydah",
@@ -87,7 +95,8 @@
   "countryAr": "السعودية",
   "latitude": 26.326,
   "longitude": 43.975,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "sa_ahsa",
@@ -97,7 +106,8 @@
   "countryAr": "السعودية",
   "latitude": 25.3833,
   "longitude": 49.5833,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Riyadh"
  },
  {
   "id": "ae_abudhabi",
@@ -107,7 +117,8 @@
   "countryAr": "الإمارات",
   "latitude": 24.4539,
   "longitude": 54.3773,
-  "timezoneOffsetHours": 4
+  "timezoneOffsetHours": 4,
+  "timezoneId": "Asia/Dubai"
  },
  {
   "id": "ae_dubai",
@@ -117,7 +128,8 @@
   "countryAr": "الإمارات",
   "latitude": 25.2048,
   "longitude": 55.2708,
-  "timezoneOffsetHours": 4
+  "timezoneOffsetHours": 4,
+  "timezoneId": "Asia/Dubai"
  },
  {
   "id": "ae_sharjah",
@@ -127,7 +139,8 @@
   "countryAr": "الإمارات",
   "latitude": 25.3463,
   "longitude": 55.4209,
-  "timezoneOffsetHours": 4
+  "timezoneOffsetHours": 4,
+  "timezoneId": "Asia/Dubai"
  },
  {
   "id": "qa_doha",
@@ -137,7 +150,8 @@
   "countryAr": "قطر",
   "latitude": 25.2854,
   "longitude": 51.531,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Qatar"
  },
  {
   "id": "kw_kuwaitcity",
@@ -147,7 +161,8 @@
   "countryAr": "الكويت",
   "latitude": 29.3759,
   "longitude": 47.9774,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Kuwait"
  },
  {
   "id": "bh_manama",
@@ -157,7 +172,8 @@
   "countryAr": "البحرين",
   "latitude": 26.2285,
   "longitude": 50.586,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Bahrain"
  },
  {
   "id": "om_muscat",
@@ -167,7 +183,8 @@
   "countryAr": "عُمان",
   "latitude": 23.588,
   "longitude": 58.3829,
-  "timezoneOffsetHours": 4
+  "timezoneOffsetHours": 4,
+  "timezoneId": "Asia/Muscat"
  },
  {
   "id": "om_salalah",
@@ -177,7 +194,8 @@
   "countryAr": "عُمان",
   "latitude": 17.0151,
   "longitude": 54.0924,
-  "timezoneOffsetHours": 4
+  "timezoneOffsetHours": 4,
+  "timezoneId": "Asia/Muscat"
  },
  {
   "id": "ye_sanaa",
@@ -187,7 +205,8 @@
   "countryAr": "اليمن",
   "latitude": 15.3694,
   "longitude": 44.191,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Aden"
  },
  {
   "id": "ye_aden",
@@ -197,7 +216,8 @@
   "countryAr": "اليمن",
   "latitude": 12.7855,
   "longitude": 45.0187,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Aden"
  },
  {
   "id": "jo_amman",
@@ -207,7 +227,8 @@
   "countryAr": "الأردن",
   "latitude": 31.9539,
   "longitude": 35.9106,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Amman"
  },
  {
   "id": "sy_damascus",
@@ -217,7 +238,8 @@
   "countryAr": "سوريا",
   "latitude": 33.5138,
   "longitude": 36.2765,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Damascus"
  },
  {
   "id": "lb_beirut",
@@ -227,7 +249,8 @@
   "countryAr": "لبنان",
   "latitude": 33.8938,
   "longitude": 35.5018,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Beirut"
  },
  {
   "id": "ps_gaza",
@@ -237,7 +260,8 @@
   "countryAr": "فلسطين",
   "latitude": 31.5017,
   "longitude": 34.4668,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Asia/Gaza"
  },
  {
   "id": "ps_jerusalem",
@@ -247,7 +271,8 @@
   "countryAr": "فلسطين",
   "latitude": 31.7683,
   "longitude": 35.2137,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Asia/Jerusalem"
  },
  {
   "id": "iq_baghdad",
@@ -257,7 +282,8 @@
   "countryAr": "العراق",
   "latitude": 33.3152,
   "longitude": 44.3661,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Baghdad"
  },
  {
   "id": "iq_basra",
@@ -267,7 +293,8 @@
   "countryAr": "العراق",
   "latitude": 30.5081,
   "longitude": 47.7835,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Asia/Baghdad"
  },
  {
   "id": "eg_cairo",
@@ -277,7 +304,8 @@
   "countryAr": "مصر",
   "latitude": 30.0444,
   "longitude": 31.2357,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Africa/Cairo"
  },
  {
   "id": "eg_alexandria",
@@ -287,7 +315,8 @@
   "countryAr": "مصر",
   "latitude": 31.2001,
   "longitude": 29.9187,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Africa/Cairo"
  },
  {
   "id": "sd_khartoum",
@@ -297,7 +326,8 @@
   "countryAr": "السودان",
   "latitude": 15.5007,
   "longitude": 32.5599,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Africa/Khartoum"
  },
  {
   "id": "ly_tripoli",
@@ -307,7 +337,8 @@
   "countryAr": "ليبيا",
   "latitude": 32.8872,
   "longitude": 13.1913,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Africa/Tripoli"
  },
  {
   "id": "ly_benghazi",
@@ -317,7 +348,8 @@
   "countryAr": "ليبيا",
   "latitude": 32.1167,
   "longitude": 20.0667,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Africa/Tripoli"
  },
  {
   "id": "tn_tunis",
@@ -327,7 +359,8 @@
   "countryAr": "تونس",
   "latitude": 36.8065,
   "longitude": 10.1815,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Tunis"
  },
  {
   "id": "dz_algiers",
@@ -337,7 +370,8 @@
   "countryAr": "الجزائر",
   "latitude": 36.7538,
   "longitude": 3.0588,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Algiers"
  },
  {
   "id": "dz_oran",
@@ -347,7 +381,8 @@
   "countryAr": "الجزائر",
   "latitude": 35.6971,
   "longitude": -0.6308,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Algiers"
  },
  {
   "id": "ma_rabat",
@@ -357,7 +392,8 @@
   "countryAr": "المغرب",
   "latitude": 34.0209,
   "longitude": -6.8416,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Casablanca"
  },
  {
   "id": "ma_casablanca",
@@ -367,7 +403,8 @@
   "countryAr": "المغرب",
   "latitude": 33.5731,
   "longitude": -7.5898,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Casablanca"
  },
  {
   "id": "mr_nouakchott",
@@ -377,7 +414,8 @@
   "countryAr": "موريتانيا",
   "latitude": 18.0735,
   "longitude": -15.9582,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Africa/Nouakchott"
  },
  {
   "id": "so_mogadishu",
@@ -387,7 +425,8 @@
   "countryAr": "الصومال",
   "latitude": 2.0469,
   "longitude": 45.3182,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Africa/Mogadishu"
  },
  {
   "id": "dj_djibouti",
@@ -397,7 +436,8 @@
   "countryAr": "جيبوتي",
   "latitude": 11.5721,
   "longitude": 43.1456,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Africa/Djibouti"
  },
  {
   "id": "km_moroni",
@@ -407,7 +447,8 @@
   "countryAr": "جزر القمر",
   "latitude": -11.6989,
   "longitude": 43.2551,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Indian/Comoro"
  },
  {
   "id": "tr_istanbul",
@@ -417,7 +458,8 @@
   "countryAr": "تركيا",
   "latitude": 41.0082,
   "longitude": 28.9784,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Europe/Istanbul"
  },
  {
   "id": "tr_ankara",
@@ -427,7 +469,8 @@
   "countryAr": "تركيا",
   "latitude": 39.9334,
   "longitude": 32.8597,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Europe/Istanbul"
  },
  {
   "id": "ir_tehran",
@@ -437,7 +480,8 @@
   "countryAr": "إيران",
   "latitude": 35.6892,
   "longitude": 51.389,
-  "timezoneOffsetHours": 3.5
+  "timezoneOffsetHours": 3.5,
+  "timezoneId": "Asia/Tehran"
  },
  {
   "id": "ir_mashhad",
@@ -447,7 +491,8 @@
   "countryAr": "إيران",
   "latitude": 36.2605,
   "longitude": 59.6168,
-  "timezoneOffsetHours": 3.5
+  "timezoneOffsetHours": 3.5,
+  "timezoneId": "Asia/Tehran"
  },
  {
   "id": "af_kabul",
@@ -457,7 +502,8 @@
   "countryAr": "أفغانستان",
   "latitude": 34.5553,
   "longitude": 69.2075,
-  "timezoneOffsetHours": 4.5
+  "timezoneOffsetHours": 4.5,
+  "timezoneId": "Asia/Kabul"
  },
  {
   "id": "pk_karachi",
@@ -467,7 +513,8 @@
   "countryAr": "باكستان",
   "latitude": 24.8607,
   "longitude": 67.0011,
-  "timezoneOffsetHours": 5
+  "timezoneOffsetHours": 5,
+  "timezoneId": "Asia/Karachi"
  },
  {
   "id": "pk_lahore",
@@ -477,7 +524,8 @@
   "countryAr": "باكستان",
   "latitude": 31.5204,
   "longitude": 74.3587,
-  "timezoneOffsetHours": 5
+  "timezoneOffsetHours": 5,
+  "timezoneId": "Asia/Karachi"
  },
  {
   "id": "pk_islamabad",
@@ -487,7 +535,8 @@
   "countryAr": "باكستان",
   "latitude": 33.6844,
   "longitude": 73.0479,
-  "timezoneOffsetHours": 5
+  "timezoneOffsetHours": 5,
+  "timezoneId": "Asia/Karachi"
  },
  {
   "id": "bd_dhaka",
@@ -497,7 +546,8 @@
   "countryAr": "بنغلاديش",
   "latitude": 23.8103,
   "longitude": 90.4125,
-  "timezoneOffsetHours": 6
+  "timezoneOffsetHours": 6,
+  "timezoneId": "Asia/Dhaka"
  },
  {
   "id": "mv_male",
@@ -507,7 +557,8 @@
   "countryAr": "المالديف",
   "latitude": 4.1755,
   "longitude": 73.5093,
-  "timezoneOffsetHours": 5
+  "timezoneOffsetHours": 5,
+  "timezoneId": "Indian/Maldives"
  },
  {
   "id": "in_delhi",
@@ -517,7 +568,8 @@
   "countryAr": "الهند",
   "latitude": 28.6139,
   "longitude": 77.209,
-  "timezoneOffsetHours": 5.5
+  "timezoneOffsetHours": 5.5,
+  "timezoneId": "Asia/Kolkata"
  },
  {
   "id": "in_mumbai",
@@ -527,7 +579,8 @@
   "countryAr": "الهند",
   "latitude": 19.076,
   "longitude": 72.8777,
-  "timezoneOffsetHours": 5.5
+  "timezoneOffsetHours": 5.5,
+  "timezoneId": "Asia/Kolkata"
  },
  {
   "id": "in_hyderabad",
@@ -537,7 +590,8 @@
   "countryAr": "الهند",
   "latitude": 17.385,
   "longitude": 78.4867,
-  "timezoneOffsetHours": 5.5
+  "timezoneOffsetHours": 5.5,
+  "timezoneId": "Asia/Kolkata"
  },
  {
   "id": "lk_colombo",
@@ -547,7 +601,8 @@
   "countryAr": "سريلانكا",
   "latitude": 6.9271,
   "longitude": 79.8612,
-  "timezoneOffsetHours": 5.5
+  "timezoneOffsetHours": 5.5,
+  "timezoneId": "Asia/Colombo"
  },
  {
   "id": "np_kathmandu",
@@ -557,7 +612,8 @@
   "countryAr": "نيبال",
   "latitude": 27.7172,
   "longitude": 85.324,
-  "timezoneOffsetHours": 5.75
+  "timezoneOffsetHours": 5.75,
+  "timezoneId": "Asia/Kathmandu"
  },
  {
   "id": "my_kualalumpur",
@@ -567,7 +623,8 @@
   "countryAr": "ماليزيا",
   "latitude": 3.139,
   "longitude": 101.6869,
-  "timezoneOffsetHours": 8
+  "timezoneOffsetHours": 8,
+  "timezoneId": "Asia/Kuala_Lumpur"
  },
  {
   "id": "sg_singapore",
@@ -577,7 +634,8 @@
   "countryAr": "سنغافورة",
   "latitude": 1.3521,
   "longitude": 103.8198,
-  "timezoneOffsetHours": 8
+  "timezoneOffsetHours": 8,
+  "timezoneId": "Asia/Singapore"
  },
  {
   "id": "id_jakarta",
@@ -587,7 +645,8 @@
   "countryAr": "إندونيسيا",
   "latitude": -6.2088,
   "longitude": 106.8456,
-  "timezoneOffsetHours": 7
+  "timezoneOffsetHours": 7,
+  "timezoneId": "Asia/Jakarta"
  },
  {
   "id": "id_surabaya",
@@ -597,7 +656,8 @@
   "countryAr": "إندونيسيا",
   "latitude": -7.2575,
   "longitude": 112.7521,
-  "timezoneOffsetHours": 7
+  "timezoneOffsetHours": 7,
+  "timezoneId": "Asia/Jakarta"
  },
  {
   "id": "ph_manila",
@@ -607,7 +667,8 @@
   "countryAr": "الفلبين",
   "latitude": 14.5995,
   "longitude": 120.9842,
-  "timezoneOffsetHours": 8
+  "timezoneOffsetHours": 8,
+  "timezoneId": "Asia/Manila"
  },
  {
   "id": "th_bangkok",
@@ -617,7 +678,8 @@
   "countryAr": "تايلاند",
   "latitude": 13.7563,
   "longitude": 100.5018,
-  "timezoneOffsetHours": 7
+  "timezoneOffsetHours": 7,
+  "timezoneId": "Asia/Bangkok"
  },
  {
   "id": "vn_hanoi",
@@ -627,7 +689,8 @@
   "countryAr": "فيتنام",
   "latitude": 21.0278,
   "longitude": 105.8342,
-  "timezoneOffsetHours": 7
+  "timezoneOffsetHours": 7,
+  "timezoneId": "Asia/Ho_Chi_Minh"
  },
  {
   "id": "cn_beijing",
@@ -637,7 +700,8 @@
   "countryAr": "الصين",
   "latitude": 39.9042,
   "longitude": 116.4074,
-  "timezoneOffsetHours": 8
+  "timezoneOffsetHours": 8,
+  "timezoneId": "Asia/Shanghai"
  },
  {
   "id": "cn_shanghai",
@@ -647,7 +711,8 @@
   "countryAr": "الصين",
   "latitude": 31.2304,
   "longitude": 121.4737,
-  "timezoneOffsetHours": 8
+  "timezoneOffsetHours": 8,
+  "timezoneId": "Asia/Shanghai"
  },
  {
   "id": "cn_xian",
@@ -657,7 +722,8 @@
   "countryAr": "الصين",
   "latitude": 34.3416,
   "longitude": 108.9398,
-  "timezoneOffsetHours": 8
+  "timezoneOffsetHours": 8,
+  "timezoneId": "Asia/Shanghai"
  },
  {
   "id": "jp_tokyo",
@@ -667,7 +733,8 @@
   "countryAr": "اليابان",
   "latitude": 35.6762,
   "longitude": 139.6503,
-  "timezoneOffsetHours": 9
+  "timezoneOffsetHours": 9,
+  "timezoneId": "Asia/Tokyo"
  },
  {
   "id": "kr_seoul",
@@ -677,7 +744,8 @@
   "countryAr": "كوريا الجنوبية",
   "latitude": 37.5665,
   "longitude": 126.978,
-  "timezoneOffsetHours": 9
+  "timezoneOffsetHours": 9,
+  "timezoneId": "Asia/Seoul"
  },
  {
   "id": "mn_ulaanbaatar",
@@ -687,7 +755,8 @@
   "countryAr": "منغوليا",
   "latitude": 47.8864,
   "longitude": 106.9057,
-  "timezoneOffsetHours": 8
+  "timezoneOffsetHours": 8,
+  "timezoneId": "Asia/Ulaanbaatar"
  },
  {
   "id": "kz_astana",
@@ -697,7 +766,8 @@
   "countryAr": "كازاخستان",
   "latitude": 51.1694,
   "longitude": 71.4491,
-  "timezoneOffsetHours": 5
+  "timezoneOffsetHours": 5,
+  "timezoneId": "Asia/Almaty"
  },
  {
   "id": "uz_tashkent",
@@ -707,7 +777,8 @@
   "countryAr": "أوزبكستان",
   "latitude": 41.2995,
   "longitude": 69.2401,
-  "timezoneOffsetHours": 5
+  "timezoneOffsetHours": 5,
+  "timezoneId": "Asia/Tashkent"
  },
  {
   "id": "kg_bishkek",
@@ -717,7 +788,8 @@
   "countryAr": "قرغيزستان",
   "latitude": 42.8746,
   "longitude": 74.5698,
-  "timezoneOffsetHours": 6
+  "timezoneOffsetHours": 6,
+  "timezoneId": "Asia/Bishkek"
  },
  {
   "id": "tj_dushanbe",
@@ -727,7 +799,8 @@
   "countryAr": "طاجيكستان",
   "latitude": 38.5598,
   "longitude": 68.787,
-  "timezoneOffsetHours": 5
+  "timezoneOffsetHours": 5,
+  "timezoneId": "Asia/Dushanbe"
  },
  {
   "id": "tm_ashgabat",
@@ -737,7 +810,8 @@
   "countryAr": "تركمانستان",
   "latitude": 37.9601,
   "longitude": 58.3261,
-  "timezoneOffsetHours": 5
+  "timezoneOffsetHours": 5,
+  "timezoneId": "Asia/Ashgabat"
  },
  {
   "id": "az_baku",
@@ -747,7 +821,8 @@
   "countryAr": "أذربيجان",
   "latitude": 40.4093,
   "longitude": 49.8671,
-  "timezoneOffsetHours": 4
+  "timezoneOffsetHours": 4,
+  "timezoneId": "Asia/Baku"
  },
  {
   "id": "am_yerevan",
@@ -757,7 +832,8 @@
   "countryAr": "أرمينيا",
   "latitude": 40.1792,
   "longitude": 44.4991,
-  "timezoneOffsetHours": 4
+  "timezoneOffsetHours": 4,
+  "timezoneId": "Asia/Yerevan"
  },
  {
   "id": "ge_tbilisi",
@@ -767,7 +843,8 @@
   "countryAr": "جورجيا",
   "latitude": 41.7151,
   "longitude": 44.8271,
-  "timezoneOffsetHours": 4
+  "timezoneOffsetHours": 4,
+  "timezoneId": "Asia/Tbilisi"
  },
  {
   "id": "ru_moscow",
@@ -777,7 +854,8 @@
   "countryAr": "روسيا",
   "latitude": 55.7558,
   "longitude": 37.6173,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Europe/Moscow"
  },
  {
   "id": "ru_kazan",
@@ -787,7 +865,8 @@
   "countryAr": "روسيا",
   "latitude": 55.7963,
   "longitude": 49.1088,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Europe/Moscow"
  },
  {
   "id": "gb_london",
@@ -797,7 +876,8 @@
   "countryAr": "بريطانيا",
   "latitude": 51.5074,
   "longitude": -0.1278,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Europe/London"
  },
  {
   "id": "gb_birmingham",
@@ -807,7 +887,8 @@
   "countryAr": "بريطانيا",
   "latitude": 52.4862,
   "longitude": -1.8904,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Europe/London"
  },
  {
   "id": "fr_paris",
@@ -817,7 +898,8 @@
   "countryAr": "فرنسا",
   "latitude": 48.8566,
   "longitude": 2.3522,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Paris"
  },
  {
   "id": "de_berlin",
@@ -827,7 +909,8 @@
   "countryAr": "ألمانيا",
   "latitude": 52.52,
   "longitude": 13.405,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Berlin"
  },
  {
   "id": "de_frankfurt",
@@ -837,7 +920,8 @@
   "countryAr": "ألمانيا",
   "latitude": 50.1109,
   "longitude": 8.6821,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Berlin"
  },
  {
   "id": "es_madrid",
@@ -847,7 +931,8 @@
   "countryAr": "إسبانيا",
   "latitude": 40.4168,
   "longitude": -3.7038,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Madrid"
  },
  {
   "id": "it_rome",
@@ -857,7 +942,8 @@
   "countryAr": "إيطاليا",
   "latitude": 41.9028,
   "longitude": 12.4964,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Rome"
  },
  {
   "id": "it_milan",
@@ -867,7 +953,8 @@
   "countryAr": "إيطاليا",
   "latitude": 45.4642,
   "longitude": 9.19,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Rome"
  },
  {
   "id": "nl_amsterdam",
@@ -877,7 +964,8 @@
   "countryAr": "هولندا",
   "latitude": 52.3676,
   "longitude": 4.9041,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Amsterdam"
  },
  {
   "id": "be_brussels",
@@ -887,7 +975,8 @@
   "countryAr": "بلجيكا",
   "latitude": 50.8503,
   "longitude": 4.3517,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Brussels"
  },
  {
   "id": "ch_zurich",
@@ -897,7 +986,8 @@
   "countryAr": "سويسرا",
   "latitude": 47.3769,
   "longitude": 8.5417,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Zurich"
  },
  {
   "id": "at_vienna",
@@ -907,7 +997,8 @@
   "countryAr": "النمسا",
   "latitude": 48.2082,
   "longitude": 16.3738,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Vienna"
  },
  {
   "id": "pt_lisbon",
@@ -917,7 +1008,8 @@
   "countryAr": "البرتغال",
   "latitude": 38.7223,
   "longitude": -9.1393,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Europe/Lisbon"
  },
  {
   "id": "ie_dublin",
@@ -927,7 +1019,8 @@
   "countryAr": "إيرلندا",
   "latitude": 53.3498,
   "longitude": -6.2603,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Europe/Dublin"
  },
  {
   "id": "se_stockholm",
@@ -937,7 +1030,8 @@
   "countryAr": "السويد",
   "latitude": 59.3293,
   "longitude": 18.0686,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Stockholm"
  },
  {
   "id": "no_oslo",
@@ -947,7 +1041,8 @@
   "countryAr": "النرويج",
   "latitude": 59.9139,
   "longitude": 10.7522,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Oslo"
  },
  {
   "id": "dk_copenhagen",
@@ -957,7 +1052,8 @@
   "countryAr": "الدنمارك",
   "latitude": 55.6761,
   "longitude": 12.5683,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Copenhagen"
  },
  {
   "id": "fi_helsinki",
@@ -967,7 +1063,8 @@
   "countryAr": "فنلندا",
   "latitude": 60.1699,
   "longitude": 24.9384,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Europe/Helsinki"
  },
  {
   "id": "pl_warsaw",
@@ -977,7 +1074,8 @@
   "countryAr": "بولندا",
   "latitude": 52.2297,
   "longitude": 21.0122,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Warsaw"
  },
  {
   "id": "cz_prague",
@@ -987,7 +1085,8 @@
   "countryAr": "التشيك",
   "latitude": 50.0755,
   "longitude": 14.4378,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Prague"
  },
  {
   "id": "hu_budapest",
@@ -997,7 +1096,8 @@
   "countryAr": "هنغاريا",
   "latitude": 47.4979,
   "longitude": 19.0402,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Europe/Budapest"
  },
  {
   "id": "ro_bucharest",
@@ -1007,7 +1107,8 @@
   "countryAr": "رومانيا",
   "latitude": 44.4268,
   "longitude": 26.1025,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Europe/Bucharest"
  },
  {
   "id": "gr_athens",
@@ -1017,7 +1118,8 @@
   "countryAr": "اليونان",
   "latitude": 37.9838,
   "longitude": 23.7275,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Europe/Athens"
  },
  {
   "id": "ua_kyiv",
@@ -1027,7 +1129,8 @@
   "countryAr": "أوكرانيا",
   "latitude": 50.4501,
   "longitude": 30.5234,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Europe/Kyiv"
  },
  {
   "id": "bg_sofia",
@@ -1037,7 +1140,8 @@
   "countryAr": "بلغاريا",
   "latitude": 42.6977,
   "longitude": 23.3219,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Europe/Sofia"
  },
  {
   "id": "us_newyork",
@@ -1047,7 +1151,8 @@
   "countryAr": "أمريكا",
   "latitude": 40.7128,
   "longitude": -74.006,
-  "timezoneOffsetHours": -5
+  "timezoneOffsetHours": -5,
+  "timezoneId": "America/New_York"
  },
  {
   "id": "us_chicago",
@@ -1057,7 +1162,8 @@
   "countryAr": "أمريكا",
   "latitude": 41.8781,
   "longitude": -87.6298,
-  "timezoneOffsetHours": -6
+  "timezoneOffsetHours": -6,
+  "timezoneId": "America/Chicago"
  },
  {
   "id": "us_houston",
@@ -1067,7 +1173,8 @@
   "countryAr": "أمريكا",
   "latitude": 29.7604,
   "longitude": -95.3698,
-  "timezoneOffsetHours": -6
+  "timezoneOffsetHours": -6,
+  "timezoneId": "America/Chicago"
  },
  {
   "id": "us_losangeles",
@@ -1077,7 +1184,8 @@
   "countryAr": "أمريكا",
   "latitude": 34.0522,
   "longitude": -118.2437,
-  "timezoneOffsetHours": -8
+  "timezoneOffsetHours": -8,
+  "timezoneId": "America/Los_Angeles"
  },
  {
   "id": "us_dearbourn",
@@ -1087,7 +1195,8 @@
   "countryAr": "أمريكا",
   "latitude": 42.3223,
   "longitude": -83.1763,
-  "timezoneOffsetHours": -5
+  "timezoneOffsetHours": -5,
+  "timezoneId": "America/Detroit"
  },
  {
   "id": "us_washington",
@@ -1097,7 +1206,8 @@
   "countryAr": "أمريكا",
   "latitude": 38.9072,
   "longitude": -77.0369,
-  "timezoneOffsetHours": -5
+  "timezoneOffsetHours": -5,
+  "timezoneId": "America/New_York"
  },
  {
   "id": "ca_toronto",
@@ -1107,7 +1217,8 @@
   "countryAr": "كندا",
   "latitude": 43.6532,
   "longitude": -79.3832,
-  "timezoneOffsetHours": -5
+  "timezoneOffsetHours": -5,
+  "timezoneId": "America/Toronto"
  },
  {
   "id": "ca_montreal",
@@ -1117,7 +1228,8 @@
   "countryAr": "كندا",
   "latitude": 45.5019,
   "longitude": -73.5674,
-  "timezoneOffsetHours": -5
+  "timezoneOffsetHours": -5,
+  "timezoneId": "America/Toronto"
  },
  {
   "id": "ca_vancouver",
@@ -1127,7 +1239,8 @@
   "countryAr": "كندا",
   "latitude": 49.2827,
   "longitude": -123.1207,
-  "timezoneOffsetHours": -8
+  "timezoneOffsetHours": -8,
+  "timezoneId": "America/Vancouver"
  },
  {
   "id": "mx_mexicocity",
@@ -1137,7 +1250,8 @@
   "countryAr": "المكسيك",
   "latitude": 19.4326,
   "longitude": -99.1332,
-  "timezoneOffsetHours": -6
+  "timezoneOffsetHours": -6,
+  "timezoneId": "America/Mexico_City"
  },
  {
   "id": "br_saopaulo",
@@ -1147,7 +1261,8 @@
   "countryAr": "البرازيل",
   "latitude": -23.5505,
   "longitude": -46.6333,
-  "timezoneOffsetHours": -3
+  "timezoneOffsetHours": -3,
+  "timezoneId": "America/Sao_Paulo"
  },
  {
   "id": "br_riodejaneiro",
@@ -1157,7 +1272,8 @@
   "countryAr": "البرازيل",
   "latitude": -22.9068,
   "longitude": -43.1729,
-  "timezoneOffsetHours": -3
+  "timezoneOffsetHours": -3,
+  "timezoneId": "America/Sao_Paulo"
  },
  {
   "id": "ar_buenosaires",
@@ -1167,7 +1283,8 @@
   "countryAr": "الأرجنتين",
   "latitude": -34.6037,
   "longitude": -58.3816,
-  "timezoneOffsetHours": -3
+  "timezoneOffsetHours": -3,
+  "timezoneId": "America/Argentina/Buenos_Aires"
  },
  {
   "id": "cl_santiago",
@@ -1177,7 +1294,8 @@
   "countryAr": "تشيلي",
   "latitude": -33.4489,
   "longitude": -70.6693,
-  "timezoneOffsetHours": -4
+  "timezoneOffsetHours": -4,
+  "timezoneId": "America/Santiago"
  },
  {
   "id": "co_bogota",
@@ -1187,7 +1305,8 @@
   "countryAr": "كولومبيا",
   "latitude": 4.711,
   "longitude": -74.0721,
-  "timezoneOffsetHours": -5
+  "timezoneOffsetHours": -5,
+  "timezoneId": "America/Bogota"
  },
  {
   "id": "pe_lima",
@@ -1197,7 +1316,8 @@
   "countryAr": "بيرو",
   "latitude": -12.0464,
   "longitude": -77.0428,
-  "timezoneOffsetHours": -5
+  "timezoneOffsetHours": -5,
+  "timezoneId": "America/Lima"
  },
  {
   "id": "ng_lagos",
@@ -1207,7 +1327,8 @@
   "countryAr": "نيجيريا",
   "latitude": 6.5244,
   "longitude": 3.3792,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Lagos"
  },
  {
   "id": "ng_abuja",
@@ -1217,7 +1338,8 @@
   "countryAr": "نيجيريا",
   "latitude": 9.0765,
   "longitude": 7.3986,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Lagos"
  },
  {
   "id": "ke_nairobi",
@@ -1227,7 +1349,8 @@
   "countryAr": "كينيا",
   "latitude": -1.2921,
   "longitude": 36.8219,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Africa/Nairobi"
  },
  {
   "id": "et_addisababa",
@@ -1237,7 +1360,8 @@
   "countryAr": "إثيوبيا",
   "latitude": 9.032,
   "longitude": 38.7469,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Africa/Addis_Ababa"
  },
  {
   "id": "tz_daressalaam",
@@ -1247,7 +1371,8 @@
   "countryAr": "تنزانيا",
   "latitude": -6.7924,
   "longitude": 39.2083,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Africa/Dar_es_Salaam"
  },
  {
   "id": "ug_kampala",
@@ -1257,7 +1382,8 @@
   "countryAr": "أوغندا",
   "latitude": 0.3476,
   "longitude": 32.5825,
-  "timezoneOffsetHours": 3
+  "timezoneOffsetHours": 3,
+  "timezoneId": "Africa/Kampala"
  },
  {
   "id": "gh_accra",
@@ -1267,7 +1393,8 @@
   "countryAr": "غانا",
   "latitude": 5.6037,
   "longitude": -0.187,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Africa/Accra"
  },
  {
   "id": "sn_dakar",
@@ -1277,7 +1404,8 @@
   "countryAr": "السنغال",
   "latitude": 14.7167,
   "longitude": -17.4677,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Africa/Dakar"
  },
  {
   "id": "ci_abidjan",
@@ -1287,7 +1415,8 @@
   "countryAr": "ساحل العاج",
   "latitude": 5.36,
   "longitude": -4.0083,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Africa/Abidjan"
  },
  {
   "id": "za_johannesburg",
@@ -1297,7 +1426,8 @@
   "countryAr": "جنوب أفريقيا",
   "latitude": -26.2041,
   "longitude": 28.0473,
-  "timezoneOffsetHours": 2
+  "timezoneOffsetHours": 2,
+  "timezoneId": "Africa/Johannesburg"
  },
  {
   "id": "cm_yaounde",
@@ -1307,7 +1437,8 @@
   "countryAr": "الكاميرون",
   "latitude": 3.848,
   "longitude": 11.5021,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Douala"
  },
  {
   "id": "ml_bamako",
@@ -1317,7 +1448,8 @@
   "countryAr": "مالي",
   "latitude": 12.6392,
   "longitude": -8.0029,
-  "timezoneOffsetHours": 0
+  "timezoneOffsetHours": 0,
+  "timezoneId": "Africa/Bamako"
  },
  {
   "id": "ne_niamey",
@@ -1327,7 +1459,8 @@
   "countryAr": "النيجر",
   "latitude": 13.5127,
   "longitude": 2.1128,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Niamey"
  },
  {
   "id": "td_ndjamena",
@@ -1337,7 +1470,8 @@
   "countryAr": "تشاد",
   "latitude": 12.1348,
   "longitude": 15.0557,
-  "timezoneOffsetHours": 1
+  "timezoneOffsetHours": 1,
+  "timezoneId": "Africa/Ndjamena"
  },
  {
   "id": "au_sydney",
@@ -1347,7 +1481,8 @@
   "countryAr": "أستراليا",
   "latitude": -33.8688,
   "longitude": 151.2093,
-  "timezoneOffsetHours": 10
+  "timezoneOffsetHours": 10,
+  "timezoneId": "Australia/Sydney"
  },
  {
   "id": "au_melbourne",
@@ -1357,7 +1492,8 @@
   "countryAr": "أستراليا",
   "latitude": -37.8136,
   "longitude": 144.9631,
-  "timezoneOffsetHours": 10
+  "timezoneOffsetHours": 10,
+  "timezoneId": "Australia/Melbourne"
  },
  {
   "id": "nz_auckland",
@@ -1367,6 +1503,7 @@
   "countryAr": "نيوزيلندا",
   "latitude": -36.8485,
   "longitude": 174.7633,
-  "timezoneOffsetHours": 12
+  "timezoneOffsetHours": 12,
+  "timezoneId": "Pacific/Auckland"
  }
 ]

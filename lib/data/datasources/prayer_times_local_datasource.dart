@@ -5,6 +5,8 @@
 // Actual adhan enum names are snake_case
 
 import 'package:adhan/adhan.dart' as adhan;
+import 'package:timezone/data/latest_all.dart' as tzdata;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/city.dart';
@@ -15,6 +17,8 @@ import '../../domain/repositories/prayer_times_repository.dart';
 /// Offline prayer-times computation through the adhan library
 class PrayerTimesLocalDatasource implements PrayerTimesRepository {
   const PrayerTimesLocalDatasource();
+
+  static bool _tzInitialized = false; // تهيئة tz مرة واحدة / init once
 
   @override
   Future<DailyPrayerTimes> getPrayerTimes({
@@ -33,12 +37,15 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
         : adhan.Madhab.shafi;
     params.highLatitudeRule = adhan.HighLatitudeRule.middle_of_the_night;
 
-    // مصنع utcOffset يعيد الأوقات جاهزة بتوقيت المدينة (UTC + الإزاحة)
-    // لا نضيف الإزاحة مرة أخرى هنا — كانت تسبب إزاحة مزدوجة (+3 ساعات مثلاً)
-    // The utcOffset factory already returns city-local times (UTC + offset).
-    // Do NOT shift again — that caused the +3h double-offset bug.
-    final Duration offset =
-        Duration(minutes: (city.timezoneOffsetHours * 60).round());
+    // ── الإزاحة الصحيحة حسب التاريخ (DST-aware) ──
+    // إذا توفر timezoneId (IANA) نحسب الإزاحة الفعلية للتاريخ المطلوب:
+    // شتوية/صيفية تلقائياً. وإلا نرجع للإزاحة الثابتة الاحتياطية.
+    //
+    // DST-aware offset: when a timezoneId (IANA) exists, compute the
+    // actual UTC offset for the requested date (summer/winter automatic).
+    // Fall back to the fixed winter offset otherwise.
+    final Duration offset = _effectiveOffset(city, date);
+
     final adhan.PrayerTimes raw = adhan.PrayerTimes.utcOffset(
       coordinates,
       adhan.DateComponents.from(date),
@@ -79,6 +86,32 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
         build(Prayer.isha, normalize(raw.isha)),
       ],
     );
+  }
+
+  /// الإزاحة الفعلية للمدينة في التاريخ المطلوب — تدعم DST تلقائياً
+  /// Effective offset for the city on the given date — DST-aware
+  Duration _effectiveOffset(City city, DateTime date) {
+    final String? tzId = city.timezoneId;
+    if (tzId == null || tzId.isEmpty) {
+      return Duration(minutes: (city.timezoneOffsetHours * 60).round());
+    }
+    try {
+      if (!_tzInitialized) {
+        tzdata.initializeTimeZones();
+        _tzInitialized = true;
+      }
+      final tz.Location location = tz.getLocation(tzId);
+      // منتصف الظهر بتاريخ المدينة — نقطة تمثيل دقيقة للإزاحة اليومية
+      // Local noon on that date — accurate representative instant
+      final DateTime localNoon = DateTime(
+          date.year, date.month, date.day, 12);
+      final int offsetMinutes =
+          tz.TZDateTime.from(localNoon, location).timeZoneOffset.inMinutes;
+      return Duration(minutes: offsetMinutes);
+    } catch (_) {
+      // معرف غير معروف → الإزاحة الاحتياطية / unknown id → fallback
+      return Duration(minutes: (city.timezoneOffsetHours * 60).round());
+    }
   }
 
   /// مطابقة طريقة الحساب إلى adhan (أسماء snake_case)
