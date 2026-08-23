@@ -100,13 +100,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       body: SafeArea(
         child: ListView(
-              // تمرير iOS المرن — انزلاق ناعم وارتداد مطاطي عند الأطراف
-              // iOS-style elastic scroll — smooth glide + gentle edge bounce
-              physics: const BouncingScrollPhysics(
-                decelerationRate: ScrollDecelerationRate.fast,
-              ),
-              padding: const EdgeInsets.all(16),
-              children: <Widget>[
+          // تمرير iOS المرن — انزلاق ناعم وارتداد مطاطي عند الأطراف
+          // iOS-style elastic scroll — smooth glide + gentle edge bounce
+          physics: const BouncingScrollPhysics(
+            decelerationRate: ScrollDecelerationRate.fast,
+          ),
+          padding: const EdgeInsets.all(16),
+          children: <Widget>[
             // التاريخ الهجري والميلادي — من تاريخ المواقيت المحسوبة
             // (مصدر حقيقة واحد يتبع تحديث منتصف الليل تلقائياً)
             // Date header — from computed times date (single source of
@@ -140,10 +140,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               data: (DailyPrayerTimes daily) {
                 final PrayerTime? next = daily.nextPrayer(DateTime.now());
-                // بدون fadeIn لكل بطاقة — كان يسبب "ترسب" النجوم عند التمرير
-                // (البطاقة شفافة أثناء الأنيميشن فتظهر النجوم خلفها فجأة)
-                // No per-card fadeIn — it made stars appear through the
-                // translucent card during animation, then "settle"
+                // بدون fadeIn لكل بطاقة — يسبب وميضاً عند دخول الشاشة
+                // No per-card fadeIn — it flickered when scrolling into view
                 return Column(
                   children: <Widget>[
                     for (final PrayerTime pt in daily.times)
@@ -160,7 +158,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 );
               },
             ),
-          ),
+          ],
+        ),
+      ),
     );
   }
 }
