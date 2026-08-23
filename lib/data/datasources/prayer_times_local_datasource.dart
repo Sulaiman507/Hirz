@@ -5,6 +5,7 @@
 // Actual adhan enum names are snake_case
 
 import 'package:adhan/adhan.dart' as adhan;
+import 'package:flutter/foundation.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -116,8 +117,13 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
       final int offsetMinutes =
           tz.TZDateTime.from(localNoon, location).timeZoneOffset.inMinutes;
       return Duration(minutes: offsetMinutes);
-    } catch (_) {
+    } catch (e) {
       // معرف غير معروف → الإزاحة الاحتياطية / unknown id → fallback
+      // نطبع في debug فقط لتشخيص الأخطاء الحقيقية لاحقاً
+      assert(() {
+        debugPrint('Hirz: timezone lookup failed for "$tzId": $e');
+        return true;
+      }());
       return Duration(minutes: (city.timezoneOffsetHours * 60).round());
     }
   }

@@ -72,8 +72,8 @@ class _ManualCoordinatesFormState
       id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
       nameEn: name,
       nameAr: name,
-      countryEn: l10n.tr('manualCoordinates'),
-      countryAr: l10n.tr('manualCoordinates'),
+      countryEn: '—', // موقع مخصص بلا دولة معروفة / custom, unknown country
+      countryAr: '—',
       latitude: latitude,
       longitude: longitude,
       timezoneOffsetHours: offset,
