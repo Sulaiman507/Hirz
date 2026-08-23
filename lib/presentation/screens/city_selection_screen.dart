@@ -93,6 +93,10 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                   return Center(child: Text(l10n.tr('noResults')));
                 }
                 return ListView.builder(
+                  // نفس التمرير المرن الموحد / same unified elastic scroll
+                  physics: const BouncingScrollPhysics(
+                    decelerationRate: ScrollDecelerationRate.fast,
+                  ),
                   itemCount: cities.length,
                   itemBuilder: (BuildContext context, int index) {
                     final City city = cities[index];

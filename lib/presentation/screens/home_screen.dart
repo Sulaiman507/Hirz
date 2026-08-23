@@ -109,11 +109,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           SafeArea(
             child: ListView(
-              // تمرير ناعم بدون تمطيط مطاطي — يمنع إعادة تركيب الطبقات
-              // عند الحدود (سبب اختفاء blur البطاقات)
-              // Smooth scroll, no rubber-band — prevents layer recomposition
-              // at bounds (the cause of the vanishing card blur)
-              physics: const ClampingScrollPhysics(),
+              // تمرير iOS المرن — انزلاق ناعم وارتداد مطاطي عند الأطراف
+              // iOS-style elastic scroll — smooth glide + gentle edge bounce
+              physics: const BouncingScrollPhysics(
+                decelerationRate: ScrollDecelerationRate.fast,
+              ),
               padding: const EdgeInsets.all(16),
               children: <Widget>[
             // التاريخ الهجري والميلادي / Hijri + Gregorian date
