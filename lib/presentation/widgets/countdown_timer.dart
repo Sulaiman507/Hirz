@@ -13,6 +13,8 @@ import '../../core/utils/time_formatter.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../providers/prayer_providers.dart';
+import 'prayer_badge.dart';
+import 'shimmer_text.dart';
 import 'circular_countdown_ring.dart';
 /// عدّاد تنازلي يتحدث كل ثانية / Updates every second
 class CountdownTimer extends ConsumerStatefulWidget {
@@ -180,25 +182,51 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
           // All today's prayers done → countdown switches to tomorrow's fajr
           return _buildTomorrowCountdown(l10n);
         }
+        // الصلاة الحالية = آخر صلاة دخل وقتها / current = last prayer begun
+        PrayerTime? current;
+        for (final PrayerTime pt in daily.times) {
+          if (pt.time.millisecondsSinceEpoch <=
+              DateTime.now().millisecondsSinceEpoch) {
+            current = pt;
+          }
+        }
         final Duration remaining = _remaining;
         final double progress = _progress;
 
         return GlassCard(
           child: Column(
             children: <Widget>[
-              Text(
-                l10n.tr('nextPrayer'),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: AppColors.goldBright,
-                    ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                l10n.tr(next.prayer.name),
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
+              // شارة الحالية فوق اسمها / CURRENT badge above its name
+              if (current != null) ...<Widget>[
+                Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: PrayerBadge(
+                    label: l10n.tr('badgeCurrent'),
+                    bright: true,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                ShimmerText(
+                  l10n.tr(current.prayer.name),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ] else ...<Widget>[
+                Text(
+                  l10n.tr('nextPrayer'),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: AppColors.goldBright,
+                      ),
+                ),
+                const SizedBox(height: 4),
+                ShimmerText(
+                  l10n.tr(next.prayer.name),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
               const SizedBox(height: 16),
               // الحلقة الذهبية حول الوقت المتبقي / Gold ring around remaining time
               CircularCountdownRing(
