@@ -28,7 +28,15 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
   }) async {
     final adhan.Coordinates coordinates =
         adhan.Coordinates(city.latitude, city.longitude);
-    final adhan.CalculationParameters params = _parametersFor(settings.method);
+
+    // ── اختيار طريقة الحساب ──
+    // أولوية المستخدم (إعدادات "تلقائي" = null) ثم الطريقة الرسمية
+    // للمدينة، وإلا الافتراضي من الإعدادات (Umm Al-Qura).
+    //
+    // Method selection: user override wins ("auto" = null), else the
+    // city's official regional method, else the settings default.
+    final adhan.CalculationParameters params =
+        _parametersFor(_resolveMethod(city, settings));
 
     // المذهب (معامل العصر) + قاعدة خطوط العرض العليا
     // Madhab (Asr factor) and the high-latitude rule
@@ -112,6 +120,30 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
       // معرف غير معروف → الإزاحة الاحتياطية / unknown id → fallback
       return Duration(minutes: (city.timezoneOffsetHours * 60).round());
     }
+  }
+
+  /// تحديد الطريقة: تجاوز المستخدم → طريقة المدينة الرسمية → افتراضي الإعدادات
+  /// Resolve method: user override → city official → settings default
+  CalculationMethod _resolveMethod(City city, AppSettings settings) {
+    // "auto" يعني اتباع المدينة / "auto" means follow the city
+    if (settings.method == CalculationMethod.auto) {
+      final String? cityMethod = city.methodId;
+      if (cityMethod != null && cityMethod.isNotEmpty) {
+        final CalculationMethod? parsed =
+            _methodById(cityMethod);
+        if (parsed != null) return parsed;
+      }
+      return CalculationMethod.ummAlQura; // احتياط معقول / sane fallback
+    }
+    return settings.method;
+  }
+
+  /// مطابقة نص الطريقة من JSON إلى enum / Map JSON string to enum
+  CalculationMethod? _methodById(String id) {
+    for (final CalculationMethod m in CalculationMethod.values) {
+      if (m.jsonId == id) return m;
+    }
+    return null;
   }
 
   /// مطابقة طريقة الحساب إلى adhan (أسماء snake_case)

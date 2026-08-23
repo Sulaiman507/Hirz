@@ -3,15 +3,22 @@
 /// طريقة الحساب — الأسماء تطابق مكتبة adhan حرفياً
 /// Calculation method — names map 1:1 to the adhan library
 enum CalculationMethod {
-  ummAlQura,
-  muslimWorldLeague,
-  egyptian,
-  karachi,
-  northAmerica,
-  turkey,
-  qatar,
-  kuwait,
-  dubai,
+  // تلقائي: يتبع الطريقة الرسمية للمدينة المختارة
+  // auto: follows the selected city's official regional method
+  auto('auto'),
+  ummAlQura('ummAlQura'),
+  muslimWorldLeague('muslimWorldLeague'),
+  egyptian('egyptian'),
+  karachi('karachi'),
+  northAmerica('northAmerica'),
+  turkey('turkey'),
+  qatar('qatar'),
+  kuwait('kuwait'),
+  dubai('dubai');
+
+  /// المعرف النصي المستخدم في cities.json / String id used in cities.json
+  final String jsonId;
+  const CalculationMethod(this.jsonId);
 }
 
 /// مذهب حساب وقت العصر / Madhab for Asr calculation

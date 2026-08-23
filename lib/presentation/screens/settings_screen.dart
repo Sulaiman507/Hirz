@@ -16,6 +16,8 @@ class SettingsScreen extends ConsumerWidget {
   /// مفتاح ترجمة طريقة الحساب / Localization key for a method
   String _methodKey(CalculationMethod method) {
     switch (method) {
+      case CalculationMethod.auto:
+        return 'methodAuto';
       case CalculationMethod.ummAlQura:
         return 'methodUmmAlQura';
       case CalculationMethod.muslimWorldLeague:

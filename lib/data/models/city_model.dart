@@ -14,6 +14,7 @@ class CityModel extends City {
     required super.longitude,
     required super.timezoneOffsetHours,
     super.timezoneId,
+    super.methodId,
     super.isCustom,
   });
 
@@ -29,6 +30,7 @@ class CityModel extends City {
       longitude: (json['longitude'] as num).toDouble(),
       timezoneOffsetHours: (json['timezoneOffsetHours'] as num).toDouble(),
       timezoneId: json['timezoneId'] as String?,
+      methodId: json['methodId'] as String?,
       isCustom: (json['isCustom'] as bool?) ?? false,
     );
   }
@@ -45,6 +47,7 @@ class CityModel extends City {
       longitude: city.longitude,
       timezoneOffsetHours: city.timezoneOffsetHours,
       timezoneId: city.timezoneId,
+      methodId: city.methodId,
       isCustom: city.isCustom,
     );
   }
@@ -61,6 +64,7 @@ class CityModel extends City {
       'longitude': longitude,
       'timezoneOffsetHours': timezoneOffsetHours,
       if (timezoneId != null) 'timezoneId': timezoneId,
+      if (methodId != null) 'methodId': methodId,
       'isCustom': isCustom,
     };
   }

@@ -12,6 +12,7 @@ class City {
   final double longitude;
   final double timezoneOffsetHours; // إزاحة شتوية احتياطية / Fallback winter offset
   final String? timezoneId; // معرف IANA لحساب DST / IANA id for DST-aware offset
+  final String? methodId; // طريقة الحساب الرسمية للمدينة / City's official method
   final bool isCustom; // مدينة أدخلها المستخدم يدوياً / Manually entered city
 
   const City({
@@ -24,6 +25,7 @@ class City {
     required this.longitude,
     required this.timezoneOffsetHours,
     this.timezoneId,
+    this.methodId,
     this.isCustom = false,
   });
 }
