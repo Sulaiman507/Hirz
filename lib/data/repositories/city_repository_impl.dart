@@ -24,23 +24,43 @@ class CityRepositoryImpl implements CityRepository {
   }
 
   @override
-  Future<List<City>> searchCities(String query) async {
-    return _datasource.search(query);
-  }
-
-  @override
   Future<City?> getSavedCity() async {
     // أولاً: مدينة مخصصة محفوظة / First: a saved custom city
-    final String? customRaw = _prefs.getString(SettingsKeys.savedCustomCity);
-    if (customRaw != null && customRaw.isNotEmpty) {
-      final Map<String, dynamic> decoded =
-          jsonDecode(customRaw) as Map<String, dynamic>;
-      return CityModel.fromJson(decoded);
-    }
+    final City? custom = await getSavedCustomCity();
+    if (custom != null) return custom;
     // ثانياً: معرف مدينة من القائمة / Second: a listed city id
     final String? cityId = _prefs.getString(SettingsKeys.savedCityId);
     if (cityId == null || cityId.isEmpty) return null;
     return _datasource.findById(cityId);
+  }
+
+  @override
+  Future<City?> getSavedCustomCity() async {
+    final String? customRaw = _prefs.getString(SettingsKeys.savedCustomCity);
+    if (customRaw == null || customRaw.isEmpty) return null;
+    final Map<String, dynamic> decoded =
+        jsonDecode(customRaw) as Map<String, dynamic>;
+    return CityModel.fromJson(decoded);
+  }
+
+  @override
+  Future<List<City>> searchCities(String query) async {
+    final List<City> results = await _datasource.search(query);
+    // أدرج المدينة المخصصة إن طابقت البحث — كانت مفقودة من النتائج
+    // Include the custom city if it matches — it was missing from results
+    final String q = query.trim();
+    if (q.isNotEmpty) {
+      final City? custom = await getSavedCustomCity();
+      if (custom != null &&
+          (custom.nameEn.toLowerCase().contains(q.toLowerCase()) ||
+              custom.nameAr.contains(q))) {
+        // تجنب التكرار / avoid duplicates
+        final bool alreadyListed =
+            results.any((City c) => c.id == custom.id);
+        if (!alreadyListed) results.insert(0, custom);
+      }
+    }
+    return results;
   }
 
   @override

@@ -18,4 +18,8 @@ abstract class CityRepository {
 
   /// حفظ مدينة مدخلة يدوياً / Save a manually entered city
   Future<void> saveCustomCity(City city);
+
+  /// جلب المدينة المخصصة المحفوظة إن وجدت
+  /// Get the saved custom city, if any
+  Future<City?> getSavedCustomCity();
 }

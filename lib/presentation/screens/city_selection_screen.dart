@@ -1,6 +1,8 @@
 // شاشة اختيار المدن / City selection screen
 // بحث فوري + قائمة + نموذج إحداثيات يدوية
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,10 +13,32 @@ import '../providers/settings_providers.dart';
 import '../widgets/manual_coordinates_form.dart';
 
 /// بحث + قائمة مدن + إدخال يدوي / Search + city list + manual entry
-class CitySelectionScreen extends ConsumerWidget {
+class CitySelectionScreen extends ConsumerStatefulWidget {
   const CitySelectionScreen({super.key});
 
-  void _showManualForm(BuildContext context, WidgetRef ref) {
+  @override
+  ConsumerState<CitySelectionScreen> createState() =>
+      _CitySelectionScreenState();
+}
+
+class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  /// بحث مؤجل 250ms — يمنع فلترة عند كل حرف / 250ms debounced search
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 250), () {
+      ref.read(citySearchQueryProvider.notifier).state = value;
+    });
+  }
+
+  void _showManualForm() {
     showDialog<void>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
@@ -33,7 +57,7 @@ class CitySelectionScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final AsyncValue<List<City>> citiesAsync =
         ref.watch(filteredCitiesProvider);
@@ -55,8 +79,7 @@ class CitySelectionScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              onChanged: (String value) =>
-                  ref.read(citySearchQueryProvider.notifier).state = value,
+              onChanged: _onSearchChanged,
             ),
           ),
           // القائمة / List
@@ -98,7 +121,7 @@ class CitySelectionScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showManualForm(context, ref),
+        onPressed: _showManualForm,
         icon: const Icon(Icons.edit_location_alt_outlined),
         label: Text(l10n.tr('manualCoordinates')),
       ),
