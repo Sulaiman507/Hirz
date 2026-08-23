@@ -29,6 +29,7 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
   // Remaining time stored here — setState rebuilds only this widget
   Duration _remaining = Duration.zero;
   double _progress = 0.0;
+  PrayerTime? _nextPrayer; // الصلاة القادمة المخزنة / cached next prayer
 
   @override
   void initState() {
@@ -43,10 +44,12 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
     });
   }
 
-  /// حساب المتبقي والتقدم من بيانات اليوم / Compute remaining + progress
+  /// حساب المتبقي والتقدم — مقارنة موحّدة بالـ epoch milliseconds
+  /// Compute remaining + progress — unified via epoch ms comparison
+  /// (يتجنب مشاكل DateTime kind: UTC vs local)
   void _recompute(DailyPrayerTimes daily) {
-    final DateTime now = DateTime.now();
-    final PrayerTime? next = daily.nextPrayer(now);
+    final int nowMs = DateTime.now().millisecondsSinceEpoch;
+    final PrayerTime? next = _findNextPrayer(daily, nowMs);
     if (next == null) {
       // صلوات اليوم انتهت — الحساب يتم في _buildTomorrowCountdown
       // Today's prayers done — computed in _buildTomorrowCountdown
@@ -54,19 +57,29 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
       _progress = 1.0;
       return;
     }
-    _remaining = next.time.difference(now);
-    final List<PrayerTime> passed = daily.times
-        .where((PrayerTime pt) => pt.time.isBefore(now))
-        .toList();
-    final DateTime? previousTime = passed.isEmpty ? null : passed.last.time;
-    final Duration totalSpan = previousTime == null
-        ? const Duration(hours: 6)
-        : next.time.difference(previousTime);
-    _progress = totalSpan.inSeconds <= 0
+    _nextPrayer = next;
+    _remaining = Duration(milliseconds: next.time.millisecondsSinceEpoch - nowMs);
+    // الصلاة السابقة لحساب تقدم الحلقة / previous prayer for ring progress
+    PrayerTime? previous;
+    for (final PrayerTime pt in daily.times) {
+      if (pt.time.millisecondsSinceEpoch <= nowMs) previous = pt;
+    }
+    final int startMs =
+        previous?.time.millisecondsSinceEpoch ?? nowMs - const Duration(hours: 6).inMilliseconds;
+    final int spanMs = next.time.millisecondsSinceEpoch - startMs;
+    _progress = spanMs <= 0
         ? 0.0
         : 1.0 -
-            (_remaining.inSeconds / max(totalSpan.inSeconds, 1))
-                .clamp(0.0, 1.0);
+            (_remaining.inMilliseconds / max(spanMs, 1)).clamp(0.0, 1.0);
+  }
+
+  /// أول صلاة وقتها بعد الآن — بمقارنة epoch آمنة عبر الأنواع
+  /// First prayer after now — safe epoch comparison across kinds
+  PrayerTime? _findNextPrayer(DailyPrayerTimes daily, int nowMs) {
+    for (final PrayerTime pt in daily.times) {
+      if (pt.time.millisecondsSinceEpoch > nowMs) return pt;
+    }
+    return null;
   }
 
   /// عدّاد فجر الغد بعد انتهاء صلوات اليوم / Tomorrow-fajr countdown
@@ -160,9 +173,9 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
         child: Center(child: Text(l10n.tr('error'))),
       ),
       data: (DailyPrayerTimes daily) {
-        // إعادة الحساب عند تغير البيانات (وليس كل ثانية) / recompute on data change only
+        // إعادة الحساب عند تغير البيانات / recompute on data change
         _recompute(daily);
-        final PrayerTime? next = daily.nextPrayer(DateTime.now());
+        final PrayerTime? next = _nextPrayer;
         if (next == null) {
           // كل صلوات اليوم انتهت → العدّاد يتحول لفجر الغد
           // All today's prayers done → countdown switches to tomorrow's fajr
