@@ -53,11 +53,12 @@ class GlassCard extends StatelessWidget {
             ],
           ),
           boxShadow: <BoxShadow>[
-            // ظل عميق للفصل عن الخلفية / deep shadow for separation
+            // ظل معتدل — 24px كان مكلفاً ×8 بطاقات أثناء التمرير
+            // moderate shadow — 24px was costly across 8 cards while scrolling
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.12),
-              blurRadius: 24,
-              offset: const Offset(0, 10),
+              color: Colors.black.withValues(alpha: isDark ? 0.30 : 0.10),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
             ),
             // وهج داخلي علوي — الضوء يلامس المادة
             // inner top glow — light catching the material

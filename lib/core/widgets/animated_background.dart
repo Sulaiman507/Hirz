@@ -39,6 +39,9 @@ class AnimatedNightBackground extends StatelessWidget {
       // تغطية الشاشة كاملة / fill the whole screen
       width: double.infinity,
       height: double.infinity,
+      // فك ترميز بدقة معقولة — يمنع GPU من التعامل مع bitmap أكبر من الشاشة
+      // Decode at sane resolution — avoids oversized GPU bitmap
+      cacheWidth: 1080,
       // طبقة تظليل فوق الصورة لعمق أكثر ووضوح النصوص
       // dark overlay for depth and text legibility
       color: const Color(0xFF0A1128).withValues(alpha: 0.45),

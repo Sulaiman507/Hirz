@@ -123,7 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             DateHeader(
               date: timesAsync.valueOrNull?.date ?? DateTime.now(),
               languageCode: settings.languageCode,
-            ).animate().fadeIn(duration: 400.ms),
+            ),
             const SizedBox(height: 16),
             // زر المدينة / City button
             cityAsync.when(
