@@ -15,7 +15,6 @@ import '../../core/widgets/glass_card.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../providers/prayer_providers.dart';
 import 'circular_countdown_ring.dart';
-
 /// عدّاد تنازلي يتحدث كل ثانية / Updates every second
 class CountdownTimer extends ConsumerStatefulWidget {
   const CountdownTimer({super.key});
@@ -49,6 +48,8 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
     final DateTime now = DateTime.now();
     final PrayerTime? next = daily.nextPrayer(now);
     if (next == null) {
+      // صلوات اليوم انتهت — الحساب يتم في _buildTomorrowCountdown
+      // Today's prayers done — computed in _buildTomorrowCountdown
       _remaining = Duration.zero;
       _progress = 1.0;
       return;
@@ -66,6 +67,78 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
         : 1.0 -
             (_remaining.inSeconds / max(totalSpan.inSeconds, 1))
                 .clamp(0.0, 1.0);
+  }
+
+  /// عدّاد فجر الغد بعد انتهاء صلوات اليوم / Tomorrow-fajr countdown
+  /// يُعاد بناؤه كل ثانية عبر الـ Timer نفسه / rebuilt every second by same timer
+  Widget _buildTomorrowCountdown(AppLocalizations l10n) {
+    final AsyncValue<DailyPrayerTimes> tomorrow =
+        ref.watch(tomorrowTimesProvider);
+
+    return tomorrow.when(
+      loading: () => const GlassCard(
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (Object error, StackTrace stack) => GlassCard(
+        child: Center(child: Text(l10n.tr('error'))),
+      ),
+      data: (DailyPrayerTimes tomorrowDaily) {
+        final PrayerTime fajr = tomorrowDaily.times.first; // فجر الغد
+        final Duration remaining = fajr.time.difference(DateTime.now());
+
+        return GlassCard(
+          child: Column(
+            children: <Widget>[
+              Text(
+                l10n.tr('nextPrayer'),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: AppColors.goldBright,
+                    ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.tr(fajr.prayer.name),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 16),
+              CircularCountdownRing(
+                progress: 0.0, // بداية دورة جديدة / fresh cycle
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      formatDuration(
+                          remaining.isNegative ? Duration.zero : remaining),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium
+                          ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontFeatures: const <FontFeature>[
+                              FontFeature.tabularFigures(),
+                            ],
+                          ),
+                    ),
+                    Text(
+                      l10n.tr('timeRemaining'),
+                      style:
+                          Theme.of(context).textTheme.labelMedium?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.6),
+                              ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -91,13 +164,9 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
         _recompute(daily);
         final PrayerTime? next = daily.nextPrayer(DateTime.now());
         if (next == null) {
-          return GlassCard(
-            child: Text(
-              l10n.tr('nextPrayer'),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          );
+          // كل صلوات اليوم انتهت → العدّاد يتحول لفجر الغد
+          // All today's prayers done → countdown switches to tomorrow's fajr
+          return _buildTomorrowCountdown(l10n);
         }
         final Duration remaining = _remaining;
         final double progress = _progress;

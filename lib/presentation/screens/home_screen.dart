@@ -1,6 +1,8 @@
 // الشاشة الرئيسية / Home screen
 // التاريخ + العدّاد التنازلي + مواقيت الصلاة + التنقل
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,11 +23,46 @@ import 'city_selection_screen.dart';
 import 'settings_screen.dart';
 
 /// الشاشة الرئيسية: التاريخ، العدّاد، المواقيت / Home: date, countdown, times
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  Timer? _midnightTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleMidnightRefresh();
+  }
+
+  /// تحديث التاريخ والمواقيت عند منتصف الليل تلقائياً
+  /// Auto-refresh date + times at midnight
+  void _scheduleMidnightRefresh() {
+    final DateTime now = DateTime.now();
+    final DateTime nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    _midnightTimer?.cancel();
+    _midnightTimer = Timer(nextMidnight.difference(now), () {
+      if (!mounted) return;
+      ref.invalidate(prayerTimesProvider);
+      ref.invalidate(tomorrowTimesProvider);
+      ref.invalidate(nextPrayerInfoProvider);
+      setState(() {}); // تحديث التاريخ / refresh the date header
+      _scheduleMidnightRefresh(); // جدولة الليلة القادمة / schedule next night
+    });
+  }
+
+  @override
+  void dispose() {
+    _midnightTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final AsyncValue<AppSettings> settingsAsync = ref.watch(settingsProvider);
     final AsyncValue<City> cityAsync = ref.watch(selectedCityProvider);

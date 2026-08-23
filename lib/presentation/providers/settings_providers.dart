@@ -1,6 +1,7 @@
 // providers الإعدادات: AsyncNotifier مع دوال تحديث وحفظ
 // Settings providers: AsyncNotifier with update + persist helpers
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/app_settings.dart';
@@ -14,11 +15,22 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
     return getSettings();
   }
 
-  /// حفظ بعد أي تعديل / Persist after any change
+  /// حفظ بعد أي تعديل — مع معالجة أخطاء وإعادة الحالة عند الفشل
+  /// Persist after any change — with error handling and state revert
   Future<void> _save(AppSettings next) async {
-    state = AsyncValue<AppSettings>.data(next);
-    final saveSettings = await ref.read(saveSettingsUseCaseProvider.future);
-    await saveSettings(next);
+    try {
+      final saveSettings = await ref.read(saveSettingsUseCaseProvider.future);
+      await saveSettings(next);
+      // حدّث UI فقط بعد نجاح الحفظ الفعلي / update UI only after real success
+      state = AsyncValue<AppSettings>.data(next);
+    } catch (e, st) {
+      // أبلغ بالفشل بدل إخفائه / surface the failure instead of swallowing it
+      state = AsyncValue<AppSettings>.error(e, st);
+      assert(() {
+        debugPrint('Hirz: settings save failed: $e');
+        return true;
+      }());
+    }
   }
 
   Future<void> updateLanguage(String languageCode) async {
