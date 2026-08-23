@@ -150,6 +150,10 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
   /// Map our method enum to adhan's (snake_case names)
   adhan.CalculationParameters _parametersFor(CalculationMethod method) {
     switch (method) {
+      case CalculationMethod.auto:
+        // لا يجب الوصول لهنا — يُحل قبلها في _resolveMethod
+        // Should not reach here — resolved earlier in _resolveMethod
+        return adhan.CalculationMethod.umm_al_qura.getParameters();
       case CalculationMethod.ummAlQura:
         return adhan.CalculationMethod.umm_al_qura.getParameters();
       case CalculationMethod.muslimWorldLeague:
