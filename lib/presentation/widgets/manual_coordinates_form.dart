@@ -1,24 +1,29 @@
 // نموذج إحداثيات يدوية مع تحقق / Manual coordinates form with validation
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/utils/nearest_city.dart';
 import '../../domain/entities/city.dart';
+import '../providers/city_providers.dart';
 
 /// نتيجة النموذج / Form result callback
 typedef CityCreated = void Function(City city);
 
 /// نموذج إدخال مدينة يدوياً / Manual city entry form
-class ManualCoordinatesForm extends StatefulWidget {
+class ManualCoordinatesForm extends ConsumerStatefulWidget {
   final CityCreated onSubmit;
 
   const ManualCoordinatesForm({super.key, required this.onSubmit});
 
   @override
-  State<ManualCoordinatesForm> createState() => _ManualCoordinatesFormState();
+  ConsumerState<ManualCoordinatesForm> createState() =>
+      _ManualCoordinatesFormState();
 }
 
-class _ManualCoordinatesFormState extends State<ManualCoordinatesForm> {
+class _ManualCoordinatesFormState
+    extends ConsumerState<ManualCoordinatesForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _latController = TextEditingController();
@@ -63,7 +68,7 @@ class _ManualCoordinatesFormState extends State<ManualCoordinatesForm> {
     final double offset =
         double.tryParse(_offsetController.text.trim()) ?? 0.0;
 
-    final City city = City(
+    final City draft = City(
       id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
       nameEn: name,
       nameAr: name,
@@ -74,6 +79,24 @@ class _ManualCoordinatesFormState extends State<ManualCoordinatesForm> {
       timezoneOffsetHours: offset,
       isCustom: true,
     );
+
+    // ── وراثة timezoneId/methodId من أقرب مدينة معروفة (≤300كم) ──
+    // يصلح فقدان DST وطرق الحساب الإقليمية للمدن اليدوية.
+    // Inherit tz + method from the nearest known city (≤300km) —
+    // fixes DST and regional-method loss for manual cities.
+    final List<City> known =
+        ref.read(citiesProvider).valueOrNull ?? const <City>[];
+    final City? nearest = nearestKnownCity(
+      latitude: latitude,
+      longitude: longitude,
+      known: known,
+    );
+    final City city = nearest == null
+        ? draft
+        : draft.copyWith(
+            timezoneId: nearest.timezoneId,
+            methodId: nearest.methodId,
+          );
     widget.onSubmit(city);
   }
 

@@ -28,4 +28,21 @@ class City {
     this.methodId,
     this.isCustom = false,
   });
+
+  /// نسخة معدلة — للوراثة من أقرب مدينة / Copy with overrides
+  City copyWith({String? timezoneId, String? methodId}) {
+    return City(
+      id: id,
+      nameEn: nameEn,
+      nameAr: nameAr,
+      countryEn: countryEn,
+      countryAr: countryAr,
+      latitude: latitude,
+      longitude: longitude,
+      timezoneOffsetHours: timezoneOffsetHours,
+      timezoneId: timezoneId ?? this.timezoneId,
+      methodId: methodId ?? this.methodId,
+      isCustom: isCustom,
+    );
+  }
 }
