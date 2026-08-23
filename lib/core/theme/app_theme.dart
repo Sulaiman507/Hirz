@@ -10,15 +10,17 @@ abstract class AppTheme {
   /// الوضع الفاتح / Light theme
   static ThemeData light() {
     final ColorScheme scheme = ColorScheme.fromSeed(
-      seedColor: AppColors.navySecondary,
+      seedColor: AppColors.goldPrimary,
       brightness: Brightness.light,
       primary: AppColors.navySecondary,
       onPrimary: AppColors.offWhite,
       secondary: AppColors.goldPrimary,
       onSecondary: AppColors.warmBlack,
       tertiary: AppColors.olivePrimary,
-      surface: AppColors.offWhite,
-      onSurface: AppColors.navyPrimary,
+      surface: AppColors.lightBackground,
+      // النص = لون خلفية الوضع الليلي (عكس متبادل)
+      // text = dark-mode background color (inverted pair)
+      onSurface: AppColors.textOnLight,
     );
     return _base(scheme);
   }
@@ -26,15 +28,17 @@ abstract class AppTheme {
   /// الوضع الداكن / Dark theme
   static ThemeData dark() {
     final ColorScheme scheme = ColorScheme.fromSeed(
-      seedColor: AppColors.navyPrimary,
+      seedColor: AppColors.darkBackground,
       brightness: Brightness.dark,
       primary: AppColors.goldBright,
       onPrimary: AppColors.warmBlack,
       secondary: AppColors.goldPrimary,
       onSecondary: AppColors.warmBlack,
       tertiary: AppColors.olivePrimary,
-      surface: AppColors.navyPrimary, // كحلي عميق بدل الأسود / navy not black
-      onSurface: AppColors.offWhite,
+      surface: AppColors.darkBackground,
+      // النص = لون خلفية الوضع الفاتح (عكس متبادل)
+      // text = light-mode background color (inverted pair)
+      onSurface: AppColors.textOnDark,
     );
     return _base(scheme);
   }

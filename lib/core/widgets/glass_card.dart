@@ -33,37 +33,37 @@ class GlassCard extends StatelessWidget {
       child: Container(
         padding: padding,
         decoration: BoxDecoration(
-          // زجاج داكن/فاتح بدون blur — تعتيم كافٍ لوضوح النصوص
-          // glass tint without blur — enough opacity for legible text
+          // زجاج مائل للون النص المعاكس — يبرز فوق الخلفية الجديدة
+          // glass tinted toward the inverted text color — pops on new bg
           color: isDark
-              ? const Color(0xFF101A38).withValues(alpha: 0.62)
-              : Colors.white.withValues(alpha: 0.72),
+              ? Colors.white.withValues(alpha: 0.10)
+              : Colors.white.withValues(alpha: 0.65),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: const Color(0xFFD4AF37)
-                .withValues(alpha: isDark ? 0.28 : 0.45),
+                .withValues(alpha: isDark ? 0.35 : 0.45),
             width: 1,
           ),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: <Color>[
-              Colors.white.withValues(alpha: isDark ? 0.08 : 0.30),
-              Colors.white.withValues(alpha: isDark ? 0.02 : 0.10),
+              Colors.white.withValues(alpha: isDark ? 0.10 : 0.30),
+              Colors.white.withValues(alpha: isDark ? 0.03 : 0.10),
             ],
           ),
           boxShadow: <BoxShadow>[
             // ظل معتدل — 24px كان مكلفاً ×8 بطاقات أثناء التمرير
             // moderate shadow — 24px was costly across 8 cards while scrolling
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.30 : 0.10),
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.12),
               blurRadius: 14,
               offset: const Offset(0, 6),
             ),
             // وهج داخلي علوي — الضوء يلامس المادة
             // inner top glow — light catching the material
             BoxShadow(
-              color: Colors.white.withValues(alpha: isDark ? 0.06 : 0.5),
+              color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.5),
               blurRadius: 1,
               offset: const Offset(0, -1),
             ),

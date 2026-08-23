@@ -81,11 +81,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       // الخلفية من الثيم مباشرة (سطح داكن/فاتح) — بلا صور ولا Stack
       // background from theme surface directly — no image, no stack
       backgroundColor: null,
-      // الوضع الليلي: AppBar يغطي أعلى الصورة / dark: bar covers image top
       appBar: AppBar(
-        backgroundColor: settings.isDarkMode
-            ? const Color(0xFF0A1128)
-            : AppColors.offWhite,
+        // نفس لون السطح من الثيم / same theme surface color
+        backgroundColor: null,
         scrolledUnderElevation: 0,
         title: Text(l10n.tr('appName')),
         actions: <Widget>[
