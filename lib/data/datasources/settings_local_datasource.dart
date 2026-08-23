@@ -33,10 +33,10 @@ class SettingsLocalDatasource {
 
     final String methodRaw =
         _prefs.getString(SettingsKeys.calculationMethod) ??
-            CalculationMethod.ummAlQura.name;
+            CalculationMethod.auto.name;
     final CalculationMethod method = CalculationMethod.values.firstWhere(
       (CalculationMethod m) => m.name == methodRaw,
-      orElse: () => CalculationMethod.ummAlQura,
+      orElse: () => CalculationMethod.auto,
     );
 
     final String madhabRaw =

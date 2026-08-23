@@ -73,7 +73,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         settingsAsync.valueOrNull ?? const AppSettings(
       languageCode: 'ar',
       isDarkMode: false,
-      method: CalculationMethod.ummAlQura,
+      method: CalculationMethod.auto,
       madhab: Madhab.shafi,
       use24HourFormat: false,
       iqamahOffsets: AppSettings.defaultIqamahOffsets,
@@ -116,9 +116,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               padding: const EdgeInsets.all(16),
               children: <Widget>[
-            // التاريخ الهجري والميلادي / Hijri + Gregorian date
+            // التاريخ الهجري والميلادي — من تاريخ المواقيت المحسوبة
+            // (مصدر حقيقة واحد يتبع تحديث منتصف الليل تلقائياً)
+            // Date header — from computed times date (single source of
+            // truth, follows midnight refresh automatically)
             DateHeader(
-              date: DateTime.now(),
+              date: timesAsync.valueOrNull?.date ?? DateTime.now(),
               languageCode: settings.languageCode,
             ).animate().fadeIn(duration: 400.ms),
             const SizedBox(height: 16),
