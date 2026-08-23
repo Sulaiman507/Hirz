@@ -3,8 +3,6 @@
 // خفيف الأداء: ShaderMask + AnimationController واحد فقط
 // Lightweight: single AnimationController + ShaderMask, no per-frame layout
 
-import 'dart:ui' show FontFeature;
-
 import 'package:flutter/material.dart';
 
 /// نص بلمعان ماسح / Sweeping-shimmer text
@@ -66,7 +64,6 @@ class _ShimmerTextState extends State<ShimmerText>
         return ShaderMask(
           blendMode: BlendMode.srcATop,
           shaderCallback: (Rect bounds) {
-            final double w = bounds.width;
             return LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
