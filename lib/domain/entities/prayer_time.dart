@@ -32,14 +32,21 @@ class DailyPrayerTimes {
     return null;
   }
 
-  /// آخر صلاة دخل وقتها، أو null قبل الفجر
-  /// Last prayer whose time has already begun, or null before fajr
+  /// آخر صلاة دخل وقتها، وقبل الفجر تكون العشاء (آخر أمس) — الشارة لا تختفي
+  /// Last prayer begun; before fajr that is yesterday's isha — badge never vanishes
   PrayerTime? currentPrayer(DateTime now) {
     PrayerTime? current;
+    bool found = false;
     for (final prayerTime in times) {
+      if (!found && prayerTime.time.isAfter(now)) {
+        // لم تبدأ أي صلاة اليوم → العشاء (آخر صلاة أمس) هي الجارية
+        // no prayer started today → isha (yesterday's last) is current
+        return times.last;
+      }
+      found = true;
       if (prayerTime.time.isAfter(now)) break;
       current = prayerTime;
     }
-    return current;
+    return current ?? times.last;
   }
 }

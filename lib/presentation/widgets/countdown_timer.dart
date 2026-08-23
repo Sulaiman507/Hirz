@@ -182,7 +182,8 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
           // All today's prayers done → countdown switches to tomorrow's fajr
           return _buildTomorrowCountdown(l10n);
         }
-        // الصلاة الحالية = آخر صلاة دخل وقتها / current = last prayer begun
+        // الصلاة الحالية — دائماً موجودة (قبل الفجر = العشاء)
+        // current prayer — always present (before fajr = isha)
         PrayerTime? current;
         for (final PrayerTime pt in daily.times) {
           if (pt.time.millisecondsSinceEpoch <=
@@ -190,43 +191,34 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
             current = pt;
           }
         }
+        current ??= daily.times.last;
         final Duration remaining = _remaining;
         final double progress = _progress;
 
         return GlassCard(
+          // خلفية بيج فاتحة هادئة للمربع / calm light-beige backdrop
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xFFEFE7D6).withValues(alpha: 0.14)
+              : const Color(0xFFEFE7D6).withValues(alpha: 0.85),
           child: Column(
             children: <Widget>[
-              // شارة الحالية فوق اسمها / CURRENT badge above its name
-              if (current != null) ...<Widget>[
-                Align(
-                  alignment: AlignmentDirectional.topStart,
-                  child: PrayerBadge(
-                    label: l10n.tr('badgeCurrent'),
-                    bright: true,
-                  ),
+              Align(
+                alignment: AlignmentDirectional.topStart,
+                child: PrayerBadge(
+                  label: l10n.tr('badgeCurrent'),
+                  bright: true,
                 ),
-                const SizedBox(height: 6),
-                ShimmerText(
-                  l10n.tr(current.prayer.name),
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ] else ...<Widget>[
-                Text(
-                  l10n.tr('nextPrayer'),
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: AppColors.goldBright,
-                      ),
-                ),
-                const SizedBox(height: 4),
-                ShimmerText(
-                  l10n.tr(next.prayer.name),
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ],
+              ),
+              const SizedBox(height: 6),
+              // اسم الصلاة الحالية بالشيمر / shimmering current prayer name
+              ShimmerText(
+                l10n.tr(current.prayer.name),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                baseColor:
+                    Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
+              ),
               const SizedBox(height: 16),
               // الحلقة الذهبية حول الوقت المتبقي / Gold ring around remaining time
               CircularCountdownRing(
