@@ -141,7 +141,7 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onSurface
-                                    .withOpacity(0.6),
+                                    .withValues(alpha: 0.6),
                               ),
                     ),
                   ],
@@ -227,7 +227,7 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                       style:
                           Theme.of(context).textTheme.labelMedium?.copyWith(
                                 color: Theme.of(context).colorScheme.onSurface
-                                    .withOpacity(0.6),
+                                    .withValues(alpha: 0.6),
                               ),
                     ),
                   ],

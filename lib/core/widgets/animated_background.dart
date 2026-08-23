@@ -41,7 +41,7 @@ class AnimatedNightBackground extends StatelessWidget {
       height: double.infinity,
       // طبقة تظليل فوق الصورة لعمق أكثر ووضوح النصوص
       // dark overlay for depth and text legibility
-      color: const Color(0xFF0A1128).withOpacity(0.45),
+      color: const Color(0xFF0A1128).withValues(alpha: 0.45),
       colorBlendMode: BlendMode.darken,
     );
   }

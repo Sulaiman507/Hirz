@@ -50,7 +50,7 @@ abstract class AppTheme {
       fontFamily: 'Amiri',
       appBarTheme: AppBarTheme(
         backgroundColor:
-            isDark ? Colors.transparent : scheme.surface.withOpacity(0.85),
+            isDark ? Colors.transparent : scheme.surface.withValues(alpha: 0.85),
         foregroundColor: scheme.onSurface,
         elevation: 0,
         centerTitle: true,
@@ -62,12 +62,12 @@ abstract class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: isDark ? Colors.white.withOpacity(0.06) : Colors.white,
+        color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
         elevation: isDark ? 0 : 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(
-            color: AppColors.goldBright.withOpacity(isDark ? 0.25 : 0.35),
+            color: AppColors.goldBright.withValues(alpha: isDark ? 0.25 : 0.35),
             width: 1,
           ),
         ),
@@ -76,7 +76,7 @@ abstract class AppTheme {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: AppColors.goldBright.withOpacity(0.4),
+            color: AppColors.goldBright.withValues(alpha: 0.4),
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -109,7 +109,7 @@ abstract class AppTheme {
           ),
           side: WidgetStatePropertyAll<BorderSide>(
             BorderSide(
-              color: AppColors.goldBright.withOpacity(0.5),
+              color: AppColors.goldBright.withValues(alpha: 0.5),
             ),
           ),
         ),

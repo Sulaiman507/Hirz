@@ -59,7 +59,6 @@ class _ManualCoordinatesFormState
   }
 
   void _submit() {
-    final AppLocalizations l10n = AppLocalizations.of(context);
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final String name = _nameController.text.trim();

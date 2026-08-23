@@ -55,7 +55,7 @@ class _RingPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6
       ..strokeCap = StrokeCap.round
-      ..color = (isDark ? Colors.white : Colors.black).withOpacity(0.08);
+      ..color = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08);
     canvas.drawCircle(center, radius, trackPaint);
 
     // قوس التقدم — تدرج ذهبي / Progress arc — gold gradient
@@ -90,7 +90,7 @@ class _RingPainter extends CustomPainter {
     );
     // طبقة blur واحدة صغيرة فقط للنقطة / single small blur layer for the dot
     final Paint dotGlow = Paint()
-      ..color = const Color(0xFFD4AF37).withOpacity(0.5)
+      ..color = const Color(0xFFD4AF37).withValues(alpha: 0.5)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
     canvas.drawCircle(endOffset, 6, dotGlow);
     canvas.drawCircle(
