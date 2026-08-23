@@ -55,6 +55,10 @@ class SettingsScreen extends ConsumerWidget {
               ref.read(settingsProvider.notifier);
 
           return ListView(
+              // نفس التمرير المرن الموحد / same unified elastic scroll
+              physics: const BouncingScrollPhysics(
+                decelerationRate: ScrollDecelerationRate.fast,
+              ),
             padding: const EdgeInsets.all(16),
             children: <Widget>[
               // ── اللغة / Language ──────────────────────────────
