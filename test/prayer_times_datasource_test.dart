@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hirz/data/datasources/prayer_times_local_datasource.dart';
 import 'package:hirz/domain/entities/app_settings.dart';
 import 'package:hirz/domain/entities/city.dart';
+import 'package:hirz/domain/entities/prayer_time.dart';
 
 City _city({
   String id = 'test_city',
