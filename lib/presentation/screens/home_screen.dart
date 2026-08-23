@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/widgets/animated_background.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/city.dart';
 import '../../domain/entities/prayer_time.dart';
@@ -79,7 +78,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      // الخلفية من الثيم مباشرة (سطح داكن/فاتح) — بلا صور ولا Stack
+      // background from theme surface directly — no image, no stack
+      backgroundColor: null,
       // الوضع الليلي: AppBar يغطي أعلى الصورة / dark: bar covers image top
       appBar: AppBar(
         backgroundColor: settings.isDarkMode
@@ -97,17 +98,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: <Widget>[
-          // الخلفية الليلية — RepaintBoundary يمنع إعادة رسمها عند التمرير
-          // Night background — RepaintBoundary prevents repaint on scroll
-          Positioned.fill(
-            child: RepaintBoundary(
-              child: AnimatedNightBackground(isDark: settings.isDarkMode),
-            ),
-          ),
-          SafeArea(
-            child: ListView(
+      body: SafeArea(
+        child: ListView(
               // تمرير iOS المرن — انزلاق ناعم وارتداد مطاطي عند الأطراف
               // iOS-style elastic scroll — smooth glide + gentle edge bounce
               physics: const BouncingScrollPhysics(
@@ -168,11 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 );
               },
             ),
-          ],
-        ),
           ),
-        ],
-      ),
     );
   }
 }
