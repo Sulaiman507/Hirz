@@ -56,15 +56,27 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
       );
     }
 
+    // ── تطبيع النوع / Kind normalization (إصلاح جذري) ──
+    // adhan يعيد القيم بتوقيت المدينة لكن بنوع UTC (isUtc=true).
+    // مزجها مع DateTime.now() المحلي يفسد المقارنات والعدّاد لباقي المدن.
+    // الحل: نبني DateTime محلياً خالصاً بنفس قيم الحقول المعروضة.
+    //
+    // adhan returns city-local values but tagged as UTC (isUtc=true).
+    // Mixing with local DateTime.now() breaks comparisons/countdown for
+    // most cities. Fix: rebuild as pure local DateTimes with the same
+    // displayed field values.
+    DateTime normalize(DateTime t) =>
+        DateTime(t.year, t.month, t.day, t.hour, t.minute, t.second);
+
     return DailyPrayerTimes(
-      date: date,
+      date: normalize(date),
       times: <PrayerTime>[
-        build(Prayer.fajr, raw.fajr),
-        build(Prayer.sunrise, raw.sunrise),
-        build(Prayer.dhuhr, raw.dhuhr),
-        build(Prayer.asr, raw.asr),
-        build(Prayer.maghrib, raw.maghrib),
-        build(Prayer.isha, raw.isha),
+        build(Prayer.fajr, normalize(raw.fajr)),
+        build(Prayer.sunrise, normalize(raw.sunrise)),
+        build(Prayer.dhuhr, normalize(raw.dhuhr)),
+        build(Prayer.asr, normalize(raw.asr)),
+        build(Prayer.maghrib, normalize(raw.maghrib)),
+        build(Prayer.isha, normalize(raw.isha)),
       ],
     );
   }
