@@ -202,22 +202,47 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
               : const Color(0xFFEFE7D6).withValues(alpha: 0.85),
           child: Column(
             children: <Widget>[
-              Align(
-                alignment: AlignmentDirectional.topStart,
-                child: PrayerBadge(
-                  label: l10n.tr('badgeCurrent'),
-                  bright: true,
-                ),
+              // الصلاة الحالية: شارتها + اسمها بنص هادئ
+              // current prayer: its badge + calm plain name
+              Row(
+                children: <Widget>[
+                  PrayerBadge(
+                    label: l10n.tr('badgeCurrent'),
+                    bright: true,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.tr(current.prayer.name),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 6),
-              // اسم الصلاة الحالية بالشيمر / shimmering current prayer name
+              const SizedBox(height: 14),
+              // الصلاة القادمة: الاسم المتلألئ في مركز المربع
+              // next prayer: shimmering name at the center of the box
               ShimmerText(
-                l10n.tr(current.prayer.name),
+                l10n.tr(next.prayer.name),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                 baseColor:
                     Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
+              ),
+              Text(
+                l10n.tr('nextPrayer'),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.55),
+                    ),
               ),
               const SizedBox(height: 16),
               // الحلقة الذهبية حول الوقت المتبقي / Gold ring around remaining time
