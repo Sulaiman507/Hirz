@@ -91,5 +91,11 @@
  "adhan": "Adhan",
  "methodAuto": "Auto (per city)",
  "badgeCurrent": "CURRENT",
- "badgeNext": "NEXT"
+ "badgeNext": "NEXT",
+ "fontAmiri": "Amiri",
+ "fontCairo": "Cairo",
+ "fontThin": "Thin",
+ "fontThick": "Thick",
+ "fontFamily": "Font Family",
+ "fontThickness": "Font Thickness"
 }

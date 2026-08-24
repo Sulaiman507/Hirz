@@ -47,7 +47,8 @@ class SettingsScreen extends ConsumerWidget {
     final AsyncValue<AppSettings> settingsAsync = ref.watch(settingsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.tr('settingsTitle'))),
+      // شاشة كاملة بدون شريط علوي / fullscreen without top bar
+      backgroundColor: null,
       body: settingsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (Object e, StackTrace s) =>
@@ -197,6 +198,52 @@ class SettingsScreen extends ConsumerWidget {
                         ),
                       )
                       .toList(),
+                ),
+              ),
+              const SizedBox(height: 22),
+
+              // ── نوع الخط / Font family ─────────────────────────
+              LuxurySectionTitle(title: l10n.tr('fontFamily'), icon: Icons.text_fields),
+              LuxuryPanel(
+                child: SegmentedButton<String>(
+                  segments: <ButtonSegment<String>>[
+                    ButtonSegment<String>(
+                      value: 'Amiri',
+                      label: Text(l10n.tr('fontAmiri')),
+                    ),
+                    ButtonSegment<String>(
+                      value: 'Cairo',
+                      label: Text(l10n.tr('fontCairo')),
+                    ),
+                  ],
+                  selected: <String>{settings.fontFamily},
+                  onSelectionChanged: (Set<String> sel) =>
+                      notifier.updateFontFamily(sel.first),
+                ),
+              ),
+              const SizedBox(height: 22),
+
+              // ── سماكة الخط / Font thickness ────────────────────
+              LuxurySectionTitle(
+                  title: l10n.tr('fontThickness'), icon: Icons.format_bold),
+              LuxuryPanel(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: Row(
+                  children: <Widget>[
+                    Text(l10n.tr('fontThin')),
+                    Expanded(
+                      child: Slider(
+                        value: settings.fontThickness,
+                        min: 0.5,
+                        max: 2.0,
+                        divisions: 6,
+                        label: settings.fontThickness.toStringAsFixed(1),
+                        onChanged: (double v) =>
+                            notifier.updateFontThickness(v),
+                      ),
+                    ),
+                    Text(l10n.tr('fontThick')),
+                  ],
                 ),
               ),
               const SizedBox(height: 32),

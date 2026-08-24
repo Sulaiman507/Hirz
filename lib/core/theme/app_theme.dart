@@ -8,7 +8,7 @@ import 'app_colors.dart';
 
 abstract class AppTheme {
   /// الوضع الفاتح / Light theme
-  static ThemeData light() {
+  static ThemeData light({String fontFamily = 'Amiri', double fontThickness = 1.0}) {
     final ColorScheme scheme = ColorScheme.fromSeed(
       seedColor: AppColors.goldPrimary,
       brightness: Brightness.light,
@@ -22,7 +22,7 @@ abstract class AppTheme {
       // text = dark-mode background color (inverted pair)
       onSurface: AppColors.textOnLight,
     );
-    return _base(scheme);
+    return _base(scheme, fontFamily: fontFamily, fontThickness: fontThickness);
   }
 
   /// الوضع الداكن / Dark theme
@@ -43,15 +43,16 @@ abstract class AppTheme {
     return _base(scheme);
   }
 
-  static ThemeData _base(ColorScheme scheme) {
+  static ThemeData _base(ColorScheme scheme, {String fontFamily = 'Amiri', double fontThickness = 1.0}) {
     final bool isDark = scheme.brightness == Brightness.dark;
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
-      // خط Amiri الفاخر للعناوين / Luxury Amiri font for display text
-      fontFamily: 'Amiri',
+      // الخط يتبع الإعدادات / font follows settings
+      fontFamily: fontFamily,
+      fontVariations: <FontVariation>[FontVariation.weight(fontThickness * 900)],
       appBarTheme: AppBarTheme(
         backgroundColor:
             isDark ? Colors.transparent : scheme.surface.withValues(alpha: 0.85),

@@ -71,6 +71,18 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
     offsets[prayerKey] = minutes;
     await _save(current.copyWith(iqamahOffsets: offsets));
   }
+
+  Future<void> updateFontThickness(double thickness) async {
+    final AppSettings? current = state.valueOrNull;
+    if (current == null) return;
+    await _save(current.copyWith(fontThickness: thickness));
+  }
+
+  Future<void> updateFontFamily(String family) async {
+    final AppSettings? current = state.valueOrNull;
+    if (current == null) return;
+    await _save(current.copyWith(fontFamily: family));
+  }
 }
 
 /// المزود الرئيسي للإعدادات / The main settings provider

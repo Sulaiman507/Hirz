@@ -91,5 +91,11 @@
  "adhan": "الأذان",
  "methodAuto": "تلقائي (حسب المدينة)",
  "badgeCurrent": "الحالية",
- "badgeNext": "القادمة"
+ "badgeNext": "القادمة",
+ "fontAmiri": "أميري",
+ "fontCairo": "القاهرة",
+ "fontThin": "أنحف",
+ "fontThick": "أسمن",
+ "fontFamily": "نوع الخط",
+ "fontThickness": "سماكة الخط"
 }

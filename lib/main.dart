@@ -29,7 +29,7 @@ class HirzApp extends ConsumerWidget {
       error: (Object error, StackTrace stack) => _splash(),
       data: (AppSettings settings) {
         final ThemeData theme =
-            settings.isDarkMode ? AppTheme.dark() : AppTheme.light();
+            settings.isDarkMode ? AppTheme.dark(fontFamily: settings.fontFamily, fontThickness: settings.fontThickness) : AppTheme.light(fontFamily: settings.fontFamily, fontThickness: settings.fontThickness);
 
         // AnimatedTheme لانتقال سلس بين الفاتح والداكن
         // AnimatedTheme for smooth light/dark transition

@@ -68,7 +68,8 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
         ref.watch(settingsProvider).valueOrNull?.languageCode ?? 'ar';
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.tr('citySelectionTitle'))),
+      // شاشة كاملة بدون شريط علوي / fullscreen without top bar
+      backgroundColor: null,
       body: Column(
         children: <Widget>[
           // حقل البحث الفاخر / luxury search field
