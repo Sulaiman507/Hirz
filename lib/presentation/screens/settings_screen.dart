@@ -57,7 +57,30 @@ class SettingsScreen extends ConsumerWidget {
           final SettingsNotifier notifier =
               ref.read(settingsProvider.notifier);
 
-          return ListView(
+          return Column(
+            children: <Widget>[
+              // صف العنوان + زر الإغلاق / title row + close button
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 8, 0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        l10n.tr('settingsTitle'),
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded),
+                      tooltip: l10n.tr('close') ?? 'إغلاق',
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 16),
+              Expanded(
+                child: ListView(
             // نفس التمرير المرن الموحد / same unified elastic scroll
             physics: const BouncingScrollPhysics(
               decelerationRate: ScrollDecelerationRate.fast,
