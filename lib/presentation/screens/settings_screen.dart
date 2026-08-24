@@ -1,5 +1,6 @@
-// شاشة الإعدادات / Settings screen
-// اللغة، المظهر، طريقة الحساب، المذهب، تنسيق الوقت، فروق الإقامة
+// شاشة الإعدادات الفاخرة / Luxury settings screen
+// لوحات زجاجية بحدود ذهبية + عناوين بأشرطة ذهبية متدرجة
+// Glass panels with gold borders + gradient-bar section titles
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import '../../core/l10n/app_localizations.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../providers/settings_providers.dart';
+import '../widgets/luxury_components.dart';
 
 /// كل الإعدادات في شاشة واحدة / All settings in one screen
 class SettingsScreen extends ConsumerWidget {
@@ -55,118 +57,152 @@ class SettingsScreen extends ConsumerWidget {
               ref.read(settingsProvider.notifier);
 
           return ListView(
-              // نفس التمرير المرن الموحد / same unified elastic scroll
-              physics: const BouncingScrollPhysics(
-                decelerationRate: ScrollDecelerationRate.fast,
-              ),
+            // نفس التمرير المرن الموحد / same unified elastic scroll
+            physics: const BouncingScrollPhysics(
+              decelerationRate: ScrollDecelerationRate.fast,
+            ),
             padding: const EdgeInsets.all(16),
             children: <Widget>[
               // ── اللغة / Language ──────────────────────────────
-              _sectionTitle(context, l10n.tr('language')),
-              SegmentedButton<String>(
-                segments: <ButtonSegment<String>>[
-                  ButtonSegment<String>(
-                    value: 'ar',
-                    label: Text(l10n.tr('arabic')),
-                  ),
-                  ButtonSegment<String>(
-                    value: 'en',
-                    label: Text(l10n.tr('english')),
-                  ),
-                ],
-                selected: <String>{settings.languageCode},
-                onSelectionChanged: (Set<String> selection) =>
-                    notifier.updateLanguage(selection.first),
-              ),
-              const SizedBox(height: 24),
-
-              // ── المظهر / Theme ────────────────────────────────
-              _sectionTitle(context, l10n.tr('theme')),
-              SwitchListTile(
-                title: Text(l10n.tr('darkMode')),
-                secondary: const Icon(Icons.dark_mode_outlined),
-                value: settings.isDarkMode,
-                onChanged: (bool value) => notifier.updateTheme(value),
-              ),
-              const SizedBox(height: 24),
-
-              // ── طريقة الحساب / Calculation method ─────────────
-              _sectionTitle(context, l10n.tr('calculationMethod')),
-              ...CalculationMethod.values.map(
-                (CalculationMethod method) => RadioListTile<CalculationMethod>(
-                  title: Text(l10n.tr(_methodKey(method))),
-                  value: method,
-                  groupValue: settings.method,
-                  onChanged: (CalculationMethod? value) {
-                    if (value != null) notifier.updateMethod(value);
-                  },
+              LuxurySectionTitle(
+                  title: l10n.tr('language'), icon: Icons.translate),
+              LuxuryPanel(
+                child: SegmentedButton<String>(
+                  segments: <ButtonSegment<String>>[
+                    ButtonSegment<String>(
+                      value: 'ar',
+                      label: Text(l10n.tr('arabic')),
+                    ),
+                    ButtonSegment<String>(
+                      value: 'en',
+                      label: Text(l10n.tr('english')),
+                    ),
+                  ],
+                  selected: <String>{settings.languageCode},
+                  onSelectionChanged: (Set<String> selection) =>
+                      notifier.updateLanguage(selection.first),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 22),
+
+              // ── المظهر / Theme ────────────────────────────────
+              LuxurySectionTitle(
+                  title: l10n.tr('theme'), icon: Icons.dark_mode_outlined),
+              LuxuryPanel(
+                padding: const EdgeInsets.all(4),
+                child: SwitchListTile(
+                  title: Text(l10n.tr('darkMode')),
+                  secondary: ShaderMask(
+                    shaderCallback: (Rect bounds) => const LinearGradient(
+                      colors: <Color>[Color(0xFFE8C96A), Color(0xFFB8912F)],
+                    ).createShader(bounds),
+                    child: const Icon(Icons.dark_mode_outlined,
+                        color: Colors.white),
+                  ),
+                  value: settings.isDarkMode,
+                  onChanged: (bool value) => notifier.updateTheme(value),
+                ),
+              ),
+              const SizedBox(height: 22),
+
+              // ── طريقة الحساب / Calculation method ─────────────
+              LuxurySectionTitle(
+                  title: l10n.tr('calculationMethod'),
+                  icon: Icons.calculate_outlined),
+              LuxuryPanel(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Column(
+                  children: CalculationMethod.values
+                      .map(
+                        (CalculationMethod method) => RadioListTile<
+                            CalculationMethod>(
+                          title: Text(l10n.tr(_methodKey(method))),
+                          dense: true,
+                          value: method,
+                          groupValue: settings.method,
+                          onChanged: (CalculationMethod? value) {
+                            if (value != null) notifier.updateMethod(value);
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+              const SizedBox(height: 22),
 
               // ── المذهب / Madhab ───────────────────────────────
-              _sectionTitle(context, l10n.tr('madhab')),
-              SegmentedButton<Madhab>(
-                segments: <ButtonSegment<Madhab>>[
-                  ButtonSegment<Madhab>(
-                    value: Madhab.shafi,
-                    label: Text(l10n.tr('shafi')),
-                  ),
-                  ButtonSegment<Madhab>(
-                    value: Madhab.hanafi,
-                    label: Text(l10n.tr('hanafi')),
-                  ),
-                ],
-                selected: <Madhab>{settings.madhab},
-                onSelectionChanged: (Set<Madhab> selection) =>
-                    notifier.updateMadhab(selection.first),
+              LuxurySectionTitle(
+                  title: l10n.tr('madhab'), icon: Icons.menu_book_outlined),
+              LuxuryPanel(
+                child: SegmentedButton<Madhab>(
+                  segments: <ButtonSegment<Madhab>>[
+                    ButtonSegment<Madhab>(
+                      value: Madhab.shafi,
+                      label: Text(l10n.tr('shafi')),
+                    ),
+                    ButtonSegment<Madhab>(
+                      value: Madhab.hanafi,
+                      label: Text(l10n.tr('hanafi')),
+                    ),
+                  ],
+                  selected: <Madhab>{settings.madhab},
+                  onSelectionChanged: (Set<Madhab> selection) =>
+                      notifier.updateMadhab(selection.first),
+                ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 22),
 
               // ── تنسيق الوقت / Time format ─────────────────────
-              _sectionTitle(context, l10n.tr('timeFormat')),
-              SwitchListTile(
-                title: Text(l10n.tr('format24')),
-                secondary: const Icon(Icons.access_time),
-                value: settings.use24HourFormat,
-                onChanged: (bool value) => notifier.updateTimeFormat(value),
+              LuxurySectionTitle(
+                  title: l10n.tr('timeFormat'), icon: Icons.access_time),
+              LuxuryPanel(
+                padding: const EdgeInsets.all(4),
+                child: SwitchListTile(
+                  title: Text(l10n.tr('format24')),
+                  secondary: ShaderMask(
+                    shaderCallback: (Rect bounds) => const LinearGradient(
+                      colors: <Color>[Color(0xFFE8C96A), Color(0xFFB8912F)],
+                    ).createShader(bounds),
+                    child: const Icon(Icons.access_time, color: Colors.white),
+                  ),
+                  value: settings.use24HourFormat,
+                  onChanged: (bool value) => notifier.updateTimeFormat(value),
+                ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 22),
 
               // ── فروق الإقامة / Iqamah offsets ─────────────────
-              _sectionTitle(context, l10n.tr('iqamahOffsets')),
-              ...<Prayer>[
-                Prayer.fajr,
-                Prayer.sunrise,
-                Prayer.dhuhr,
-                Prayer.asr,
-                Prayer.maghrib,
-                Prayer.isha,
-              ].map(
-                (Prayer prayer) => _IqamahOffsetRow(
-                  prayerKey: prayer.name,
-                  label: l10n.tr(prayer.name),
-                  value: settings.iqamahOffsets[prayer.name] ?? 15,
-                  onChanged: (int minutes) =>
-                      notifier.updateIqamahOffset(prayer.name, minutes),
+              LuxurySectionTitle(
+                  title: l10n.tr('iqamahOffsets'),
+                  icon: Icons.timelapse_outlined),
+              LuxuryPanel(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Column(
+                  children: <Prayer>[
+                    Prayer.fajr,
+                    Prayer.sunrise,
+                    Prayer.dhuhr,
+                    Prayer.asr,
+                    Prayer.maghrib,
+                    Prayer.isha,
+                  ]
+                      .map(
+                        (Prayer prayer) => _IqamahOffsetRow(
+                          prayerKey: prayer.name,
+                          label: l10n.tr(prayer.name),
+                          value: settings.iqamahOffsets[prayer.name] ?? 15,
+                          onChanged: (int minutes) => notifier
+                              .updateIqamahOffset(prayer.name, minutes),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
               const SizedBox(height: 32),
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _sectionTitle(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
       ),
     );
   }
@@ -203,7 +239,9 @@ class _IqamahOffsetRow extends StatelessWidget {
             child: Text(
               '$value',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
           IconButton(

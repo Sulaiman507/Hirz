@@ -1,5 +1,6 @@
-// شاشة اختيار المدن / City selection screen
-// بحث فوري + قائمة + نموذج إحداثيات يدوية
+// شاشة اختيار المدن الفاخرة / Luxury city selection screen
+// بحث بإطار ذهبي متوهج + بطاقات مدن بتدرجات راقية
+// Glowing gold search field + refined gradient city cards
 
 import 'dart:async';
 
@@ -7,9 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/theme/app_colors.dart';
 import '../../domain/entities/city.dart';
 import '../providers/city_providers.dart';
 import '../providers/settings_providers.dart';
+import '../widgets/luxury_components.dart';
 import '../widgets/manual_coordinates_form.dart';
 
 /// بحث + قائمة مدن + إدخال يدوي / Search + city list + manual entry
@@ -68,17 +71,11 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
       appBar: AppBar(title: Text(l10n.tr('citySelectionTitle'))),
       body: Column(
         children: <Widget>[
-          // حقل البحث / Search field
+          // حقل البحث الفاخر / luxury search field
           Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: l10n.tr('searchCity'),
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: LuxurySearchField(
+              hint: l10n.tr('searchCity'),
               onChanged: _onSearchChanged,
             ),
           ),
@@ -93,10 +90,10 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                   return Center(child: Text(l10n.tr('noResults')));
                 }
                 return ListView.builder(
-                  // نفس التمرير المرن الموحد / same unified elastic scroll
                   physics: const BouncingScrollPhysics(
                     decelerationRate: ScrollDecelerationRate.fast,
                   ),
+                  padding: const EdgeInsets.only(bottom: 88),
                   itemCount: cities.length,
                   itemBuilder: (BuildContext context, int index) {
                     final City city = cities[index];
@@ -105,13 +102,12 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                     final String country = languageCode == 'ar'
                         ? city.countryAr
                         : city.countryEn;
-                    return ListTile(
-                      title: Text(name),
-                      subtitle: Text(country),
-                      trailing: Text(
-                        'UTC${city.timezoneOffsetHours >= 0 ? '+' : ''}${city.timezoneOffsetHours}',
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
+                    return _LuxuryCityTile(
+                      name: name,
+                      country: country,
+                      offsetLabel:
+                          'UTC${city.timezoneOffsetHours >= 0 ? '+' : ''}${city.timezoneOffsetHours}',
+                      isCustom: city.isCustom,
                       onTap: () async {
                         await selectCity(ref, city);
                         if (context.mounted) Navigator.of(context).pop();
@@ -128,6 +124,118 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
         onPressed: _showManualForm,
         icon: const Icon(Icons.edit_location_alt_outlined),
         label: Text(l10n.tr('manualCoordinates')),
+      ),
+    );
+  }
+}
+
+/// بطاقة مدينة فاخرة / Luxury city tile
+class _LuxuryCityTile extends StatelessWidget {
+  final String name;
+  final String country;
+  final String offsetLabel;
+  final bool isCustom;
+  final VoidCallback onTap;
+
+  const _LuxuryCityTile({
+    required this.name,
+    required this.country,
+    required this.offsetLabel,
+    required this.isCustom,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.07)
+                  : Colors.white.withValues(alpha: 0.62),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: AppColors.goldBright
+                    .withValues(alpha: isCustom ? 0.55 : 0.28),
+                width: isCustom ? 1.4 : 1,
+              ),
+              // تدرج يضيء يسار البطاقة / gradient lighting the tile start
+              gradient: LinearGradient(
+                begin: AlignmentDirectional.centerStart,
+                end: AlignmentDirectional.centerEnd,
+                colors: <Color>[
+                  AppColors.goldBright.withValues(alpha: isDark ? 0.10 : 0.14),
+                  Colors.white.withValues(alpha: 0.0),
+                ],
+              ),
+            ),
+            child: Row(
+              children: <Widget>[
+                Icon(
+                  isCustom
+                      ? Icons.my_location_outlined
+                      : Icons.location_city_outlined,
+                  size: 20,
+                  color: AppColors.goldBright,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        country,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.55),
+                                ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: AppColors.goldBright.withValues(alpha: 0.14),
+                  ),
+                  child: Text(
+                    offsetLabel,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: AppColors.goldBright,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
