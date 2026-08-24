@@ -67,10 +67,10 @@ void main() {
       expect(cur?.prayer, Prayer.isha);
     });
 
-    test('قبل الفجر → null', () {
+    test('قبل الفجر → العشاء (آخر صلاة أمس) — الشارة لا تختفي', () {
       final PrayerTime? cur =
           _day(day).currentPrayer(DateTime(day.year, day.month, day.day, 3, 0));
-      expect(cur, isNull);
+      expect(cur?.prayer, Prayer.isha);
     });
   });
 
