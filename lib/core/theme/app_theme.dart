@@ -45,7 +45,6 @@ abstract class AppTheme {
 
   static ThemeData _base(ColorScheme scheme, {String fontFamily = 'Amiri', double fontThickness = 1.0}) {
     final bool isDark = scheme.brightness == Brightness.dark;
-    final double baseWeight = fontThickness * 900;
 
     return ThemeData(
       useMaterial3: true,
