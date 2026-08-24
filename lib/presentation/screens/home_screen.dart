@@ -77,24 +77,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
 
     return Scaffold(
-      // الخلفية من الثيم مباشرة (سطح داكن/فاتح) — بلا صور ولا Stack
-      // background from theme surface directly — no image, no stack
+      // شاشة كاملة بدون شريط علوي / fullscreen without top bar
       backgroundColor: null,
-      appBar: AppBar(
-        // نفس لون السطح من الثيم / same theme surface color
-        backgroundColor: null,
-        scrolledUnderElevation: 0,
-        title: Text(l10n.tr('appName')),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: l10n.tr('settingsTitle'),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
-            ),
-          ),
-        ],
-      ),
       body: SafeArea(
         child: ListView(
           // تمرير iOS المرن — انزلاق ناعم وارتداد مطاطي عند الأطراف
@@ -104,13 +88,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           padding: const EdgeInsets.all(16),
           children: <Widget>[
-            // التاريخ الهجري والميلادي — من تاريخ المواقيت المحسوبة
-            // (مصدر حقيقة واحد يتبع تحديث منتصف الليل تلقائياً)
-            // Date header — from computed times date (single source of
-            // truth, follows midnight refresh automatically)
-            DateHeader(
-              date: timesAsync.valueOrNull?.date ?? DateTime.now(),
-              languageCode: settings.languageCode,
+            // صف التاريخ + زر الإعدادات بجانبه / date row + settings beside it
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: DateHeader(
+                    date: timesAsync.valueOrNull?.date ?? DateTime.now(),
+                    languageCode: settings.languageCode,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.settings_outlined),
+                  tooltip: l10n.tr('settingsTitle'),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                        builder: (_) => const SettingsScreen()),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             // زر المدينة / City button
