@@ -26,7 +26,7 @@ abstract class AppTheme {
   }
 
   /// الوضع الداكن / Dark theme
-  static ThemeData dark() {
+  static ThemeData dark({String fontFamily = 'Amiri', double fontThickness = 1.0}) {
     final ColorScheme scheme = ColorScheme.fromSeed(
       seedColor: AppColors.darkBackground,
       brightness: Brightness.dark,
@@ -40,19 +40,18 @@ abstract class AppTheme {
       // text = light-mode background color (inverted pair)
       onSurface: AppColors.textOnDark,
     );
-    return _base(scheme);
+    return _base(scheme, fontFamily: fontFamily, fontThickness: fontThickness);
   }
 
   static ThemeData _base(ColorScheme scheme, {String fontFamily = 'Amiri', double fontThickness = 1.0}) {
     final bool isDark = scheme.brightness == Brightness.dark;
+    final double baseWeight = fontThickness * 900;
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
-      // الخط يتبع الإعدادات / font follows settings
       fontFamily: fontFamily,
-      fontVariations: <FontVariation>[FontVariation.weight(fontThickness * 900)],
       appBarTheme: AppBarTheme(
         backgroundColor:
             isDark ? Colors.transparent : scheme.surface.withValues(alpha: 0.85),
@@ -62,9 +61,23 @@ abstract class AppTheme {
         titleTextStyle: TextStyle(
           color: scheme.onSurface,
           fontSize: 20,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w900,
           letterSpacing: isDark ? 0.5 : 0,
         ),
+      ),
+      textTheme: TextTheme(
+        headlineLarge: const TextStyle(fontWeight: FontWeight.w900, fontSize: 32),
+        headlineMedium: const TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
+        headlineSmall: const TextStyle(fontWeight: FontWeight.w900, fontSize: 24),
+        titleLarge: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
+        titleMedium: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+        titleSmall: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+        bodyLarge: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+        bodyMedium: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+        bodySmall: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+        labelLarge: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+        labelMedium: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+        labelSmall: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11),
       ),
       cardTheme: CardThemeData(
         color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
