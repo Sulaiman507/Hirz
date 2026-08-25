@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/app_settings.dart';
-import '../../domain/entities/prayer.dart';
-import '../../l10n/app_localizations.dart';
+import '../../domain/entities/prayer_time.dart';
+import '../../core/l10n/app_localizations.dart';
 import '../providers/settings_providers.dart';
 import '../widgets/luxury_components.dart';
 
@@ -109,7 +109,7 @@ class SettingsScreen extends ConsumerWidget {
                             .map(
                               (CalculationMethod method) => RadioListTile<
                                   CalculationMethod>(
-                                title: Text(l10n.tr(_methodKey(method))),
+                                title: Text(l10n.tr('method${method.jsonId.substring(0,1).toUpperCase()}${method.jsonId.substring(1)}')),
                                 dense: true,
                                 value: method,
                                 groupValue: settings.method,
