@@ -74,7 +74,14 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
         children: <Widget>[
           // حقل البحث الفاخر / luxury search field
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            // SafeArea يدوية: ارتفاع شريط الحالة + التنفس الأصلي
+            // Manual SafeArea: status-bar height + original breathing room
+            padding: EdgeInsets.fromLTRB(
+              16,
+              MediaQuery.paddingOf(context).top + 12,
+              16,
+              8,
+            ),
             child: LuxurySearchField(
               hint: l10n.tr('searchCity'),
               onChanged: _onSearchChanged,

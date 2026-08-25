@@ -31,7 +31,14 @@ class SettingsScreen extends ConsumerWidget {
             children: <Widget>[
               // صف العنوان + زر الإغلاق
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 8, 0),
+                // SafeArea يدوية: ارتفاع شريط الحالة + التنفس الأصلي
+                // Manual SafeArea: status-bar height + original breathing room
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  MediaQuery.paddingOf(context).top + 12,
+                  8,
+                  0,
+                ),
                 child: Row(
                   children: <Widget>[
                     Expanded(
