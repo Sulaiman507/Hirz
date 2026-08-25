@@ -43,12 +43,6 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
     });
   }
 
-  /// مسح البحث فوراً / clear the search immediately
-  void _clearSearch() {
-    _searchController.clear();
-    ref.read(citySearchQueryProvider.notifier).state = '';
-  }
-
   void _showManualForm() {
     showDialog<void>(
       context: context,
@@ -59,7 +53,7 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
             onSubmit: (City city) async {
               Navigator.of(dialogContext).pop();
               await selectCity(ref, city);
-              if (context.mounted) Navigator.of(context).pop();
+              if (mounted) Navigator.of(context).pop();
             },
           ),
         ),
@@ -203,7 +197,7 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                       showCountry: false,
                       onTap: () async {
                         await selectCity(ref, sc.city);
-                        if (context.mounted) Navigator.of(context).pop();
+                        if (mounted) Navigator.of(context).pop();
                       },
                     );
                   },
