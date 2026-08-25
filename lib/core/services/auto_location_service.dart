@@ -90,8 +90,11 @@ class AutoLocationService {
       );
       if (marks.isEmpty) return null;
       final Placemark m = marks.first;
-      final String city = m.locality.isNotEmpty ? m.locality : m.adminArea;
-      final String country = m.country;
+      // في geocoding 3.0 كل الحقول nullable / all fields nullable in v3
+      final String city = (m.locality?.isNotEmpty ?? false)
+          ? m.locality!
+          : (m.administrativeArea ?? '');
+      final String country = m.country ?? '';
       if (city.isEmpty && country.isEmpty) return null;
       return country.isEmpty ? city : '$city، $country';
     } catch (_) {
