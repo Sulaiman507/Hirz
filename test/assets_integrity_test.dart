@@ -55,6 +55,7 @@ void main() {
         'settingsTitle', 'manualCoordinates',
         'adhanTitle', 'adhanEnable', 'adhanTest',
         'adhanTestRegular', 'adhanTestFajr',
+        'locateMe', 'locatedTo', 'locationFailed',
       ];
       for (final String key in requiredKeys) {
         expect(ar.keys, contains(key), reason: 'missing ar key=$key');

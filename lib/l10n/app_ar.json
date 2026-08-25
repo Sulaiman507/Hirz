@@ -104,5 +104,8 @@
  "adhanEnable": "تشغيل الأذان عند وقت الصلاة",
  "adhanTest": "تجربة صوت الأذان",
  "adhanTestRegular": "عادي",
- "adhanTestFajr": "فجر"
+ "adhanTestFajr": "فجر",
+ "locateMe": "تحديد موقعي تلقائياً",
+ "locatedTo": "تم التحديد:",
+ "locationFailed": "تعذر تحديد الموقع — تأكد من تفعيل خدمة الموقع والإذن"
 }

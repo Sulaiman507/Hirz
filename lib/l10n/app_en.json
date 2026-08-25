@@ -104,5 +104,8 @@
  "adhanEnable": "Play the adhan at prayer time",
  "adhanTest": "Test adhan sound",
  "adhanTestRegular": "Regular",
- "adhanTestFajr": "Fajr"
+ "adhanTestFajr": "Fajr",
+ "locateMe": "Auto-locate my city",
+ "locatedTo": "Located to",
+ "locationFailed": "Could not get location — check GPS service and permission"
 }

@@ -6,8 +6,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/services/auto_location_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format_utils.dart';
 import '../../domain/entities/city.dart';
@@ -28,6 +30,7 @@ class CitySelectionScreen extends ConsumerStatefulWidget {
 class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
   Timer? _debounce;
   final TextEditingController _searchController = TextEditingController();
+  bool _locating = false;
 
   @override
   void dispose() {
@@ -60,6 +63,38 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
         ),
       ),
     );
+  }
+
+  /// تحديد الموقع تلقائياً واختيار أقرب مدينة / auto-locate → nearest bundled city
+  Future<void> _locateMe(AppLocalizations l10n, String languageCode) async {
+    if (_locating) return;
+    setState(() => _locating = true);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final NavigatorState navigator = Navigator.of(context);
+    try {
+      const AutoLocationService service = AutoLocationService();
+      final Position position = await service.getCurrentPosition();
+      final List<City> cities =
+          await ref.read(getAllCitiesUseCaseProvider.future);
+      final LocationResult result = service.nearestCity(cities, position);
+      await selectCity(ref, result.city);
+      final String cityName =
+          languageCode == 'ar' ? result.city.nameAr : result.city.nameEn;
+      messenger.showSnackBar(
+        SnackBar(
+          content:
+              Text('${l10n.tr('locatedTo')} $cityName'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      if (mounted) navigator.pop();
+    } on Exception {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.tr('locationFailed'))),
+      );
+    } finally {
+      if (mounted) setState(() => _locating = false);
+    }
   }
 
   @override
@@ -95,6 +130,18 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                     controller: _searchController,
                     onChanged: _onSearchChanged,
                   ),
+                ),
+                // تحديد الموقع تلقائياً / auto-locate button
+                IconButton(
+                  tooltip: l10n.tr('locateMe'),
+                  icon: _locating
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.my_location_rounded),
+                  onPressed: () => _locateMe(l10n, languageCode),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close_rounded),

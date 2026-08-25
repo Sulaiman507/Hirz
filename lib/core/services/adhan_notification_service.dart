@@ -28,9 +28,10 @@ class AdhanNotificationService {
   bool _initialized = false;
 
   // معرفات قناتي الأذان — الصوت مربوط بالقناة نفسها
-  // Channel ids — the adhan audio is bound to the channel itself
-  static const String channelRegular = 'adhan_regular';
-  static const String channelFajr = 'adhan_fajr';
+  // v2: أندرويد يخزّن القنوات القديمة ولا يحدّثها — المعرف الجديد يفرض الإعدادات الصحيحة
+  // v2 suffix defeats cached broken channels from the first install
+  static const String channelRegular = 'adhan_regular_v2';
+  static const String channelFajr = 'adhan_fajr_v2';
 
   Future<void> init() async {
     if (_initialized) return;
@@ -59,6 +60,11 @@ class AdhanNotificationService {
       importance: Importance.max,
       playSound: true,
       sound: RawResourceAndroidNotificationSound('adhan_regular'),
+      // usage=alarm: يلتزم بمستوى صوت المنبه ويتجاوز كتم الوسائط
+      audioAttributes: AudioAttributes(
+        usage: AudioUsage.alarm,
+        contentType: AudioContentType.music,
+      ),
       enableVibration: true,
     );
     const AndroidNotificationChannel fajr = AndroidNotificationChannel(
@@ -68,6 +74,10 @@ class AdhanNotificationService {
       importance: Importance.max,
       playSound: true,
       sound: RawResourceAndroidNotificationSound('adhan_fajr'),
+      audioAttributes: AudioAttributes(
+        usage: AudioUsage.alarm,
+        contentType: AudioContentType.music,
+      ),
       enableVibration: true,
     );
     await android.createNotificationChannel(regular);
@@ -99,6 +109,14 @@ class AdhanNotificationService {
             importance: Importance.max,
             priority: Priority.max,
             category: AndroidNotificationCategory.alarm,
+            // صوت في الإشعار نفسه كطبقة ثانية فوق إعداد القناة
+            sound: RawResourceAndroidNotificationSound(
+              isFajr ? 'adhan_fajr' : 'adhan_regular',
+            ),
+            audioAttributes: AudioAttributes(
+              usage: AudioUsage.alarm,
+              contentType: AudioContentType.music,
+            ),
             fullScreenIntent: true,
           ),
         ),
@@ -124,6 +142,13 @@ class AdhanNotificationService {
           importance: Importance.max,
           priority: Priority.max,
           category: AndroidNotificationCategory.alarm,
+          sound: RawResourceAndroidNotificationSound(
+            fajr ? 'adhan_fajr' : 'adhan_regular',
+          ),
+          audioAttributes: AudioAttributes(
+            usage: AudioUsage.alarm,
+            contentType: AudioContentType.music,
+          ),
           fullScreenIntent: true,
         ),
       ),
