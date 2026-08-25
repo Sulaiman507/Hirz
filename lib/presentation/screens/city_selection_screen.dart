@@ -13,7 +13,6 @@ import '../../core/services/auto_location_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format_utils.dart';
 import '../../domain/entities/city.dart';
-import '../providers/app_providers.dart';
 import '../providers/city_providers.dart';
 import '../providers/settings_providers.dart';
 import '../widgets/luxury_components.dart';
@@ -245,8 +244,9 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                       isCustom: sc.city.isCustom,
                       showCountry: false,
                       onTap: () async {
+                        final NavigatorState nav = Navigator.of(context);
                         await selectCity(ref, sc.city);
-                        if (mounted) Navigator.of(context).pop();
+                        if (mounted) nav.pop();
                       },
                     );
                   },

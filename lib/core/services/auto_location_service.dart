@@ -40,13 +40,11 @@ class AutoLocationService {
     }
     // آخر موضع معروف سريعاً ثم تحديد دقيق / cached fix first, then precise
     try {
-      final Position? last =
-          await Geolocator.getLastKnownPosition();
+      final Position? last = await Geolocator.getLastKnownPosition();
       if (last != null) {
-        return Geolocator.getCurrentPosition(
+        return await Geolocator.getCurrentPosition(
           locationSettings:
               const LocationSettings(accuracy: LocationAccuracy.low),
-          // لا تنتظر الدقة العالية كثيراً
         ).timeout(const Duration(seconds: 12), onTimeout: () => last);
       }
     } catch (_) {
