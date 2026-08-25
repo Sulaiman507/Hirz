@@ -54,6 +54,98 @@ def copy_audio() -> None:
 DESUGAR_VERSION = '2.1.4'
 
 
+def patch_root_subprojects_floor() -> None:
+    """فرض حد أدنى compileSdk=36 على كل موديولات Android (بما فيها plugins).
+
+    Force a compileSdk floor of 36 across all Android subprojects (plugins).
+    Flutter's template root build file may not exist as .kts — handle both.
+    """
+    for candidate in (
+        'android/build.gradle.kts',
+        'android/build.gradle',
+    ):
+        path = os.path.join(SCAFFOLD, candidate)
+        if not os.path.exists(path):
+            print('root floor:', candidate, 'not found, skipping')
+            continue
+        with open(path, encoding='utf-8') as f:
+            content = f.read()
+        if 'COMPILE_SDK_FLOOR' in content:
+            print('root floor: already applied')
+            return
+        kts = candidate.endswith('.kts')
+        if kts:
+            block = '''
+// COMPILE_SDK_FLOOR: raise any subproject below the floor (plugins included)
+subprojects {
+    afterEvaluate {
+        if (project.hasProperty("android")) {
+            val androidExt = project.extensions.findByName("android")
+            if (androidExt is com.android.build.gradle.BaseExtension) {
+                if (androidExt.compileSdkVersion != null && androidExt.compileSdkVersion!!.split("-").last().toIntOrNull()?.let { it < 36 } == true) {
+                    androidExt.compileSdkVersion(36)
+                }
+            }
+        }
+    }
+}
+'''
+        else:
+            block = '''
+// COMPILE_SDK_FLOOR: raise any subproject below the floor (plugins included)
+subprojects { proj ->
+    proj.afterEvaluate {
+        if (proj.hasProperty("android")) {
+            def androidExt = proj.android
+            if (androidExt.compileSdkVersion != null) {
+                def m = androidExt.compileSdkVersion =~ /(\\d+)$/
+                if (m.find() && (m.group(1) as int) < 36) {
+                    androidExt.compileSdkVersion 36
+                }
+            }
+        }
+    }
+}
+'''
+        content += block
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print('root floor: applied to', candidate)
+        return
+    # لا يوجد ملف root — أنشئ .kts بسيطاً مع الإعداد المطلوب
+    # No root file — create a minimal .kts with the floor block
+    path = os.path.join(SCAFFOLD, 'android/build.gradle.kts')
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(
+            '// COMPILE_SDK_FLOOR generated\n'
+            'allprojects {\n'
+            '    repositories {\n'
+            '        google()\n'
+            '        mavenCentral()\n'
+            '    }\n'
+            '}\n'
+        )
+        f.write('''
+subprojects {
+    afterEvaluate {
+        if (project.hasProperty("android")) {
+            val androidExt = project.extensions.findByName("android")
+            if (androidExt is com.android.build.gradle.BaseExtension) {
+                val current = androidExt.compileSdkVersion
+                if (current != null) {
+                    val num = current.substringAfterLast("-").toIntOrNull()
+                    if (num != null && num < 36) {
+                        androidExt.compileSdkVersion(36)
+                    }
+                }
+            }
+        }
+    }
+}
+''')
+    print('root floor: created new build.gradle.kts')
+
+
 def patch_gradle_desugaring() -> None:
     for candidate in (
         'android/app/build.gradle',
@@ -134,3 +226,4 @@ if __name__ == '__main__':
     patch_manifest()
     copy_audio()
     patch_gradle_desugaring()
+    patch_root_subprojects_floor()
