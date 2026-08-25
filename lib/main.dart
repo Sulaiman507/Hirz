@@ -28,31 +28,30 @@ class HirzApp extends ConsumerWidget {
       loading: () => _splash(),
       error: (Object error, StackTrace stack) => _splash(),
       data: (AppSettings settings) {
-        final ThemeData theme =
-            settings.isDarkMode ? AppTheme.dark(fontFamily: settings.fontFamily, fontThickness: settings.fontThickness) : AppTheme.light(fontFamily: settings.fontFamily, fontThickness: settings.fontThickness);
-
-        // AnimatedTheme لانتقال سلس بين الفاتح والداكن
-        // AnimatedTheme for smooth light/dark transition
-        return AnimatedTheme(
-          data: theme,
-          duration: const Duration(milliseconds: 350),
-          child: MaterialApp(
-            title: 'حِرز',
-            debugShowCheckedModeBanner: false,
-            locale: Locale(settings.languageCode),
-            supportedLocales: const <Locale>[Locale('ar'), Locale('en')],
-            localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            theme: AppTheme.light(),
-            darkTheme: AppTheme.dark(),
-            themeMode:
-                settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            home: const HomeScreen(),
+        // الخط والسماكة من الإعدادات تُمرَّر فعلياً إلى MaterialApp
+        // Font family + thickness from settings actually reach MaterialApp
+        // (MaterialApp يتحرك بين الفاتح والداكن داخلياً — لا حاجة لـ AnimatedTheme)
+        return MaterialApp(
+          title: 'حِرز',
+          debugShowCheckedModeBanner: false,
+          locale: Locale(settings.languageCode),
+          supportedLocales: const <Locale>[Locale('ar'), Locale('en')],
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          theme: AppTheme.light(
+            fontFamily: settings.fontFamily,
+            fontThickness: settings.fontThickness,
           ),
+          darkTheme: AppTheme.dark(
+            fontFamily: settings.fontFamily,
+            fontThickness: settings.fontThickness,
+          ),
+          themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          home: const HomeScreen(),
         );
       },
     );

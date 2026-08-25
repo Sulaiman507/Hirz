@@ -45,6 +45,9 @@ abstract class AppTheme {
 
   static ThemeData _base(ColorScheme scheme, {String fontFamily = 'Amiri', double fontThickness = 1.0}) {
     final bool isDark = scheme.brightness == Brightness.dark;
+    // تطبيق مضاعف السماكة على كل الأوزان — بدون FontVariation (متوافق مع CI)
+    // Apply thickness multiplier to every weight — no FontVariation (CI-safe)
+    FontWeight thickened(FontWeight base) => _scaleWeight(base, fontThickness);
 
     return ThemeData(
       useMaterial3: true,
@@ -60,23 +63,23 @@ abstract class AppTheme {
         titleTextStyle: TextStyle(
           color: scheme.onSurface,
           fontSize: 20,
-          fontWeight: FontWeight.w900,
+          fontWeight: thickened(FontWeight.w900),
           letterSpacing: isDark ? 0.5 : 0,
         ),
       ),
       textTheme: TextTheme(
-        headlineLarge: TextStyle(fontWeight: FontWeight.w900, fontSize: 32, fontFamily: fontFamily),
-        headlineMedium: TextStyle(fontWeight: FontWeight.w900, fontSize: 28, fontFamily: fontFamily),
-        headlineSmall: TextStyle(fontWeight: FontWeight.w900, fontSize: 24, fontFamily: fontFamily),
-        titleLarge: TextStyle(fontWeight: FontWeight.w900, fontSize: 22, fontFamily: fontFamily),
-        titleMedium: TextStyle(fontWeight: FontWeight.w700, fontSize: 18, fontFamily: fontFamily),
-        titleSmall: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, fontFamily: fontFamily),
-        bodyLarge: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, fontFamily: fontFamily),
-        bodyMedium: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, fontFamily: fontFamily),
-        bodySmall: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, fontFamily: fontFamily),
-        labelLarge: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, fontFamily: fontFamily),
-        labelMedium: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, fontFamily: fontFamily),
-        labelSmall: TextStyle(fontWeight: FontWeight.w700, fontSize: 11, fontFamily: fontFamily),
+        headlineLarge: TextStyle(fontWeight: thickened(FontWeight.w900), fontSize: 32, fontFamily: fontFamily),
+        headlineMedium: TextStyle(fontWeight: thickened(FontWeight.w900), fontSize: 28, fontFamily: fontFamily),
+        headlineSmall: TextStyle(fontWeight: thickened(FontWeight.w900), fontSize: 24, fontFamily: fontFamily),
+        titleLarge: TextStyle(fontWeight: thickened(FontWeight.w900), fontSize: 22, fontFamily: fontFamily),
+        titleMedium: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 18, fontFamily: fontFamily),
+        titleSmall: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 16, fontFamily: fontFamily),
+        bodyLarge: TextStyle(fontWeight: thickened(FontWeight.w600), fontSize: 16, fontFamily: fontFamily),
+        bodyMedium: TextStyle(fontWeight: thickened(FontWeight.w600), fontSize: 14, fontFamily: fontFamily),
+        bodySmall: TextStyle(fontWeight: thickened(FontWeight.w600), fontSize: 12, fontFamily: fontFamily),
+        labelLarge: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 14, fontFamily: fontFamily),
+        labelMedium: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 12, fontFamily: fontFamily),
+        labelSmall: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 11, fontFamily: fontFamily),
       ),
       cardTheme: CardThemeData(
         color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
@@ -138,5 +141,14 @@ abstract class AppTheme {
         },
       ),
     );
+  }
+
+  /// يضرب الوزن القاعدي بمضاعف السماكة ويقيّده بين w100 و w900
+  /// Scales a base font weight by the thickness multiplier, clamped to w100–w900
+  static FontWeight _scaleWeight(FontWeight base, double thickness) {
+    final int step = ((base.value * thickness) / 100).round();
+    if (step < 1) return FontWeight.w100;
+    if (step > 9) return FontWeight.w900;
+    return FontWeight.values[step - 1];
   }
 }

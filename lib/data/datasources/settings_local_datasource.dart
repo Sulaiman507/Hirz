@@ -16,6 +16,8 @@ abstract class SettingsKeys {
   static const String iqamahOffsets = 'iqamah_offsets';
   static const String savedCityId = 'saved_city_id';
   static const String savedCustomCity = 'saved_custom_city';
+  static const String fontFamily = 'font_family';
+  static const String fontThickness = 'font_thickness';
 }
 
 /// مصدر الإعدادات بأنواع صريحة — لا dynamic عائم
@@ -50,6 +52,17 @@ class SettingsLocalDatasource {
 
     final Map<String, int> iqamahOffsets = _loadIqamahOffsets();
 
+    final String fontFamilyRaw =
+        _prefs.getString(SettingsKeys.fontFamily) ?? 'Amiri';
+    // قيمة غير معروفة (خطأ قديم) → ارجع لافتراضي بدل انفجار
+    final String fontFamily =
+        (fontFamilyRaw == 'Amiri' || fontFamilyRaw == 'Cairo')
+            ? fontFamilyRaw
+            : 'Amiri';
+    final double fontThicknessRaw =
+        _prefs.getDouble(SettingsKeys.fontThickness) ?? 1.0;
+    final double fontThickness = fontThicknessRaw.clamp(0.5, 2.0);
+
     return AppSettings(
       languageCode: languageCode,
       isDarkMode: isDarkMode,
@@ -57,6 +70,8 @@ class SettingsLocalDatasource {
       madhab: madhab,
       use24HourFormat: use24Hour,
       iqamahOffsets: iqamahOffsets,
+      fontFamily: fontFamily,
+      fontThickness: fontThickness,
     );
   }
 
@@ -71,6 +86,8 @@ class SettingsLocalDatasource {
       SettingsKeys.iqamahOffsets,
       jsonEncode(settings.iqamahOffsets),
     );
+    await _prefs.setString(SettingsKeys.fontFamily, settings.fontFamily);
+    await _prefs.setDouble(SettingsKeys.fontThickness, settings.fontThickness);
   }
 
   Map<String, int> _loadIqamahOffsets() {
