@@ -1,6 +1,6 @@
 // شاشة اختيار المدن الفاخرة / Luxury city selection screen
-// بحث بإطار ذهبي متوهج + بطاقات مدن بتدرجات راقية
-// Glowing gold search field + refined gradient city cards
+// بحث بإطار ذهبي متوهج + قائمة مجمعة حسب الدولة بعدّاد نتائج
+// Glowing gold search field + country-grouped list with results counter
 
 import 'dart:async';
 
@@ -26,10 +26,12 @@ class CitySelectionScreen extends ConsumerStatefulWidget {
 
 class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
   Timer? _debounce;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose() {
     _debounce?.cancel();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -39,6 +41,12 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
     _debounce = Timer(const Duration(milliseconds: 250), () {
       ref.read(citySearchQueryProvider.notifier).state = value;
     });
+  }
+
+  /// مسح البحث فوراً / clear the search immediately
+  void _clearSearch() {
+    _searchController.clear();
+    ref.read(citySearchQueryProvider.notifier).state = '';
   }
 
   void _showManualForm() {
@@ -66,28 +74,58 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
         ref.watch(filteredCitiesProvider);
     final String languageCode =
         ref.watch(settingsProvider).valueOrNull?.languageCode ?? 'ar';
+    final int filteredCount =
+        ref.watch(filteredCitiesProvider).valueOrNull?.length ?? 0;
 
     return Scaffold(
       // شاشة كاملة بدون شريط علوي / fullscreen without top bar
       backgroundColor: null,
       body: Column(
         children: <Widget>[
-          // حقل البحث الفاخر / luxury search field
+          // حقل البحث + زر الإغلاق / search field + close button
           Padding(
             // SafeArea يدوية: ارتفاع شريط الحالة + التنفس الأصلي
             // Manual SafeArea: status-bar height + original breathing room
             padding: EdgeInsets.fromLTRB(
               16,
               MediaQuery.paddingOf(context).top + 12,
-              16,
+              8,
               8,
             ),
-            child: LuxurySearchField(
-              hint: l10n.tr('searchCity'),
-              onChanged: _onSearchChanged,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: LuxurySearchField(
+                    hint: l10n.tr('searchCity'),
+                    controller: _searchController,
+                    onChanged: _onSearchChanged,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  tooltip: l10n.tr('close'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
             ),
           ),
-          // القائمة / List
+          // عدّاد النتائج / results counter
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 2, 20, 4),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                l10n.tr('resultsCount').replaceAll('{n}', '$filteredCount'),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.55),
+                    ),
+              ),
+            ),
+          ),
+          // القائمة المجمّعة حسب الدولة / list grouped by country
           Expanded(
             child: citiesAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
@@ -95,29 +133,76 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                   Center(child: Text(l10n.tr('error'))),
               data: (List<City> cities) {
                 if (cities.isEmpty) {
-                  return Center(child: Text(l10n.tr('noResults')));
+                  // حالة فراغ مصممة / designed empty state
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(
+                          Icons.search_off_rounded,
+                          size: 56,
+                          color: AppColors.goldBright.withValues(alpha: 0.55),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          l10n.tr('noResults'),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                      ],
+                    ),
+                  );
                 }
+
+                // ترتيب حسب الدولة ثم المدينة / sort by country then city
+                final List<_SortedCity> sorted = cities
+                    .map(
+                      (City c) => _SortedCity(
+                        city: c,
+                        label: languageCode == 'ar' ? c.nameAr : c.nameEn,
+                        countryLabel:
+                            languageCode == 'ar' ? c.countryAr : c.countryEn,
+                      ),
+                    )
+                    .toList()
+                  ..sort((_SortedCity a, _SortedCity b) {
+                    final int byCountry =
+                        a.countryLabel.compareTo(b.countryLabel);
+                    if (byCountry != 0) return byCountry;
+                    return a.label.compareTo(b.label);
+                  });
+
+                // تجميع متتالي: عنوان لكل دولة يتبعه بطاقاتها
+                // Contiguous grouping: a header per country followed by its tiles
+                final List<Object> rows = <Object>[]; // String عنوان | بطاقة
+                String? currentGroup;
+                for (final _SortedCity c in sorted) {
+                  if (currentGroup != c.countryLabel) {
+                    rows.add(c.countryLabel);
+                    currentGroup = c.countryLabel;
+                  }
+                  rows.add(c);
+                }
+
                 return ListView.builder(
                   physics: const BouncingScrollPhysics(
                     decelerationRate: ScrollDecelerationRate.fast,
                   ),
-                  padding: const EdgeInsets.only(bottom: 88),
-                  itemCount: cities.length,
+                  padding: const EdgeInsets.only(top: 4, bottom: 88),
+                  itemCount: rows.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final City city = cities[index];
-                    final String name =
-                        languageCode == 'ar' ? city.nameAr : city.nameEn;
-                    final String country = languageCode == 'ar'
-                        ? city.countryAr
-                        : city.countryEn;
+                    final Object row = rows[index];
+                    if (row is String) {
+                      return _LuxurySectionHeader(title: row);
+                    }
+                    final _SortedCity sc = row as _SortedCity;
                     return _LuxuryCityTile(
-                      name: name,
-                      country: country,
-                      offsetLabel:
-                          'UTC${city.timezoneOffsetHours >= 0 ? '+' : ''}${city.timezoneOffsetHours}',
-                      isCustom: city.isCustom,
+                      name: sc.label,
+                      country: sc.countryLabel,
+                      offsetLabel: _formatUtc(sc.city.timezoneOffsetHours),
+                      isCustom: sc.city.isCustom,
+                      showCountry: false,
                       onTap: () async {
-                        await selectCity(ref, city);
+                        await selectCity(ref, sc.city);
                         if (context.mounted) Navigator.of(context).pop();
                       },
                     );
@@ -137,6 +222,63 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
   }
 }
 
+/// تنسيق إزاحة المنطقة الزمنية بدون أصفار زائدة / tidy UTC label, no trailing zeros
+String _formatUtc(double hours) {
+  final double rounded = double.parse(hours.toStringAsFixed(1));
+  final bool negative = rounded < 0;
+  final int whole = rounded.abs().truncate();
+  final int tenths = ((rounded.abs() - whole) * 10).round();
+  final String frac = tenths == 0 ? '' : '.$tenths';
+  return 'UTC${negative ? '-' : '+'}$whole$frac';
+}
+
+/// عنوان قسم دولة بشريط ذهبي / country section header with a gold bar
+class _LuxurySectionHeader extends StatelessWidget {
+  final String title;
+
+  const _LuxurySectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 4,
+            height: 14,
+            decoration: BoxDecoration(
+              color: AppColors.goldBright,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: AppColors.goldBright,
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// مدينة مرتبة مع تسميات معروضة حسب اللغة / sorted city with localized labels
+class _SortedCity {
+  final City city;
+  final String label;
+  final String countryLabel;
+
+  const _SortedCity({
+    required this.city,
+    required this.label,
+    required this.countryLabel,
+  });
+}
+
 /// بطاقة مدينة فاخرة / Luxury city tile
 class _LuxuryCityTile extends StatelessWidget {
   final String name;
@@ -144,6 +286,7 @@ class _LuxuryCityTile extends StatelessWidget {
   final String offsetLabel;
   final bool isCustom;
   final VoidCallback onTap;
+  final bool showCountry;
 
   const _LuxuryCityTile({
     required this.name,
@@ -151,6 +294,7 @@ class _LuxuryCityTile extends StatelessWidget {
     required this.offsetLabel,
     required this.isCustom,
     required this.onTap,
+    this.showCountry = true,
   });
 
   @override
@@ -210,18 +354,19 @@ class _LuxuryCityTile extends StatelessWidget {
                             .titleSmall
                             ?.copyWith(fontWeight: FontWeight.w600),
                       ),
-                      Text(
-                        country,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            Theme.of(context).textTheme.labelSmall?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withValues(alpha: 0.55),
-                                ),
-                      ),
+                      if (showCountry)
+                        Text(
+                          country,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.labelSmall?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.55),
+                                  ),
+                        ),
                     ],
                   ),
                 ),

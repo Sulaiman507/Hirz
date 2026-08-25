@@ -97,5 +97,6 @@
  "fontThin": "أنحف",
  "fontThick": "أسمن",
  "fontFamily": "نوع الخط",
- "fontThickness": "سماكة الخط"
+ "fontThickness": "سماكة الخط",
+ "resultsCount": "{n} نتيجة"
 }

@@ -97,5 +97,6 @@
  "fontThin": "Thin",
  "fontThick": "Thick",
  "fontFamily": "Font Family",
- "fontThickness": "Font Thickness"
+ "fontThickness": "Font Thickness",
+ "resultsCount": "{n} results"
 }

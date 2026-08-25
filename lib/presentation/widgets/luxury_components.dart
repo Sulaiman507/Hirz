@@ -104,20 +104,61 @@ class LuxuryPanel extends StatelessWidget {
   }
 }
 
-/// حقل بحث فاخر بإطار ذهبي متوهج / Luxury search field, glowing gold frame
-class LuxurySearchField extends StatelessWidget {
+/// حقل بحث فاخر بإطار ذهبي متوهج + زر مسح / Luxury search field, gold frame + clear button
+class LuxurySearchField extends StatefulWidget {
   final String hint;
   final ValueChanged<String> onChanged;
+
+  /// تحكم اختياري من الأب لمسح النص خارجياً / optional parent controller for external clearing
+  final TextEditingController? controller;
 
   const LuxurySearchField({
     super.key,
     required this.hint,
     required this.onChanged,
+    this.controller,
   });
+
+  @override
+  State<LuxurySearchField> createState() => _LuxurySearchFieldState();
+}
+
+class _LuxurySearchFieldState extends State<LuxurySearchField> {
+  TextEditingController? _internal;
+
+  TextEditingController get _effectiveController =>
+      widget.controller ?? (_internal ??= TextEditingController());
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller?.addListener(_refresh);
+  }
+
+  @override
+  void didUpdateWidget(covariant LuxurySearchField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?.removeListener(_refresh);
+      widget.controller?.addListener(_refresh);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_refresh);
+    _internal?.dispose();
+    super.dispose();
+  }
+
+  /// يعيد البناء عند تغير النص لإظهار/إخفاء زر المسح
+  /// Rebuild on text change to toggle the clear button
+  void _refresh() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool hasText = _effectiveController.text.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
@@ -136,16 +177,34 @@ class LuxurySearchField extends StatelessWidget {
         ],
       ),
       child: TextField(
-        onChanged: onChanged,
+        controller: _effectiveController,
+        onChanged: widget.onChanged,
         style: Theme.of(context).textTheme.bodyLarge,
         decoration: InputDecoration(
-          hintText: hint,
+          hintText: widget.hint,
           prefixIcon: ShaderMask(
             shaderCallback: (Rect bounds) => const LinearGradient(
               colors: <Color>[Color(0xFFE8C96A), Color(0xFFB8912F)],
             ).createShader(bounds),
             child: const Icon(Icons.search, color: Colors.white),
           ),
+          // زر مسح يظهر فقط مع نص / clear button only when text exists
+          suffixIcon: hasText
+              ? IconButton(
+                  iconSize: 18,
+                  icon: Icon(
+                    Icons.close_rounded,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.5),
+                  ),
+                  onPressed: () {
+                    _effectiveController.clear();
+                    widget.onChanged('');
+                  },
+                )
+              : null,
           filled: true,
           fillColor: isDark
               ? Colors.white.withValues(alpha: 0.08)
