@@ -20,6 +20,7 @@ jobs:
           cp -r assets scaffold/assets
           cp pubspec.yaml analysis_options.yaml scaffold/
           mkdir -p scaffold/test && cp -r test/. scaffold/test/
+          python3 scripts/android_patches.py
       - name: Get dependencies
         working-directory: scaffold
         run: flutter pub get

@@ -53,6 +53,8 @@ void main() {
         'fontFamily', 'fontThickness', 'fontAmiri', 'fontCairo',
         'fontThin', 'fontThick', 'searchCity', 'noResults', 'close',
         'settingsTitle', 'manualCoordinates',
+        'adhanTitle', 'adhanEnable', 'adhanTest',
+        'adhanTestRegular', 'adhanTestFajr',
       ];
       for (final String key in requiredKeys) {
         expect(ar.keys, contains(key), reason: 'missing ar key=$key');

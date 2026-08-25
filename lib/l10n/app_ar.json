@@ -99,5 +99,10 @@
  "fontFamily": "نوع الخط",
  "fontThickness": "سماكة الخط",
  "resultsCount": "{n} نتيجة",
- "close": "إغلاق"
+ "close": "إغلاق",
+ "adhanTitle": "الأذان",
+ "adhanEnable": "تشغيل الأذان عند وقت الصلاة",
+ "adhanTest": "تجربة صوت الأذان",
+ "adhanTestRegular": "عادي",
+ "adhanTestFajr": "فجر"
 }

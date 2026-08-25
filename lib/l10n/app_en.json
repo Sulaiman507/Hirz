@@ -99,5 +99,10 @@
  "fontFamily": "Font Family",
  "fontThickness": "Font Thickness",
  "resultsCount": "{n} results",
- "close": "Close"
+ "close": "Close",
+ "adhanTitle": "Adhan",
+ "adhanEnable": "Play the adhan at prayer time",
+ "adhanTest": "Test adhan sound",
+ "adhanTestRegular": "Regular",
+ "adhanTestFajr": "Fajr"
 }

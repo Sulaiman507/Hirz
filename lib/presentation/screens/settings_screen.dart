@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/services/adhan_notification_service.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../../core/l10n/app_localizations.dart';
@@ -198,6 +199,56 @@ class SettingsScreen extends ConsumerWidget {
                               ),
                             )
                             .toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+
+                    // ── الأذان / Adhan ─────────────────────────────────
+                    LuxurySectionTitle(
+                        title: l10n.tr('adhanTitle'), icon: Icons.notifications_active),
+                    LuxuryPanel(
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(l10n.tr('adhanEnable')),
+                          ),
+                          Switch(
+                            value: settings.adhanEnabled,
+                            onChanged: (bool v) async {
+                              if (v) {
+                                // إذن الإشعارات قبل أول تفعيل (أندرويد 13+)
+                                await AdhanNotificationService.instance
+                                    .ensurePermission();
+                              }
+                              await notifier.updateAdhanEnabled(v);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    LuxuryPanel(
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              l10n.tr('adhanTest'),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: () => AdhanNotificationService.instance
+                                .testAdhan(fajr: false),
+                            icon: const Icon(Icons.play_arrow_rounded),
+                            label: Text(l10n.tr('adhanTestRegular')),
+                          ),
+                          TextButton.icon(
+                            onPressed: () => AdhanNotificationService.instance
+                                .testAdhan(fajr: true),
+                            icon: const Icon(Icons.brightness_4_rounded),
+                            label: Text(l10n.tr('adhanTestFajr')),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 22),

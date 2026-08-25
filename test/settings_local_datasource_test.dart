@@ -89,6 +89,7 @@ void main() {
             '{"fajr":20,"sunrise":15,"dhuhr":15,"asr":15,"maghrib":10,"isha":20}',
         'font_family': 'Amiri',
         'font_thickness': 1.0,
+        'adhan_enabled': true,
       };
       final SettingsLocalDatasource readDs = await _datasourceWith(stored);
       final AppSettings loaded = readDs.load();
@@ -99,6 +100,12 @@ void main() {
       expect(loaded.method, CalculationMethod.ummAlQura);
       expect(loaded.iqamahOffsets['fajr'], 20);
       expect(loaded.iqamahOffsets['maghrib'], 10);
+      expect(loaded.adhanEnabled, isTrue);
+    });
+
+    test('adhanEnabled مفقود → افتراضياً معطل / missing flag defaults off', () async {
+      final SettingsLocalDatasource ds = await _datasourceWith(<String, Object>{});
+      expect(ds.load().adhanEnabled, isFalse);
     });
   });
 }

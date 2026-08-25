@@ -34,6 +34,7 @@ class AppSettings {
   final Map<String, int> iqamahOffsets; // مفاتيح: fajr,sunrise,dhuhr,asr,maghrib,isha بالدقائق / keys in minutes
   final double fontThickness; // سماكة الخط: 0.5 أنحف ← 2.0 أسمن / font thickness multiplier
   final String fontFamily; // 'Amiri' | 'Cairo'
+  final bool adhanEnabled; // إشعار الأذان عند وقت الصلاة / adhan notification at prayer time
 
   /// فروق الإقامة الافتراضية بالدقائق / Default iqamah offsets in minutes
   static const Map<String, int> defaultIqamahOffsets = {
@@ -54,6 +55,7 @@ class AppSettings {
     required this.iqamahOffsets,
     this.fontThickness = 1.0,
     this.fontFamily = 'Amiri',
+    this.adhanEnabled = false,
   });
 
   /// نسخة محدّثة بحقول اختيارية / Updated copy with optional overrides
@@ -66,6 +68,7 @@ class AppSettings {
     Map<String, int>? iqamahOffsets,
     double? fontThickness,
     String? fontFamily,
+    bool? adhanEnabled,
   }) {
     return AppSettings(
       languageCode: languageCode ?? this.languageCode,
@@ -76,6 +79,7 @@ class AppSettings {
       iqamahOffsets: iqamahOffsets ?? this.iqamahOffsets,
       fontThickness: fontThickness ?? this.fontThickness,
       fontFamily: fontFamily ?? this.fontFamily,
+      adhanEnabled: adhanEnabled ?? this.adhanEnabled,
     );
   }
 }
