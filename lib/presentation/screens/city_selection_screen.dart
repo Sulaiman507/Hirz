@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/format_utils.dart';
 import '../../domain/entities/city.dart';
 import '../providers/city_providers.dart';
 import '../providers/settings_providers.dart';
@@ -192,7 +193,8 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                     return _LuxuryCityTile(
                       name: sc.label,
                       country: sc.countryLabel,
-                      offsetLabel: _formatUtc(sc.city.timezoneOffsetHours),
+                      offsetLabel:
+                          formatUtcOffset(sc.city.timezoneOffsetHours),
                       isCustom: sc.city.isCustom,
                       showCountry: false,
                       onTap: () async {
@@ -214,16 +216,6 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
       ),
     );
   }
-}
-
-/// تنسيق إزاحة المنطقة الزمنية بدون أصفار زائدة / tidy UTC label, no trailing zeros
-String _formatUtc(double hours) {
-  final double rounded = double.parse(hours.toStringAsFixed(1));
-  final bool negative = rounded < 0;
-  final int whole = rounded.abs().truncate();
-  final int tenths = ((rounded.abs() - whole) * 10).round();
-  final String frac = tenths == 0 ? '' : '.$tenths';
-  return 'UTC${negative ? '-' : '+'}$whole$frac';
 }
 
 /// عنوان قسم دولة بشريط ذهبي / country section header with a gold bar
