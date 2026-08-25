@@ -60,11 +60,8 @@ class AdhanNotificationService {
       importance: Importance.max,
       playSound: true,
       sound: RawResourceAndroidNotificationSound('adhan_regular'),
-      // usage=alarm: يلتزم بمستوى صوت المنبه ويتجاوز كتم الوسائط
-      audioAttributes: AudioAttributes(
-        usage: AudioUsage.alarm,
-        contentType: AudioContentType.music,
-      ),
+      // alarm usage: مستوى صوت المنبه ويتجاوز كتم الوسائط
+      audioAttributesUsage: AudioAttributesUsage.alarm,
       enableVibration: true,
     );
     const AndroidNotificationChannel fajr = AndroidNotificationChannel(
@@ -74,10 +71,7 @@ class AdhanNotificationService {
       importance: Importance.max,
       playSound: true,
       sound: RawResourceAndroidNotificationSound('adhan_fajr'),
-      audioAttributes: AudioAttributes(
-        usage: AudioUsage.alarm,
-        contentType: AudioContentType.music,
-      ),
+      audioAttributesUsage: AudioAttributesUsage.alarm,
       enableVibration: true,
     );
     await android.createNotificationChannel(regular);
@@ -113,10 +107,7 @@ class AdhanNotificationService {
             sound: RawResourceAndroidNotificationSound(
               isFajr ? 'adhan_fajr' : 'adhan_regular',
             ),
-            audioAttributes: AudioAttributes(
-              usage: AudioUsage.alarm,
-              contentType: AudioContentType.music,
-            ),
+            audioAttributesUsage: AudioAttributesUsage.alarm,
             fullScreenIntent: true,
           ),
         ),
@@ -145,10 +136,7 @@ class AdhanNotificationService {
           sound: RawResourceAndroidNotificationSound(
             fajr ? 'adhan_fajr' : 'adhan_regular',
           ),
-          audioAttributes: AudioAttributes(
-            usage: AudioUsage.alarm,
-            contentType: AudioContentType.music,
-          ),
+          audioAttributesUsage: AudioAttributesUsage.alarm,
           fullScreenIntent: true,
         ),
       ),
