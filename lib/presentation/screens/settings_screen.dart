@@ -42,7 +42,7 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.close_rounded),
-                      tooltip: l10n.tr('close') ?? 'إغلاق',
+                      tooltip: l10n.tr('close'),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
