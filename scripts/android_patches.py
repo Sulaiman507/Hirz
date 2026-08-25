@@ -64,6 +64,24 @@ def patch_gradle_desugaring() -> None:
             continue
         with open(path, encoding='utf-8') as f:
             content = f.read()
+        # رفع compileSdk لمتطلبات geolocator/notifications (35)
+        # bump compileSdk to satisfy newer androidx dependencies
+        new_content = re.sub(
+            r'(compileSdk\s*=\s*)\d+',
+            r'\g<1>35',
+            content,
+        )
+        new_content = re.sub(
+            r'(compileSdkVersion\s+)\d+',
+            r'\g<1>35',
+            new_content,
+        )
+        if new_content != content:
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            print('gradle: compileSdk bumped to 35 in', candidate)
+        with open(path, encoding='utf-8') as f:
+            content = f.read()
         if 'coreLibraryDesugaring' in content:
             print('gradle: desugaring already enabled')
             return
