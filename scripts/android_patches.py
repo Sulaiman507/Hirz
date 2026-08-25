@@ -77,15 +77,20 @@ def patch_root_subprojects_floor() -> None:
         if kts:
             block = '''
 // COMPILE_SDK_FLOOR: raise any subproject below the floor (plugins included)
+// withId hook runs at plugin application time (safe after evaluation started)
 subprojects {
-    afterEvaluate {
-        if (project.hasProperty("android")) {
-            val androidExt = project.extensions.findByName("android")
-            if (androidExt is com.android.build.gradle.BaseExtension) {
-                if (androidExt.compileSdkVersion != null && androidExt.compileSdkVersion!!.split("-").last().toIntOrNull()?.let { it < 36 } == true) {
-                    androidExt.compileSdkVersion(36)
-                }
-            }
+    project.plugins.withId("com.android.library") {
+        val androidExt = project.extensions.findByName("android")
+            as? com.android.build.gradle.LibraryExtension
+        if (androidExt != null && androidExt.compileSdk != null && androidExt.compileSdk!! < 36) {
+            androidExt.compileSdk = 36
+        }
+    }
+    project.plugins.withId("com.android.application") {
+        val androidExt = project.extensions.findByName("android")
+            as? com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+        if (androidExt != null && androidExt.compileSdk != null && androidExt.compileSdk!! < 36) {
+            androidExt.compileSdk = 36
         }
     }
 }
@@ -127,18 +132,11 @@ subprojects { proj ->
         )
         f.write('''
 subprojects {
-    afterEvaluate {
-        if (project.hasProperty("android")) {
-            val androidExt = project.extensions.findByName("android")
-            if (androidExt is com.android.build.gradle.BaseExtension) {
-                val current = androidExt.compileSdkVersion
-                if (current != null) {
-                    val num = current.substringAfterLast("-").toIntOrNull()
-                    if (num != null && num < 36) {
-                        androidExt.compileSdkVersion(36)
-                    }
-                }
-            }
+    project.plugins.withId("com.android.library") {
+        val androidExt = project.extensions.findByName("android")
+            as? com.android.build.gradle.LibraryExtension
+        if (androidExt != null && androidExt.compileSdk != null && androidExt.compileSdk!! < 36) {
+            androidExt.compileSdk = 36
         }
     }
 }
