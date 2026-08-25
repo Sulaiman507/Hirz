@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hirz/core/l10n/app_localizations.dart';
 
