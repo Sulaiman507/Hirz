@@ -98,5 +98,6 @@
  "fontThick": "أسمن",
  "fontFamily": "نوع الخط",
  "fontThickness": "سماكة الخط",
- "resultsCount": "{n} نتيجة"
+ "resultsCount": "{n} نتيجة",
+ "close": "إغلاق"
 }

@@ -31,10 +31,20 @@ void main() {
       expect(ar.keys.toSet(), equals(en.keys.toSet()));
     });
 
-    test('كل القيم نصوص غير فارغة / all values are non-empty strings', () {
+    test('كل القيم نصوص أو قوائم نصوص غير فارغة / values are non-empty strings or lists', () {
       for (final MapEntry<String, dynamic> e in ar.entries) {
-        expect(e.value, isA<String>(), reason: 'key=${e.key}');
-        expect((e.value as String).trim(), isNotEmpty, reason: 'key=${e.key}');
+        final dynamic value = e.value;
+        if (value is List<dynamic>) {
+          // قوائم مثل أسماء الأشهر والأيام / lists like month & weekday names
+          expect(value, isNotEmpty, reason: 'key=${e.key}');
+          for (final dynamic item in value) {
+            expect(item, isA<String>(), reason: 'key=${e.key}');
+            expect((item as String).trim(), isNotEmpty, reason: 'key=${e.key}');
+          }
+        } else {
+          expect(value, isA<String>(), reason: 'key=${e.key}');
+          expect((value as String).trim(), isNotEmpty, reason: 'key=${e.key}');
+        }
       }
     });
 
@@ -47,6 +57,19 @@ void main() {
       for (final String key in requiredKeys) {
         expect(ar.keys, contains(key), reason: 'missing ar key=$key');
         expect(en.keys, contains(key), reason: 'missing en key=$key');
+      }
+    });
+
+    test('كل طرق الحساب لها ترجمة / every calculation method has a label', () {
+      // مفاتيح ديناميكية: method + jsonId بحرف أول كبير
+      const List<String> jsonIds = <String>[
+        'auto', 'ummAlQura', 'muslimWorldLeague', 'egyptian', 'karachi',
+        'northAmerica', 'turkey', 'qatar', 'kuwait', 'dubai',
+      ];
+      for (final String id in jsonIds) {
+        final String key = 'method${id[0].toUpperCase()}${id.substring(1)}';
+        expect(ar.keys, contains(key), reason: 'missing ar $key');
+        expect(en.keys, contains(key), reason: 'missing en $key');
       }
     });
   });
