@@ -51,7 +51,7 @@ def copy_audio() -> None:
         print('audio:', name, '-> res/raw')
 
 
-DESUGAR_VERSION = '2.0.4'
+DESUGAR_VERSION = '2.1.4'
 
 
 def patch_gradle_desugaring() -> None:
@@ -64,22 +64,28 @@ def patch_gradle_desugaring() -> None:
             continue
         with open(path, encoding='utf-8') as f:
             content = f.read()
-        # رفع compileSdk لمتطلبات geolocator/notifications (35)
-        # bump compileSdk to satisfy newer androidx dependencies
+        # رفع compileSdk لمتطلبات geolocator/notifications
+        # القالب يستخدم flutter.compileSdkVersion (رمز) → نستبدله برقم صريح 36
+        # template uses symbolic flutter.compileSdkVersion → replace with literal 36
         new_content = re.sub(
-            r'(compileSdk\s*=\s*)\d+',
-            r'\g<1>35',
+            r'compileSdk\s*=\s*flutter\.compileSdkVersion',
+            'compileSdk = 36',
             content,
         )
         new_content = re.sub(
-            r'(compileSdkVersion\s+)\d+',
-            r'\g<1>35',
+            r'compileSdk\s*=\s*\d+',
+            'compileSdk = 36',
+            new_content,
+        )
+        new_content = re.sub(
+            r'compileSdkVersion\s+\d+',
+            'compileSdkVersion 36',
             new_content,
         )
         if new_content != content:
             with open(path, 'w', encoding='utf-8') as f:
                 f.write(new_content)
-            print('gradle: compileSdk bumped to 35 in', candidate)
+            print('gradle: compileSdk bumped to 36 in', candidate)
         with open(path, encoding='utf-8') as f:
             content = f.read()
         if 'coreLibraryDesugaring' in content:
