@@ -75,8 +75,7 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
     try {
       const AutoLocationService service = AutoLocationService();
       final Position position = await service.getCurrentPosition();
-      final List<City> cities =
-          await ref.read(getAllCitiesUseCaseProvider.future);
+      final List<City> cities = await ref.read(citiesProvider.future);
       final LocationResult result = service.nearestCity(cities, position);
       await selectCity(ref, result.city);
       final String cityName =
