@@ -251,11 +251,29 @@ class SettingsScreen extends ConsumerWidget {
                             value: settings.adhanEnabled,
                             onChanged: (bool v) async {
                               if (v) {
-                                // إذن الإشعارات قبل أول تفعيل (أندرويد 13+)
                                 await AdhanNotificationService.instance
                                     .ensurePermission();
                               }
                               await notifier.updateAdhanEnabled(v);
+                              if (v) {
+                                // تأكيد بصري بعد الجدولة — نعطي الكود وقت ليكتمل
+                                await Future<void>.delayed(
+                                  const Duration(seconds: 2),
+                                );
+                                if (!mounted) return;
+                                final int pending =
+                                    await AdhanNotificationService.instance
+                                        .pendingCount();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      pending > 0
+                                          ? '✅ تمت الجدولة: $pending أذان'
+                                          : '⚠️ لم يتم جدولة أي أذان — تحقق من الإعدادات',
+                                    ),
+                                  ),
+                                );
+                              }
                             },
                           ),
                         ],
