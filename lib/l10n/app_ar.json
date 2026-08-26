@@ -106,6 +106,8 @@
  "adhanTestRegular": "عادي",
  "adhanTestFajr": "فجر",
  "adhanTestOk": "✅ تم إرسال إشعار التجربة",
+ "exactAlarmMissing": "إذن المنبهات والتذكيرات غير مفعّل — لن تظهر أذانات المواقيت. اضغط للتفعيل",
+ "exactAlarmGrant": "تفعيل",
  "locateMe": "تحديد موقعي تلقائياً",
  "locatedTo": "تم التحديد:",
  "locationFailed": "تعذر تحديد الموقع — تأكد من تفعيل خدمة الموقع والإذن"

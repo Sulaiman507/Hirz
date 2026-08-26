@@ -106,6 +106,8 @@
  "adhanTestRegular": "Regular",
  "adhanTestFajr": "Fajr",
  "adhanTestOk": "✅ Test notification sent",
+ "exactAlarmMissing": "Alarms & reminders permission is off — prayer adhans will not fire. Tap to enable",
+ "exactAlarmGrant": "Enable",
  "locateMe": "Auto-locate my city",
  "locatedTo": "Located to",
  "locationFailed": "Could not get location — check GPS service and permission"

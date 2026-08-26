@@ -262,6 +262,10 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
+                    // حالة إذن المنبه الدقيق — شرط عمل الجدولة على أندرويد 14+
+                    // exact-alarm permission status — scheduling gate on Android 14+
+                    _ExactAlarmStatusPanel(),
+                    const SizedBox(height: 12),
                     LuxuryPanel(
                       child: Row(
                         children: <Widget>[
@@ -381,6 +385,69 @@ class SettingsScreen extends ConsumerWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// لوحة حالة إذن المنبه الدقيق — بدونها لا تعمل الجدولة على أندرويد 14+
+/// Exact-alarm permission status panel — required for scheduling on Android 14+
+class _ExactAlarmStatusPanel extends ConsumerStatefulWidget {
+  const _ExactAlarmStatusPanel();
+
+  @override
+  ConsumerState<_ExactAlarmStatusPanel> createState() =>
+      _ExactAlarmStatusPanelState();
+}
+
+class _ExactAlarmStatusPanelState
+    extends ConsumerState<_ExactAlarmStatusPanel> {
+  bool? _granted;
+  bool _checking = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _check();
+  }
+
+  Future<void> _check() async {
+    final bool? granted = await AdhanNotificationService.instance
+        .exactAlarmGranted();
+    if (mounted) {
+      setState(() {
+        _granted = granted;
+        _checking = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    if (_checking || _granted == null || _granted!) {
+      return const SizedBox.shrink(); // كل شيء سليم — لا نعرض شيئاً
+    }
+    return LuxuryPanel(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              l10n.tr('exactAlarmMissing'),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () async {
+              await AdhanNotificationService.instance.ensurePermission();
+              await _check();
+            },
+            icon: const Icon(Icons.alarm_on_rounded),
+            label: Text(l10n.tr('exactAlarmGrant')),
+          ),
+        ],
       ),
     );
   }

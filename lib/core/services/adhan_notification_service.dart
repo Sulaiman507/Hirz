@@ -155,6 +155,20 @@ class AdhanNotificationService {
         >();
     if (android != null) {
       await android.requestNotificationsPermission();
+      // إذن المنبه الدقيق مطلوب للجدولة على أندرويد 14+ — غير ممنوح تلقائياً
+      // exact alarm permission required for scheduling on Android 14+
+      await android.requestExactAlarmsPermission();
     }
+  }
+
+  /// هل إذن الجدولة الدقيقة ممنوح؟ / is exact alarm permission granted?
+  /// null = غير معروف على هذه المنصة / unknown on this platform
+  Future<bool?> exactAlarmGranted() async {
+    await init();
+    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    return android?.checkExactNotificationPermission();
   }
 }
