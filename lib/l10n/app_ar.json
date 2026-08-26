@@ -105,6 +105,7 @@
  "adhanTest": "تجربة صوت الأذان",
  "adhanTestRegular": "عادي",
  "adhanTestFajr": "فجر",
+ "adhanTestOk": "✅ تم إرسال إشعار التجربة",
  "locateMe": "تحديد موقعي تلقائياً",
  "locatedTo": "تم التحديد:",
  "locationFailed": "تعذر تحديد الموقع — تأكد من تفعيل خدمة الموقع والإذن"

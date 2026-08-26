@@ -23,10 +23,10 @@ class SettingsScreen extends ConsumerWidget {
       backgroundColor: null,
       body: settingsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (Object e, StackTrace s) => Center(child: Text(l10n.tr('error'))),
+        error: (Object e, StackTrace s) =>
+            Center(child: Text(l10n.tr('error'))),
         data: (AppSettings settings) {
-          final SettingsNotifier notifier =
-              ref.read(settingsProvider.notifier);
+          final SettingsNotifier notifier = ref.read(settingsProvider.notifier);
 
           return Column(
             children: <Widget>[
@@ -66,7 +66,9 @@ class SettingsScreen extends ConsumerWidget {
                   children: <Widget>[
                     // ── اللغة / Language ──────────────────────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('language'), icon: Icons.translate),
+                      title: l10n.tr('language'),
+                      icon: Icons.translate,
+                    ),
                     LuxuryPanel(
                       child: SegmentedButton<String>(
                         segments: <ButtonSegment<String>>[
@@ -88,17 +90,24 @@ class SettingsScreen extends ConsumerWidget {
 
                     // ── المظهر / Theme ────────────────────────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('theme'), icon: Icons.dark_mode_outlined),
+                      title: l10n.tr('theme'),
+                      icon: Icons.dark_mode_outlined,
+                    ),
                     LuxuryPanel(
                       padding: const EdgeInsets.all(4),
                       child: SwitchListTile(
                         title: Text(l10n.tr('darkMode')),
                         secondary: ShaderMask(
                           shaderCallback: (Rect bounds) => const LinearGradient(
-                            colors: <Color>[Color(0xFFE8C96A), Color(0xFFB8912F)],
+                            colors: <Color>[
+                              Color(0xFFE8C96A),
+                              Color(0xFFB8912F),
+                            ],
                           ).createShader(bounds),
-                          child: const Icon(Icons.dark_mode_outlined,
-                              color: Colors.white),
+                          child: const Icon(
+                            Icons.dark_mode_outlined,
+                            color: Colors.white,
+                          ),
                         ),
                         value: settings.isDarkMode,
                         onChanged: (bool value) => notifier.updateTheme(value),
@@ -108,21 +117,28 @@ class SettingsScreen extends ConsumerWidget {
 
                     // ── طريقة الحساب / Calculation method ─────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('calculationMethod'),
-                        icon: Icons.calculate_outlined),
+                      title: l10n.tr('calculationMethod'),
+                      icon: Icons.calculate_outlined,
+                    ),
                     LuxuryPanel(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Column(
                         children: CalculationMethod.values
                             .map(
-                              (CalculationMethod method) => RadioListTile<
-                                  CalculationMethod>(
-                                title: Text(l10n.tr('method${method.jsonId.substring(0,1).toUpperCase()}${method.jsonId.substring(1)}')),
+                              (
+                                CalculationMethod method,
+                              ) => RadioListTile<CalculationMethod>(
+                                title: Text(
+                                  l10n.tr(
+                                    'method${method.jsonId.substring(0, 1).toUpperCase()}${method.jsonId.substring(1)}',
+                                  ),
+                                ),
                                 dense: true,
                                 value: method,
                                 groupValue: settings.method,
                                 onChanged: (CalculationMethod? value) {
-                                  if (value != null) notifier.updateMethod(value);
+                                  if (value != null)
+                                    notifier.updateMethod(value);
                                 },
                               ),
                             )
@@ -133,7 +149,9 @@ class SettingsScreen extends ConsumerWidget {
 
                     // ── المذهب / Madhab ───────────────────────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('madhab'), icon: Icons.menu_book_outlined),
+                      title: l10n.tr('madhab'),
+                      icon: Icons.menu_book_outlined,
+                    ),
                     LuxuryPanel(
                       child: SegmentedButton<Madhab>(
                         segments: <ButtonSegment<Madhab>>[
@@ -155,16 +173,24 @@ class SettingsScreen extends ConsumerWidget {
 
                     // ── تنسيق الوقت / Time format ─────────────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('timeFormat'), icon: Icons.access_time),
+                      title: l10n.tr('timeFormat'),
+                      icon: Icons.access_time,
+                    ),
                     LuxuryPanel(
                       padding: const EdgeInsets.all(4),
                       child: SwitchListTile(
                         title: Text(l10n.tr('format24')),
                         secondary: ShaderMask(
                           shaderCallback: (Rect bounds) => const LinearGradient(
-                            colors: <Color>[Color(0xFFE8C96A), Color(0xFFB8912F)],
+                            colors: <Color>[
+                              Color(0xFFE8C96A),
+                              Color(0xFFB8912F),
+                            ],
                           ).createShader(bounds),
-                          child: const Icon(Icons.access_time, color: Colors.white),
+                          child: const Icon(
+                            Icons.access_time,
+                            color: Colors.white,
+                          ),
                         ),
                         value: settings.use24HourFormat,
                         onChanged: (bool value) =>
@@ -175,43 +201,52 @@ class SettingsScreen extends ConsumerWidget {
 
                     // ── فروق الإقامة / Iqamah offsets ─────────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('iqamahOffsets'),
-                        icon: Icons.timelapse_outlined),
+                      title: l10n.tr('iqamahOffsets'),
+                      icon: Icons.timelapse_outlined,
+                    ),
                     LuxuryPanel(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       child: Column(
-                        children: <Prayer>[
-                          Prayer.fajr,
-                          Prayer.sunrise,
-                          Prayer.dhuhr,
-                          Prayer.asr,
-                          Prayer.maghrib,
-                          Prayer.isha,
-                        ]
-                            .map(
-                              (Prayer prayer) => _IqamahOffsetRow(
-                                prayerKey: prayer.name,
-                                label: l10n.tr(prayer.name),
-                                value: settings.iqamahOffsets[prayer.name] ?? 15,
-                                onChanged: (int minutes) => notifier
-                                    .updateIqamahOffset(prayer.name, minutes),
-                              ),
-                            )
-                            .toList(),
+                        children:
+                            <Prayer>[
+                                  Prayer.fajr,
+                                  Prayer.sunrise,
+                                  Prayer.dhuhr,
+                                  Prayer.asr,
+                                  Prayer.maghrib,
+                                  Prayer.isha,
+                                ]
+                                .map(
+                                  (Prayer prayer) => _IqamahOffsetRow(
+                                    prayerKey: prayer.name,
+                                    label: l10n.tr(prayer.name),
+                                    value:
+                                        settings.iqamahOffsets[prayer.name] ??
+                                        15,
+                                    onChanged: (int minutes) =>
+                                        notifier.updateIqamahOffset(
+                                          prayer.name,
+                                          minutes,
+                                        ),
+                                  ),
+                                )
+                                .toList(),
                       ),
                     ),
                     const SizedBox(height: 22),
 
                     // ── الأذان / Adhan ─────────────────────────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('adhanTitle'), icon: Icons.notifications_active),
+                      title: l10n.tr('adhanTitle'),
+                      icon: Icons.notifications_active,
+                    ),
                     LuxuryPanel(
                       child: Row(
                         children: <Widget>[
-                          Expanded(
-                            child: Text(l10n.tr('adhanEnable')),
-                          ),
+                          Expanded(child: Text(l10n.tr('adhanEnable'))),
                           Switch(
                             value: settings.adhanEnabled,
                             onChanged: (bool v) async {
@@ -237,14 +272,48 @@ class SettingsScreen extends ConsumerWidget {
                             ),
                           ),
                           TextButton.icon(
-                            onPressed: () => AdhanNotificationService.instance
-                                .testAdhan(fajr: false),
+                            onPressed: () async {
+                              try {
+                                await AdhanNotificationService.instance
+                                    .testAdhan(fajr: false);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(l10n.tr('adhanTestOk')),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('❌ $e')),
+                                  );
+                                }
+                              }
+                            },
                             icon: const Icon(Icons.play_arrow_rounded),
                             label: Text(l10n.tr('adhanTestRegular')),
                           ),
                           TextButton.icon(
-                            onPressed: () => AdhanNotificationService.instance
-                                .testAdhan(fajr: true),
+                            onPressed: () async {
+                              try {
+                                await AdhanNotificationService.instance
+                                    .testAdhan(fajr: true);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(l10n.tr('adhanTestOk')),
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('❌ $e')),
+                                  );
+                                }
+                              }
+                            },
                             icon: const Icon(Icons.brightness_4_rounded),
                             label: Text(l10n.tr('adhanTestFajr')),
                           ),
@@ -255,7 +324,9 @@ class SettingsScreen extends ConsumerWidget {
 
                     // ── نوع الخط / Font family ─────────────────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('fontFamily'), icon: Icons.text_fields),
+                      title: l10n.tr('fontFamily'),
+                      icon: Icons.text_fields,
+                    ),
                     LuxuryPanel(
                       child: SegmentedButton<String>(
                         segments: <ButtonSegment<String>>[
@@ -277,10 +348,14 @@ class SettingsScreen extends ConsumerWidget {
 
                     // ── سماكة الخط / Font thickness ────────────────────
                     LuxurySectionTitle(
-                        title: l10n.tr('fontThickness'),
-                        icon: Icons.format_bold),
+                      title: l10n.tr('fontThickness'),
+                      icon: Icons.format_bold,
+                    ),
                     LuxuryPanel(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
                       child: Row(
                         children: <Widget>[
                           Text(l10n.tr('fontThin')),
@@ -342,9 +417,9 @@ class _IqamahOffsetRow extends StatelessWidget {
             child: Text(
               '$value',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
           IconButton(

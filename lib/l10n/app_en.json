@@ -105,6 +105,7 @@
  "adhanTest": "Test adhan sound",
  "adhanTestRegular": "Regular",
  "adhanTestFajr": "Fajr",
+ "adhanTestOk": "✅ Test notification sent",
  "locateMe": "Auto-locate my city",
  "locatedTo": "Located to",
  "locationFailed": "Could not get location — check GPS service and permission"

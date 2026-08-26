@@ -14,6 +14,7 @@ SCAFFOLD = os.path.join(ROOT, 'scaffold')
 
 PERMISSIONS = (
     'android.permission.POST_NOTIFICATIONS',
+    'android.permission.USE_FULL_SCREEN_INTENT',
     'android.permission.SCHEDULE_EXACT_ALARM',
     'android.permission.USE_EXACT_ALARM',
     'android.permission.VIBRATE',
