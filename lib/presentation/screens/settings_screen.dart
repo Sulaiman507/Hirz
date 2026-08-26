@@ -266,66 +266,8 @@ class SettingsScreen extends ConsumerWidget {
                     // exact-alarm permission status — scheduling gate on Android 14+
                     _ExactAlarmStatusPanel(),
                     const SizedBox(height: 12),
-                    // لوحة تشخيص الجدولة / scheduling diagnostics panel
-                    _SchedulingDiagnosticsPanel(),
-                    LuxuryPanel(
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              l10n.tr('adhanTest'),
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                          TextButton.icon(
-                            onPressed: () async {
-                              try {
-                                await AdhanNotificationService.instance
-                                    .testAdhan(fajr: false);
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(l10n.tr('adhanTestOk')),
-                                    ),
-                                  );
-                                }
-                              } catch (e) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('❌ $e')),
-                                  );
-                                }
-                              }
-                            },
-                            icon: const Icon(Icons.play_arrow_rounded),
-                            label: Text(l10n.tr('adhanTestRegular')),
-                          ),
-                          TextButton.icon(
-                            onPressed: () async {
-                              try {
-                                await AdhanNotificationService.instance
-                                    .testAdhan(fajr: true);
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(l10n.tr('adhanTestOk')),
-                                    ),
-                                  );
-                                }
-                              } catch (e) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('❌ $e')),
-                                  );
-                                }
-                              }
-                            },
-                            icon: const Icon(Icons.brightness_4_rounded),
-                            label: Text(l10n.tr('adhanTestFajr')),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // تشخيص مباشر لعدد الأذانات المجدولة فعلياً في النظام
+                    _AdhanPendingCountRow(),
                     const SizedBox(height: 12),
                     // مستوى صوت الأذان / Adhan volume
                     LuxuryPanel(
@@ -543,6 +485,57 @@ class _ExactAlarmStatusPanelState
           ),
         ],
       ),
+    );
+  }
+}
+
+/// صف تشخيص الأذانات المجدولة — يعرض الرقم مباشرة بدون تعقيد
+/// Simple diagnostics row for scheduled adhan count
+class _AdhanPendingCountRow extends ConsumerWidget {
+  const _AdhanPendingCountRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    return FutureBuilder<int>(
+      future: AdhanNotificationService.instance.pendingCount(),
+      builder: (BuildContext ctx, AsyncSnapshot<int> snap) {
+        final int? count = snap.data;
+        final bool loading = snap.connectionState == ConnectionState.waiting;
+        final bool ok = count != null && count > 0;
+        return LuxuryPanel(
+          child: Row(
+            children: <Widget>[
+              Icon(
+                loading
+                    ? Icons.hourglass_empty_rounded
+                    : (ok
+                          ? Icons.check_circle_rounded
+                          : Icons.warning_amber_rounded),
+                color: loading
+                    ? Colors.amber
+                    : (ok ? Colors.green : Theme.of(context).colorScheme.error),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  loading
+                      ? '${l10n.tr('schedDiag')}: جاري الفحص...'
+                      : '${l10n.tr('schedDiag')}: ${count ?? 0}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.refresh_rounded),
+                onPressed: () {
+                  // إعادة بناء لتحديث الرقم / rebuild to refresh count
+                  (context as Element).markNeedsBuild();
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
