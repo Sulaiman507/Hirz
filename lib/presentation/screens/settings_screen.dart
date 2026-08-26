@@ -10,7 +10,6 @@ import '../../domain/entities/prayer_time.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../providers/settings_providers.dart';
 import '../widgets/luxury_components.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
