@@ -8,39 +8,37 @@ import 'package:timezone/timezone.dart' as tz;
 import '../../domain/entities/prayer_time.dart';
 
 /// أسماء الصلوات بالعربية والإنجليزية للإشعار / Prayer names for the notification
-const Map<String, Map<String, String>> kAdhanPrayerNames = <String, Map<String, String>>{
-  'fajr': <String, String>{'ar': 'الفجر', 'en': 'Fajr'},
-  'dhuhr': <String, String>{'ar': 'الظهر', 'en': 'Dhuhr'},
-  'asr': <String, String>{'ar': 'العصر', 'en': 'Asr'},
-  'maghrib': <String, String>{'ar': 'المغرب', 'en': 'Maghrib'},
-  'isha': <String, String>{'ar': 'العشاء', 'en': 'Isha'},
-};
+const Map<String, Map<String, String>> kAdhanPrayerNames =
+    <String, Map<String, String>>{
+      'fajr': <String, String>{'ar': 'الفجر', 'en': 'Fajr'},
+      'dhuhr': <String, String>{'ar': 'الظهر', 'en': 'Dhuhr'},
+      'asr': <String, String>{'ar': 'العصر', 'en': 'Asr'},
+      'maghrib': <String, String>{'ar': 'المغرب', 'en': 'Maghrib'},
+      'isha': <String, String>{'ar': 'العشاء', 'en': 'Isha'},
+    };
 
 class AdhanNotificationService {
   AdhanNotificationService._();
 
-  static final AdhanNotificationService instance =
-      AdhanNotificationService._();
+  static final AdhanNotificationService instance = AdhanNotificationService._();
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
   bool _initialized = false;
 
-  // معرفات قناتي الأذان — الصوت مربوط بالقناة نفسها
-  // v2: أندرويد يخزّن القنوات القديمة ولا يحدّثها — المعرف الجديد يفرض الإعدادات الصحيحة
-  // v2 suffix defeats cached broken channels from the first install
-  static const String channelRegular = 'adhan_regular_v2';
-  static const String channelFajr = 'adhan_fajr_v2';
+  // v3: أندرويد يخزّن القنوات القديمة ولا يحدّثها ولا يمسحها — معرف جديد يجبر قنوات نظيفة
+  // v3 suffix: Android caches channels forever; a new id forces clean channels
+  static const String channelRegular = 'adhan_regular_v3';
+  static const String channelFajr = 'adhan_fajr_v3';
 
   Future<void> init() async {
     if (_initialized) return;
     tzdata.initializeTimeZones();
-    const AndroidInitializationSettings android =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    await _plugin.initialize(
-      const InitializationSettings(android: android),
+    const AndroidInitializationSettings android = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
     );
+    await _plugin.initialize(const InitializationSettings(android: android));
     await _createChannels();
     _initialized = true;
   }
@@ -48,9 +46,10 @@ class AdhanNotificationService {
   /// القناتان بصوتي الأذان من res/raw — تُنسخ في الـ workflow
   /// Both channels use adhan audio from res/raw — copied by the CI workflow
   Future<void> _createChannels() async {
-    final AndroidFlutterLocalNotificationsPlugin? android =
-        _plugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (android == null) return;
 
     const AndroidNotificationChannel regular = AndroidNotificationChannel(
@@ -85,7 +84,8 @@ class AdhanNotificationService {
     await cancelAll();
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     for (final PrayerTime pt in times) {
-      if (pt.prayer == Prayer.sunrise) continue; // الشروق ليس أذاناً / no adhan at sunrise
+      if (pt.prayer == Prayer.sunrise)
+        continue; // الشروق ليس أذاناً / no adhan at sunrise
       final tz.TZDateTime when = tz.TZDateTime.from(pt.time, tz.local);
       if (!when.isAfter(now)) continue; // فات وقته / already passed
       final bool isFajr = pt.prayer == Prayer.fajr;
@@ -149,9 +149,10 @@ class AdhanNotificationService {
   /// طلب إذن الإشعارات (أندرويد 13+) / request POST_NOTIFICATIONS (Android 13+)
   Future<void> ensurePermission() async {
     await init();
-    final AndroidFlutterLocalNotificationsPlugin? android =
-        _plugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (android != null) {
       await android.requestNotificationsPermission();
     }
