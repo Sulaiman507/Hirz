@@ -94,7 +94,7 @@ class AdhanNotificationService {
       final tz.TZDateTime when = tz.TZDateTime.from(pt.time, tz.local);
       if (!when.isAfter(now)) continue; // فات وقته / already passed
       try {
-        await _scheduleOne(
+        await service.scheduleOne(
           _stableId(pt.prayer, when),
           'حان الآن وقت صلاة ${_prayerNameAr(pt)}',
           'حي على الصلاة',
@@ -149,7 +149,7 @@ class AdhanNotificationService {
   /// جدولة أذان واحد بمستوى صوت محدد — قناة ديناميكية لكل مستوى
   /// Schedule one adhan with volume via per-level dynamic channels
   /// (أندرويد لا يدعم ضبط الصوت لكل إشعار؛ القناة هي وحدة التحكم)
-  Future<void> _scheduleOne(
+  Future<void> scheduleOne(
     int id,
     String title,
     String body,

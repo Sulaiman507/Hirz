@@ -587,7 +587,7 @@ class _ScheduleTestRow extends ConsumerWidget {
                 tz.local,
               ).add(const Duration(minutes: 1));
               try {
-                await service._scheduleOne(
+                await service.scheduleOne(
                   999999,
                   'اختبار جدولة — ${l10n.tr('scheduleTest')}',
                   'هذا اختبار جدولة بعد دقيقة واحدة',
