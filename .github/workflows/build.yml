@@ -24,6 +24,9 @@ jobs:
       - name: Get dependencies
         working-directory: scaffold
         run: flutter pub get
+      - name: Bump plugin compileSdk in pub cache
+        working-directory: scaffold
+        run: python3 ../scripts/bump_plugin_compilesdk.py
       - name: Analyze
         working-directory: scaffold
         run: flutter analyze --no-fatal-infos
