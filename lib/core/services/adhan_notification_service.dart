@@ -169,6 +169,6 @@ class AdhanNotificationService {
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
-    return android?.checkExactNotificationPermission();
+    return android?.canScheduleExactNotifications();
   }
 }
