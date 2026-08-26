@@ -10,11 +10,7 @@ class DateHeader extends StatelessWidget {
   final DateTime date;
   final String languageCode;
 
-  const DateHeader({
-    super.key,
-    required this.date,
-    required this.languageCode,
-  });
+  const DateHeader({super.key, required this.date, required this.languageCode});
 
   @override
   Widget build(BuildContext context) {
@@ -35,16 +31,18 @@ class DateHeader extends StatelessWidget {
       children: <Widget>[
         Text(
           hijriText,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
           gregorianText,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
         ),
       ],
     );

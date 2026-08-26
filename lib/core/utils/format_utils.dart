@@ -13,9 +13,8 @@ String formatUtcOffset(double hours) {
   final double rounded = double.parse(hours.toStringAsFixed(2));
   final bool negative = rounded < 0;
   final double magnitude = rounded.abs();
-  final String magnitudeLabel =
-      magnitude == magnitude.roundToDouble()
-          ? magnitude.round().toString()
-          : magnitude.toString();
+  final String magnitudeLabel = magnitude == magnitude.roundToDouble()
+      ? magnitude.round().toString()
+      : magnitude.toString();
   return 'UTC${negative ? '-' : '+'}$magnitudeLabel';
 }

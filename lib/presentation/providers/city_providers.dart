@@ -19,12 +19,14 @@ const City defaultCity = City(
 );
 
 /// نص البحث الحالي / Current search query
-final StateProvider<String> citySearchQueryProvider =
-    StateProvider<String>((Ref ref) => '');
+final StateProvider<String> citySearchQueryProvider = StateProvider<String>(
+  (Ref ref) => '',
+);
 
 /// كل المدن المدمجة / All bundled cities
-final FutureProvider<List<City>> citiesProvider =
-    FutureProvider<List<City>>((Ref ref) async {
+final FutureProvider<List<City>> citiesProvider = FutureProvider<List<City>>((
+  Ref ref,
+) async {
   final getAllCities = await ref.watch(getAllCitiesUseCaseProvider.future);
   return getAllCities();
 });
@@ -32,14 +34,16 @@ final FutureProvider<List<City>> citiesProvider =
 /// المدن بعد البحث / Filtered cities after search
 final FutureProvider<List<City>> filteredCitiesProvider =
     FutureProvider<List<City>>((Ref ref) async {
-  final String query = ref.watch(citySearchQueryProvider);
-  final searchCities = await ref.watch(searchCitiesUseCaseProvider.future);
-  return searchCities(query);
-});
+      final String query = ref.watch(citySearchQueryProvider);
+      final searchCities = await ref.watch(searchCitiesUseCaseProvider.future);
+      return searchCities(query);
+    });
 
 /// المدينة المختارة: المحفوظة أو مكة افتراضياً
 /// Selected city: the saved one, or Makkah by default
-final FutureProvider<City> selectedCityProvider = FutureProvider<City>((Ref ref) async {
+final FutureProvider<City> selectedCityProvider = FutureProvider<City>((
+  Ref ref,
+) async {
   final getSavedCity = await ref.watch(getSavedCityUseCaseProvider.future);
   final City? saved = await getSavedCity();
   return saved ?? defaultCity;

@@ -8,7 +8,10 @@ import 'app_colors.dart';
 
 abstract class AppTheme {
   /// الوضع الفاتح / Light theme
-  static ThemeData light({String fontFamily = 'Amiri', double fontThickness = 1.0}) {
+  static ThemeData light({
+    String fontFamily = 'Amiri',
+    double fontThickness = 1.0,
+  }) {
     final ColorScheme scheme = ColorScheme.fromSeed(
       seedColor: AppColors.goldPrimary,
       brightness: Brightness.light,
@@ -26,7 +29,10 @@ abstract class AppTheme {
   }
 
   /// الوضع الداكن / Dark theme
-  static ThemeData dark({String fontFamily = 'Amiri', double fontThickness = 1.0}) {
+  static ThemeData dark({
+    String fontFamily = 'Amiri',
+    double fontThickness = 1.0,
+  }) {
     final ColorScheme scheme = ColorScheme.fromSeed(
       seedColor: AppColors.darkBackground,
       brightness: Brightness.dark,
@@ -43,7 +49,11 @@ abstract class AppTheme {
     return _base(scheme, fontFamily: fontFamily, fontThickness: fontThickness);
   }
 
-  static ThemeData _base(ColorScheme scheme, {String fontFamily = 'Amiri', double fontThickness = 1.0}) {
+  static ThemeData _base(
+    ColorScheme scheme, {
+    String fontFamily = 'Amiri',
+    double fontThickness = 1.0,
+  }) {
     final bool isDark = scheme.brightness == Brightness.dark;
     // تطبيق مضاعف السماكة على كل الأوزان — بدون FontVariation (متوافق مع CI)
     // Apply thickness multiplier to every weight — no FontVariation (CI-safe)
@@ -55,8 +65,9 @@ abstract class AppTheme {
       scaffoldBackgroundColor: scheme.surface,
       fontFamily: fontFamily,
       appBarTheme: AppBarTheme(
-        backgroundColor:
-            isDark ? Colors.transparent : scheme.surface.withValues(alpha: 0.85),
+        backgroundColor: isDark
+            ? Colors.transparent
+            : scheme.surface.withValues(alpha: 0.85),
         foregroundColor: scheme.onSurface,
         elevation: 0,
         centerTitle: true,
@@ -68,18 +79,66 @@ abstract class AppTheme {
         ),
       ),
       textTheme: TextTheme(
-        headlineLarge: TextStyle(fontWeight: thickened(FontWeight.w900), fontSize: 32, fontFamily: fontFamily),
-        headlineMedium: TextStyle(fontWeight: thickened(FontWeight.w900), fontSize: 28, fontFamily: fontFamily),
-        headlineSmall: TextStyle(fontWeight: thickened(FontWeight.w900), fontSize: 24, fontFamily: fontFamily),
-        titleLarge: TextStyle(fontWeight: thickened(FontWeight.w900), fontSize: 22, fontFamily: fontFamily),
-        titleMedium: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 18, fontFamily: fontFamily),
-        titleSmall: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 16, fontFamily: fontFamily),
-        bodyLarge: TextStyle(fontWeight: thickened(FontWeight.w600), fontSize: 16, fontFamily: fontFamily),
-        bodyMedium: TextStyle(fontWeight: thickened(FontWeight.w600), fontSize: 14, fontFamily: fontFamily),
-        bodySmall: TextStyle(fontWeight: thickened(FontWeight.w600), fontSize: 12, fontFamily: fontFamily),
-        labelLarge: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 14, fontFamily: fontFamily),
-        labelMedium: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 12, fontFamily: fontFamily),
-        labelSmall: TextStyle(fontWeight: thickened(FontWeight.w700), fontSize: 11, fontFamily: fontFamily),
+        headlineLarge: TextStyle(
+          fontWeight: thickened(FontWeight.w900),
+          fontSize: 32,
+          fontFamily: fontFamily,
+        ),
+        headlineMedium: TextStyle(
+          fontWeight: thickened(FontWeight.w900),
+          fontSize: 28,
+          fontFamily: fontFamily,
+        ),
+        headlineSmall: TextStyle(
+          fontWeight: thickened(FontWeight.w900),
+          fontSize: 24,
+          fontFamily: fontFamily,
+        ),
+        titleLarge: TextStyle(
+          fontWeight: thickened(FontWeight.w900),
+          fontSize: 22,
+          fontFamily: fontFamily,
+        ),
+        titleMedium: TextStyle(
+          fontWeight: thickened(FontWeight.w700),
+          fontSize: 18,
+          fontFamily: fontFamily,
+        ),
+        titleSmall: TextStyle(
+          fontWeight: thickened(FontWeight.w700),
+          fontSize: 16,
+          fontFamily: fontFamily,
+        ),
+        bodyLarge: TextStyle(
+          fontWeight: thickened(FontWeight.w600),
+          fontSize: 16,
+          fontFamily: fontFamily,
+        ),
+        bodyMedium: TextStyle(
+          fontWeight: thickened(FontWeight.w600),
+          fontSize: 14,
+          fontFamily: fontFamily,
+        ),
+        bodySmall: TextStyle(
+          fontWeight: thickened(FontWeight.w600),
+          fontSize: 12,
+          fontFamily: fontFamily,
+        ),
+        labelLarge: TextStyle(
+          fontWeight: thickened(FontWeight.w700),
+          fontSize: 14,
+          fontFamily: fontFamily,
+        ),
+        labelMedium: TextStyle(
+          fontWeight: thickened(FontWeight.w700),
+          fontSize: 12,
+          fontFamily: fontFamily,
+        ),
+        labelSmall: TextStyle(
+          fontWeight: thickened(FontWeight.w700),
+          fontSize: 11,
+          fontFamily: fontFamily,
+        ),
       ),
       cardTheme: CardThemeData(
         color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
@@ -101,10 +160,7 @@ abstract class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: AppColors.goldBright,
-            width: 2,
-          ),
+          borderSide: const BorderSide(color: AppColors.goldBright, width: 2),
         ),
       ),
       // الأزرار: تعبئة ذهبية واحدة للإجراء الأساسي
@@ -123,14 +179,10 @@ abstract class AppTheme {
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           shape: WidgetStatePropertyAll<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),
           side: WidgetStatePropertyAll<BorderSide>(
-            BorderSide(
-              color: AppColors.goldBright.withValues(alpha: 0.5),
-            ),
+            BorderSide(color: AppColors.goldBright.withValues(alpha: 0.5)),
           ),
         ),
       ),

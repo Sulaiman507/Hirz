@@ -66,8 +66,9 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   Future<void> updateIqamahOffset(String prayerKey, int minutes) async {
     final AppSettings? current = state.valueOrNull;
     if (current == null) return;
-    final Map<String, int> offsets =
-        Map<String, int>.from(current.iqamahOffsets);
+    final Map<String, int> offsets = Map<String, int>.from(
+      current.iqamahOffsets,
+    );
     offsets[prayerKey] = minutes;
     await _save(current.copyWith(iqamahOffsets: offsets));
   }

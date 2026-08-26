@@ -226,3 +226,8 @@ if __name__ == '__main__':
     copy_audio()
     patch_gradle_desugaring()
     patch_root_subprojects_floor()
+
+    # keep.xml: منع shrinkResources من حذف أصوات الأذان في release
+    # keep.xml: prevent shrinkResources from stripping adhan sounds in release
+    import subprocess
+    subprocess.run(['python3', os.path.join(ROOT, 'scripts', 'add_keep_xml.py')], check=False)

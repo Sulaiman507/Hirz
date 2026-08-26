@@ -48,21 +48,25 @@ class _ShimmerTextState extends State<ShimmerText>
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle effective = (widget.style ??
-            Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                )) ??
+    final TextStyle effective =
+        (widget.style ??
+            Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)) ??
         const TextStyle(fontSize: 16);
 
-    final Color base = widget.baseColor ??
+    final Color base =
+        widget.baseColor ??
         Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85);
     final Color beam = widget.beamColor ?? AppColors.goldBright;
 
     if (!widget.enabled) {
-      return Text(widget.text,
-          style: effective.copyWith(color: base),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis);
+      return Text(
+        widget.text,
+        style: effective.copyWith(color: base),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
     }
 
     // النص بلونه الأساسي + شعاع يمسحه عبر ShaderMask

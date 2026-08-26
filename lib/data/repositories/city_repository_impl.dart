@@ -55,8 +55,7 @@ class CityRepositoryImpl implements CityRepository {
           (custom.nameEn.toLowerCase().contains(q.toLowerCase()) ||
               custom.nameAr.contains(q))) {
         // تجنب التكرار / avoid duplicates
-        final bool alreadyListed =
-            results.any((City c) => c.id == custom.id);
+        final bool alreadyListed = results.any((City c) => c.id == custom.id);
         if (!alreadyListed) results.insert(0, custom);
       }
     }

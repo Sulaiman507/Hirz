@@ -16,6 +16,7 @@ import '../providers/prayer_providers.dart';
 import 'prayer_badge.dart';
 import 'shimmer_text.dart';
 import 'circular_countdown_ring.dart';
+
 /// عدّاد تنازلي يتحدث كل ثانية / Updates every second
 class CountdownTimer extends ConsumerStatefulWidget {
   const CountdownTimer({super.key});
@@ -59,19 +60,21 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
       return;
     }
     _nextPrayer = next;
-    _remaining = Duration(milliseconds: next.time.millisecondsSinceEpoch - nowMs);
+    _remaining = Duration(
+      milliseconds: next.time.millisecondsSinceEpoch - nowMs,
+    );
     // الصلاة السابقة لحساب تقدم الحلقة / previous prayer for ring progress
     PrayerTime? previous;
     for (final PrayerTime pt in daily.times) {
       if (pt.time.millisecondsSinceEpoch <= nowMs) previous = pt;
     }
     final int startMs =
-        previous?.time.millisecondsSinceEpoch ?? nowMs - const Duration(hours: 6).inMilliseconds;
+        previous?.time.millisecondsSinceEpoch ??
+        nowMs - const Duration(hours: 6).inMilliseconds;
     final int spanMs = next.time.millisecondsSinceEpoch - startMs;
     _progress = spanMs <= 0
         ? 0.0
-        : 1.0 -
-            (_remaining.inMilliseconds / max(spanMs, 1)).clamp(0.0, 1.0);
+        : 1.0 - (_remaining.inMilliseconds / max(spanMs, 1)).clamp(0.0, 1.0);
   }
 
   /// أول صلاة وقتها بعد الآن — بمقارنة epoch آمنة عبر الأنواع
@@ -86,16 +89,15 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
   /// عدّاد فجر الغد بعد انتهاء صلوات اليوم / Tomorrow-fajr countdown
   /// يُعاد بناؤه كل ثانية عبر الـ Timer نفسه / rebuilt every second by same timer
   Widget _buildTomorrowCountdown(AppLocalizations l10n) {
-    final AsyncValue<DailyPrayerTimes> tomorrow =
-        ref.watch(tomorrowTimesProvider);
+    final AsyncValue<DailyPrayerTimes> tomorrow = ref.watch(
+      tomorrowTimesProvider,
+    );
 
     return tomorrow.when(
-      loading: () => const GlassCard(
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (Object error, StackTrace stack) => GlassCard(
-        child: Center(child: Text(l10n.tr('error'))),
-      ),
+      loading: () =>
+          const GlassCard(child: Center(child: CircularProgressIndicator())),
+      error: (Object error, StackTrace stack) =>
+          GlassCard(child: Center(child: Text(l10n.tr('error')))),
       data: (DailyPrayerTimes tomorrowDaily) {
         final PrayerTime fajr = tomorrowDaily.times.first; // فجر الغد
         final Duration remaining = fajr.time.difference(DateTime.now());
@@ -105,16 +107,16 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
             children: <Widget>[
               Text(
                 l10n.tr('nextPrayer'),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: AppColors.goldBright,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelLarge?.copyWith(color: AppColors.goldBright),
               ),
               const SizedBox(height: 4),
               Text(
                 l10n.tr(fajr.prayer.name),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
               CircularCountdownRing(
@@ -124,10 +126,9 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                   children: <Widget>[
                     Text(
                       formatDuration(
-                          remaining.isNegative ? Duration.zero : remaining),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
+                        remaining.isNegative ? Duration.zero : remaining,
+                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
                           ?.copyWith(
                             fontWeight: FontWeight.bold,
                             fontFeatures: const <FontFeature>[
@@ -137,13 +138,11 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                     ),
                     Text(
                       l10n.tr('timeRemaining'),
-                      style:
-                          Theme.of(context).textTheme.labelMedium?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.6),
-                              ),
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
                     ),
                   ],
                 ),
@@ -167,12 +166,10 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
     final AsyncValue<DailyPrayerTimes> times = ref.watch(prayerTimesProvider);
 
     return times.when(
-      loading: () => const GlassCard(
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (Object error, StackTrace stack) => GlassCard(
-        child: Center(child: Text(l10n.tr('error'))),
-      ),
+      loading: () =>
+          const GlassCard(child: Center(child: CircularProgressIndicator())),
+      error: (Object error, StackTrace stack) =>
+          GlassCard(child: Center(child: Text(l10n.tr('error')))),
       data: (DailyPrayerTimes daily) {
         // إعادة الحساب عند تغير البيانات / recompute on data change
         _recompute(daily);
@@ -206,20 +203,16 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
               // current prayer: its badge + calm plain name
               Row(
                 children: <Widget>[
-                  PrayerBadge(
-                    label: l10n.tr('badgeCurrent'),
-                    bright: true,
-                  ),
+                  PrayerBadge(label: l10n.tr('badgeCurrent'), bright: true),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       l10n.tr(current.prayer.name),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -230,19 +223,19 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
               ShimmerText(
                 l10n.tr(next.prayer.name),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                baseColor:
-                    Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
+                  fontWeight: FontWeight.bold,
+                ),
+                baseColor: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.9),
               ),
               Text(
                 l10n.tr('nextPrayer'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.55),
-                    ),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.55),
+                ),
               ),
               const SizedBox(height: 16),
               // الحلقة الذهبية حول الوقت المتبقي / Gold ring around remaining time
@@ -255,10 +248,9 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                     // Remaining time with tabular figures (no layout shift)
                     Text(
                       formatDuration(
-                          remaining.isNegative ? Duration.zero : remaining),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
+                        remaining.isNegative ? Duration.zero : remaining,
+                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
                           ?.copyWith(
                             fontWeight: FontWeight.bold,
                             fontFeatures: const <FontFeature>[
@@ -268,11 +260,11 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                     ),
                     Text(
                       l10n.tr('timeRemaining'),
-                      style:
-                          Theme.of(context).textTheme.labelMedium?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface
-                                    .withValues(alpha: 0.6),
-                              ),
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
                     ),
                   ],
                 ),

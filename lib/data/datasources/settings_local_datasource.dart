@@ -36,7 +36,7 @@ class SettingsLocalDatasource {
 
     final String methodRaw =
         _prefs.getString(SettingsKeys.calculationMethod) ??
-            CalculationMethod.auto.name;
+        CalculationMethod.auto.name;
     final CalculationMethod method = CalculationMethod.values.firstWhere(
       (CalculationMethod m) => m.name == methodRaw,
       orElse: () => CalculationMethod.auto,
@@ -58,8 +58,8 @@ class SettingsLocalDatasource {
     // قيمة غير معروفة (خطأ قديم) → ارجع لافتراضي بدل انفجار
     final String fontFamily =
         (fontFamilyRaw == 'Amiri' || fontFamilyRaw == 'Cairo')
-            ? fontFamilyRaw
-            : 'Amiri';
+        ? fontFamilyRaw
+        : 'Amiri';
     final double fontThicknessRaw =
         _prefs.getDouble(SettingsKeys.fontThickness) ?? 1.0;
     final double fontThickness = fontThicknessRaw.clamp(0.5, 2.0);
@@ -83,7 +83,10 @@ class SettingsLocalDatasource {
   Future<void> save(AppSettings settings) async {
     await _prefs.setString(SettingsKeys.languageCode, settings.languageCode);
     await _prefs.setBool(SettingsKeys.isDarkMode, settings.isDarkMode);
-    await _prefs.setString(SettingsKeys.calculationMethod, settings.method.name);
+    await _prefs.setString(
+      SettingsKeys.calculationMethod,
+      settings.method.name,
+    );
     await _prefs.setString(SettingsKeys.madhab, settings.madhab.name);
     await _prefs.setBool(SettingsKeys.use24Hour, settings.use24HourFormat);
     await _prefs.setString(

@@ -27,8 +27,10 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     required DateTime date,
     required AppSettings settings,
   }) async {
-    final adhan.Coordinates coordinates =
-        adhan.Coordinates(city.latitude, city.longitude);
+    final adhan.Coordinates coordinates = adhan.Coordinates(
+      city.latitude,
+      city.longitude,
+    );
 
     // ── اختيار طريقة الحساب ──
     // أولوية المستخدم (إعدادات "تلقائي" = null) ثم الطريقة الرسمية
@@ -36,8 +38,9 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     //
     // Method selection: user override wins ("auto" = null), else the
     // city's official regional method, else the settings default.
-    final adhan.CalculationParameters params =
-        _parametersFor(_resolveMethod(city, settings));
+    final adhan.CalculationParameters params = _parametersFor(
+      _resolveMethod(city, settings),
+    );
 
     // المذهب (معامل العصر) + قاعدة خطوط العرض العليا
     // Madhab (Asr factor) and the high-latitude rule
@@ -112,10 +115,11 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
       final tz.Location location = tz.getLocation(tzId);
       // منتصف الظهر بتاريخ المدينة — نقطة تمثيل دقيقة للإزاحة اليومية
       // Local noon on that date — accurate representative instant
-      final DateTime localNoon = DateTime(
-          date.year, date.month, date.day, 12);
-      final int offsetMinutes =
-          tz.TZDateTime.from(localNoon, location).timeZoneOffset.inMinutes;
+      final DateTime localNoon = DateTime(date.year, date.month, date.day, 12);
+      final int offsetMinutes = tz.TZDateTime.from(
+        localNoon,
+        location,
+      ).timeZoneOffset.inMinutes;
       return Duration(minutes: offsetMinutes);
     } catch (e) {
       // معرف غير معروف → الإزاحة الاحتياطية / unknown id → fallback
@@ -135,8 +139,7 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     if (settings.method == CalculationMethod.auto) {
       final String? cityMethod = city.methodId;
       if (cityMethod != null && cityMethod.isNotEmpty) {
-        final CalculationMethod? parsed =
-            _methodById(cityMethod);
+        final CalculationMethod? parsed = _methodById(cityMethod);
         if (parsed != null) return parsed;
       }
       return CalculationMethod.ummAlQura; // احتياط معقول / sane fallback

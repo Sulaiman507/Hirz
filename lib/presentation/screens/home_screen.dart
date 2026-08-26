@@ -63,18 +63,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final AsyncValue<AppSettings> settingsAsync = ref.watch(settingsProvider);
     final AsyncValue<City> cityAsync = ref.watch(selectedCityProvider);
-    final AsyncValue<DailyPrayerTimes> timesAsync =
-        ref.watch(prayerTimesProvider);
+    final AsyncValue<DailyPrayerTimes> timesAsync = ref.watch(
+      prayerTimesProvider,
+    );
 
     final AppSettings settings =
-        settingsAsync.valueOrNull ?? const AppSettings(
-      languageCode: 'ar',
-      isDarkMode: false,
-      method: CalculationMethod.auto,
-      madhab: Madhab.shafi,
-      use24HourFormat: false,
-      iqamahOffsets: AppSettings.defaultIqamahOffsets,
-    );
+        settingsAsync.valueOrNull ??
+        const AppSettings(
+          languageCode: 'ar',
+          isDarkMode: false,
+          method: CalculationMethod.auto,
+          madhab: Madhab.shafi,
+          use24HourFormat: false,
+          iqamahOffsets: AppSettings.defaultIqamahOffsets,
+        );
 
     return Scaffold(
       // شاشة كاملة بدون شريط علوي / fullscreen without top bar
@@ -102,7 +104,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   tooltip: l10n.tr('settingsTitle'),
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                        builder: (_) => const SettingsScreen()),
+                      builder: (_) => const SettingsScreen(),
+                    ),
                   ),
                 ),
               ],
@@ -127,9 +130,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: CircularProgressIndicator(),
                 ),
               ),
-              error: (Object e, StackTrace s) => Center(
-                child: Text(l10n.tr('error')),
-              ),
+              error: (Object e, StackTrace s) =>
+                  Center(child: Text(l10n.tr('error'))),
               data: (DailyPrayerTimes daily) {
                 final DateTime now = DateTime.now();
                 final PrayerTime? next = daily.nextPrayer(now);
@@ -143,8 +145,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: PrayerCard(
                           prayerTime: pt,
                           isNext: next != null && next.prayer == pt.prayer,
-                          isCurrent: current != null &&
-                              current.prayer == pt.prayer,
+                          isCurrent:
+                              current != null && current.prayer == pt.prayer,
                           use24Hour: settings.use24HourFormat,
                           languageCode: settings.languageCode,
                         ),
@@ -172,16 +174,14 @@ class _CityButton extends ConsumerWidget {
     final String languageCode =
         ref.watch(settingsProvider).valueOrNull?.languageCode ?? 'ar';
     final String cityName = languageCode == 'ar' ? city.nameAr : city.nameEn;
-    final String countryName =
-        languageCode == 'ar' ? city.countryAr : city.countryEn;
+    final String countryName = languageCode == 'ar'
+        ? city.countryAr
+        : city.countryEn;
 
     return Card(
       child: ListTile(
         leading: const Icon(Icons.location_on_outlined),
-        title: Text(
-          cityName,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        title: Text(cityName, style: Theme.of(context).textTheme.titleMedium),
         subtitle: Text(countryName),
         trailing: TextButton(
           onPressed: () => Navigator.of(context).push(

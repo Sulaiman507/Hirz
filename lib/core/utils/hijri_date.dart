@@ -89,8 +89,7 @@ HijriDate hijriFromDate(DateTime gregorian) {
 
   final int year = (30 * (jd - _islamicEpoch) + 10646) ~/ 10631;
 
-  int month =
-      ((jd - (29 + _islamicToJd(year, 1, 1))) / 29.5).ceil() + 1;
+  int month = ((jd - (29 + _islamicToJd(year, 1, 1))) / 29.5).ceil() + 1;
   if (month < 1) month = 1;
   if (month > 12) month = 12;
 
@@ -101,8 +100,9 @@ HijriDate hijriFromDate(DateTime gregorian) {
 /// تنسيق التاريخ الهجري حسب اللغة / Format a Hijri date per language
 /// مثال / e.g. ar: "١ شوال ١٤٤٥هـ" (الأرقام لاتينية هنا للوضوح)
 String formatHijri(HijriDate date, String languageCode) {
-  final List<String> months =
-      languageCode == 'ar' ? hijriMonthsAr : hijriMonthsEn;
+  final List<String> months = languageCode == 'ar'
+      ? hijriMonthsAr
+      : hijriMonthsEn;
   final String monthName = months[date.month - 1];
   if (languageCode == 'ar') {
     return '${date.day} $monthName ${date.year}هـ';

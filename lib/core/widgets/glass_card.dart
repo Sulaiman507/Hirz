@@ -38,14 +38,16 @@ class GlassCard extends StatelessWidget {
         padding: padding,
         decoration: BoxDecoration(
           // زجاج مائل — أو لون بديل إن قُدّم / tinted glass or explicit color
-          color: backgroundColor ??
+          color:
+              backgroundColor ??
               (isDark
                   ? Colors.white.withValues(alpha: 0.10)
                   : Colors.white.withValues(alpha: 0.65)),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: const Color(0xFFD4AF37)
-                .withValues(alpha: isDark ? 0.35 : 0.45),
+            color: const Color(
+              0xFFD4AF37,
+            ).withValues(alpha: isDark ? 0.35 : 0.45),
             width: 1,
           ),
           gradient: LinearGradient(

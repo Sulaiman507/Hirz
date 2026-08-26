@@ -43,16 +43,18 @@ class AutoLocationService {
       final Position? last = await Geolocator.getLastKnownPosition();
       if (last != null) {
         return await Geolocator.getCurrentPosition(
-          locationSettings:
-              const LocationSettings(accuracy: LocationAccuracy.low),
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.low,
+          ),
         ).timeout(const Duration(seconds: 12), onTimeout: () => last);
       }
     } catch (_) {
       // تجاهل وأكمل بالتحديد المباشر / fall through to direct fix
     }
     return Geolocator.getCurrentPosition(
-      locationSettings:
-          const LocationSettings(accuracy: LocationAccuracy.medium),
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.medium,
+      ),
     ).timeout(const Duration(seconds: 20));
   }
 
@@ -82,10 +84,10 @@ class AutoLocationService {
   /// اسم المنطقة من الإحداثيات (اختياري للعرض) / reverse geocode (optional label)
   Future<String?> areaLabel(double lat, double lon) async {
     try {
-      final List<Placemark> marks =
-          await placemarkFromCoordinates(lat, lon).timeout(
-        const Duration(seconds: 8),
-      );
+      final List<Placemark> marks = await placemarkFromCoordinates(
+        lat,
+        lon,
+      ).timeout(const Duration(seconds: 8));
       if (marks.isEmpty) return null;
       final Placemark m = marks.first;
       // في geocoding 3.0 كل الحقول nullable / all fields nullable in v3
@@ -101,11 +103,17 @@ class AutoLocationService {
   }
 
   /// مسافة هافرسين بالكيلومتر / haversine distance in km
-  static double _haversineKm(double lat1, double lon1, double lat2, double lon2) {
+  static double _haversineKm(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const double r = 6371.0;
     final double dLat = _deg2rad(lat2 - lat1);
     final double dLon = _deg2rad(lon2 - lon1);
-    final double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+    final double a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(_deg2rad(lat1)) *
             math.cos(_deg2rad(lat2)) *
             math.sin(dLon / 2) *

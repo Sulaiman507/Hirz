@@ -41,8 +41,9 @@ class PrayerCard extends StatelessWidget {
     final ColorScheme scheme = Theme.of(context).colorScheme;
 
     // تحديد الدور: الحالية أولاً ثم القادمة / role: current wins over next
-    final _CardRole role =
-        isCurrent ? _CardRole.current : (isNext ? _CardRole.next : _CardRole.plain);
+    final _CardRole role = isCurrent
+        ? _CardRole.current
+        : (isNext ? _CardRole.next : _CardRole.plain);
 
     return GlassCard(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -50,8 +51,8 @@ class PrayerCard extends StatelessWidget {
       // calm light-beige backdrop for the current card only
       backgroundColor: role == _CardRole.current
           ? (scheme.brightness == Brightness.dark
-              ? const Color(0xFFEFE7D6).withValues(alpha: 0.14)
-              : const Color(0xFFEFE7D6))
+                ? const Color(0xFFEFE7D6).withValues(alpha: 0.14)
+                : const Color(0xFFEFE7D6))
           : null,
       child: Row(
         children: <Widget>[
@@ -64,10 +65,9 @@ class PrayerCard extends StatelessWidget {
                 if (role == _CardRole.current)
                   ShimmerText(
                     l10n.tr(_prayerKey()),
-                    style:
-                        Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   )
                 else
                   Text(
@@ -75,8 +75,8 @@ class PrayerCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                        ),
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 const SizedBox(height: 6),
                 // الشارة إن وجدت / badge when applicable
@@ -89,12 +89,16 @@ class PrayerCard extends StatelessWidget {
           ),
           // الأذان / Adhan time
           Text(
-            formatTime(prayerTime.time,
-                use24Hour: use24Hour, languageCode: languageCode),
+            formatTime(
+              prayerTime.time,
+              use24Hour: use24Hour,
+              languageCode: languageCode,
+            ),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight:
-                      role == _CardRole.plain ? FontWeight.normal : FontWeight.bold,
-                ),
+              fontWeight: role == _CardRole.plain
+                  ? FontWeight.normal
+                  : FontWeight.bold,
+            ),
           ),
           const SizedBox(width: 16),
           // الإقامة / Iqamah time
@@ -104,15 +108,18 @@ class PrayerCard extends StatelessWidget {
               Text(
                 l10n.tr('iqamah'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: scheme.onSurface.withValues(alpha: 0.6),
-                    ),
+                  color: scheme.onSurface.withValues(alpha: 0.6),
+                ),
               ),
               Text(
-                formatTime(prayerTime.iqamahTime,
-                    use24Hour: use24Hour, languageCode: languageCode),
+                formatTime(
+                  prayerTime.iqamahTime,
+                  use24Hour: use24Hour,
+                  languageCode: languageCode,
+                ),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurface.withValues(alpha: 0.8),
-                    ),
+                  color: scheme.onSurface.withValues(alpha: 0.8),
+                ),
               ),
             ],
           ),

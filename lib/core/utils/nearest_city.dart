@@ -12,7 +12,8 @@ double haversineKm(double lat1, double lon1, double lat2, double lon2) {
   const double r = 6371.0; // نصف قطر الأرض كم
   final double dLat = _degToRad(lat2 - lat1);
   final double dLon = _degToRad(lon2 - lon1);
-  final double a = math.pow(math.sin(dLat / 2), 2) +
+  final double a =
+      math.pow(math.sin(dLat / 2), 2) +
       math.cos(_degToRad(lat1)) *
           math.cos(_degToRad(lat2)) *
           math.pow(math.sin(dLon / 2), 2);
@@ -34,8 +35,7 @@ City? nearestKnownCity({
   for (final City c in known) {
     if (c.isCustom) continue; // تجاهل المدن اليدوية الأخرى
     if (c.timezoneId == null && c.methodId == null) continue;
-    final double km =
-        haversineKm(latitude, longitude, c.latitude, c.longitude);
+    final double km = haversineKm(latitude, longitude, c.latitude, c.longitude);
     if (km < bestKm) {
       bestKm = km;
       best = c;

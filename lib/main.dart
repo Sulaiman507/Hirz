@@ -84,9 +84,7 @@ class HirzApp extends ConsumerWidget {
       title: 'حِرز',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      home: const Scaffold(body: Center(child: CircularProgressIndicator())),
     );
   }
 }
@@ -123,12 +121,14 @@ class _AdhanSchedulerState extends ConsumerState<_AdhanScheduler> {
     }
     Future<void>(() async {
       try {
-        final DailyPrayerTimes today =
-            await ref.read(prayerTimesProvider.future);
+        final DailyPrayerTimes today = await ref.read(
+          prayerTimesProvider.future,
+        );
         final List<PrayerTime> all = List<PrayerTime>.of(today.times);
         try {
-          final DailyPrayerTimes tomorrow =
-              await ref.read(tomorrowTimesProvider.future);
+          final DailyPrayerTimes tomorrow = await ref.read(
+            tomorrowTimesProvider.future,
+          );
           all.addAll(tomorrow.times);
         } catch (_) {
           // الغد اختياري — جدولة اليوم وحدها تكفي مؤقتاً

@@ -22,8 +22,7 @@ class ManualCoordinatesForm extends ConsumerStatefulWidget {
       _ManualCoordinatesFormState();
 }
 
-class _ManualCoordinatesFormState
-    extends ConsumerState<ManualCoordinatesForm> {
+class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _latController = TextEditingController();
@@ -64,8 +63,7 @@ class _ManualCoordinatesFormState
     final String name = _nameController.text.trim();
     final double latitude = double.parse(_latController.text.trim());
     final double longitude = double.parse(_lngController.text.trim());
-    final double offset =
-        double.tryParse(_offsetController.text.trim()) ?? 0.0;
+    final double offset = double.tryParse(_offsetController.text.trim()) ?? 0.0;
 
     final City draft = City(
       id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
@@ -151,10 +149,7 @@ class _ManualCoordinatesFormState
                 child: Text(l10n.tr('cancel')),
               ),
               const SizedBox(width: 8),
-              FilledButton(
-                onPressed: _submit,
-                child: Text(l10n.tr('save')),
-              ),
+              FilledButton(onPressed: _submit, child: Text(l10n.tr('save'))),
             ],
           ),
         ],

@@ -31,7 +31,10 @@ class CircularCountdownRing extends StatelessWidget {
       width: size,
       height: size,
       child: CustomPaint(
-        painter: _RingPainter(progress: progress.clamp(0.0, 1.0), isDark: isDark),
+        painter: _RingPainter(
+          progress: progress.clamp(0.0, 1.0),
+          isDark: isDark,
+        ),
         child: Center(child: child),
       ),
     );
@@ -74,13 +77,7 @@ class _RingPainter extends CustomPainter {
         ],
         transform: const GradientRotation(-pi / 2),
       ).createShader(arcRect);
-    canvas.drawArc(
-      arcRect,
-      -pi / 2,
-      2 * pi * progress,
-      false,
-      progressPaint,
-    );
+    canvas.drawArc(arcRect, -pi / 2, 2 * pi * progress, false, progressPaint);
 
     // نقطة نهاية مضيئة / Glowing end cap dot
     final double endAngle = -pi / 2 + 2 * pi * progress;
@@ -93,11 +90,7 @@ class _RingPainter extends CustomPainter {
       ..color = const Color(0xFFD4AF37).withValues(alpha: 0.5)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
     canvas.drawCircle(endOffset, 6, dotGlow);
-    canvas.drawCircle(
-      endOffset,
-      4,
-      Paint()..color = const Color(0xFFF0D98C),
-    );
+    canvas.drawCircle(endOffset, 4, Paint()..color = const Color(0xFFF0D98C));
   }
 
   @override

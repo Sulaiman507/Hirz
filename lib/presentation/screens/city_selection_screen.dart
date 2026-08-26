@@ -77,12 +77,12 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
       final List<City> cities = await ref.read(citiesProvider.future);
       final LocationResult result = service.nearestCity(cities, position);
       await selectCity(ref, result.city);
-      final String cityName =
-          languageCode == 'ar' ? result.city.nameAr : result.city.nameEn;
+      final String cityName = languageCode == 'ar'
+          ? result.city.nameAr
+          : result.city.nameEn;
       messenger.showSnackBar(
         SnackBar(
-          content:
-              Text('${l10n.tr('locatedTo')} $cityName'),
+          content: Text('${l10n.tr('locatedTo')} $cityName'),
           duration: const Duration(seconds: 3),
         ),
       );
@@ -99,8 +99,9 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    final AsyncValue<List<City>> citiesAsync =
-        ref.watch(filteredCitiesProvider);
+    final AsyncValue<List<City>> citiesAsync = ref.watch(
+      filteredCitiesProvider,
+    );
     final String languageCode =
         ref.watch(settingsProvider).valueOrNull?.languageCode ?? 'ar';
     final int filteredCount =
@@ -158,11 +159,10 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
               child: Text(
                 l10n.tr('resultsCount').replaceAll('{n}', '$filteredCount'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.55),
-                    ),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.55),
+                ),
               ),
             ),
           ),
@@ -195,22 +195,25 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                 }
 
                 // ترتيب حسب الدولة ثم المدينة / sort by country then city
-                final List<_SortedCity> sorted = cities
-                    .map(
-                      (City c) => _SortedCity(
-                        city: c,
-                        label: languageCode == 'ar' ? c.nameAr : c.nameEn,
-                        countryLabel:
-                            languageCode == 'ar' ? c.countryAr : c.countryEn,
-                      ),
-                    )
-                    .toList()
-                  ..sort((_SortedCity a, _SortedCity b) {
-                    final int byCountry =
-                        a.countryLabel.compareTo(b.countryLabel);
-                    if (byCountry != 0) return byCountry;
-                    return a.label.compareTo(b.label);
-                  });
+                final List<_SortedCity> sorted =
+                    cities
+                        .map(
+                          (City c) => _SortedCity(
+                            city: c,
+                            label: languageCode == 'ar' ? c.nameAr : c.nameEn,
+                            countryLabel: languageCode == 'ar'
+                                ? c.countryAr
+                                : c.countryEn,
+                          ),
+                        )
+                        .toList()
+                      ..sort((_SortedCity a, _SortedCity b) {
+                        final int byCountry = a.countryLabel.compareTo(
+                          b.countryLabel,
+                        );
+                        if (byCountry != 0) return byCountry;
+                        return a.label.compareTo(b.label);
+                      });
 
                 // تجميع متتالي: عنوان لكل دولة يتبعه بطاقاتها
                 // Contiguous grouping: a header per country followed by its tiles
@@ -239,8 +242,7 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                     return _LuxuryCityTile(
                       name: sc.label,
                       country: sc.countryLabel,
-                      offsetLabel:
-                          formatUtcOffset(sc.city.timezoneOffsetHours),
+                      offsetLabel: formatUtcOffset(sc.city.timezoneOffsetHours),
                       isCustom: sc.city.isCustom,
                       showCountry: false,
                       onTap: () async {
@@ -289,9 +291,9 @@ class _LuxurySectionHeader extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: AppColors.goldBright,
-                  fontWeight: FontWeight.w700,
-                ),
+              color: AppColors.goldBright,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ],
       ),
@@ -342,16 +344,16 @@ class _LuxuryCityTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
               color: isDark
                   ? Colors.white.withValues(alpha: 0.07)
                   : Colors.white.withValues(alpha: 0.62),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.goldBright
-                    .withValues(alpha: isCustom ? 0.55 : 0.28),
+                color: AppColors.goldBright.withValues(
+                  alpha: isCustom ? 0.55 : 0.28,
+                ),
                 width: isCustom ? 1.4 : 1,
               ),
               // تدرج يضيء يسار البطاقة / gradient lighting the tile start
@@ -382,30 +384,30 @@ class _LuxuryCityTile extends StatelessWidget {
                         name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       if (showCountry)
                         Text(
                           country,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style:
-                              Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withValues(alpha: 0.55),
-                                  ),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.55),
+                              ),
                         ),
                     ],
                   ),
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: AppColors.goldBright.withValues(alpha: 0.14),
@@ -413,9 +415,9 @@ class _LuxuryCityTile extends StatelessWidget {
                   child: Text(
                     offsetLabel,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.goldBright,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: AppColors.goldBright,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

@@ -32,10 +32,7 @@ class LuxurySectionTitle extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: <Color>[
-                  Color(0xFFE8C96A),
-                  Color(0xFFB8912F),
-                ],
+                colors: <Color>[Color(0xFFE8C96A), Color(0xFFB8912F)],
               ),
               boxShadow: <BoxShadow>[
                 BoxShadow(
@@ -52,9 +49,9 @@ class LuxurySectionTitle extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.2,
-                ),
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.2,
+            ),
           ),
         ],
       ),
@@ -194,10 +191,9 @@ class _LuxurySearchFieldState extends State<LuxurySearchField> {
                   iconSize: 18,
                   icon: Icon(
                     Icons.close_rounded,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.5),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   onPressed: () {
                     _effectiveController.clear();
@@ -213,8 +209,10 @@ class _LuxurySearchFieldState extends State<LuxurySearchField> {
             borderRadius: BorderRadius.circular(18),
             borderSide: BorderSide.none,
           ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
         ),
       ),
     );

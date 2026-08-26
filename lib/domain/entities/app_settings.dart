@@ -31,10 +31,13 @@ class AppSettings {
   final CalculationMethod method;
   final Madhab madhab;
   final bool use24HourFormat;
-  final Map<String, int> iqamahOffsets; // مفاتيح: fajr,sunrise,dhuhr,asr,maghrib,isha بالدقائق / keys in minutes
-  final double fontThickness; // سماكة الخط: 0.5 أنحف ← 2.0 أسمن / font thickness multiplier
+  final Map<String, int>
+  iqamahOffsets; // مفاتيح: fajr,sunrise,dhuhr,asr,maghrib,isha بالدقائق / keys in minutes
+  final double
+  fontThickness; // سماكة الخط: 0.5 أنحف ← 2.0 أسمن / font thickness multiplier
   final String fontFamily; // 'Amiri' | 'Cairo'
-  final bool adhanEnabled; // إشعار الأذان عند وقت الصلاة / adhan notification at prayer time
+  final bool
+  adhanEnabled; // إشعار الأذان عند وقت الصلاة / adhan notification at prayer time
 
   /// فروق الإقامة الافتراضية بالدقائق / Default iqamah offsets in minutes
   static const Map<String, int> defaultIqamahOffsets = {

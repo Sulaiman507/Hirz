@@ -12,11 +12,7 @@ class PrayerBadge extends StatelessWidget {
   // إضاءة أقوى للحالية / brighter for "current"
   final bool bright;
 
-  const PrayerBadge({
-    super.key,
-    required this.label,
-    this.bright = false,
-  });
+  const PrayerBadge({super.key, required this.label, this.bright = false});
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +27,17 @@ class PrayerBadge extends StatelessWidget {
             : const Color(0xFFEFE7D6),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: const Color(0xFFD4AF37).withValues(alpha: bright ? 0.85 : 0.55),
+          color: const Color(
+            0xFFD4AF37,
+          ).withValues(alpha: bright ? 0.85 : 0.55),
           width: 1,
         ),
         boxShadow: <BoxShadow>[
           // وهج خفيف يطلع من أعلى اليسار / faint glow toward top-left
           BoxShadow(
-            color: const Color(0xFFD4AF37)
-                .withValues(alpha: bright ? 0.45 : 0.30),
+            color: const Color(
+              0xFFD4AF37,
+            ).withValues(alpha: bright ? 0.45 : 0.30),
             blurRadius: bright ? 10 : 6,
             offset: const Offset(-2, -2),
           ),
@@ -55,9 +54,9 @@ class PrayerBadge extends StatelessWidget {
         baseColor: const Color(0xFF241C05),
         beamColor: const Color(0xFF8A6A14), // شعاع ذهبي غامق واضح / deep gold
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.3,
-            ),
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.3,
+        ),
       ),
     );
   }
