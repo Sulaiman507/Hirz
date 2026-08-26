@@ -133,7 +133,7 @@ class _AdhanSchedulerState extends ConsumerState<_AdhanScheduler> {
         } catch (_) {
           // الغد اختياري — جدولة اليوم وحدها تكفي مؤقتاً
         }
-        await service.scheduleAdhan(all);
+        await service.scheduleAdhan(all, volume: settings.adhanVolume);
       } catch (_) {
         // لا نعطل التطبيق عند فشل الجدولة
       }

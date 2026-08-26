@@ -90,6 +90,12 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
     if (current == null) return;
     await _save(current.copyWith(adhanEnabled: enabled));
   }
+
+  Future<void> updateAdhanVolume(double volume) async {
+    final AppSettings? current = state.valueOrNull;
+    if (current == null) return;
+    await _save(current.copyWith(adhanVolume: volume.clamp(0.1, 1.0)));
+  }
 }
 
 /// المزود الرئيسي للإعدادات / The main settings provider

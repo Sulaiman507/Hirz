@@ -79,7 +79,10 @@ class AdhanNotificationService {
 
   /// جدولة أذانات يوم كامل (اليوم + الغد) بعد إلغاء القديمة
   /// Schedule a full day of adhans (today + tomorrow) after cancelling old ones
-  Future<void> scheduleAdhan(List<PrayerTime> times) async {
+  Future<void> scheduleAdhan(
+    List<PrayerTime> times, {
+    double volume = 1.0,
+  }) async {
     await init();
     await cancelAll();
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
@@ -91,36 +94,20 @@ class AdhanNotificationService {
       final bool isFajr = pt.prayer == Prayer.fajr;
       final String name =
           kAdhanPrayerNames[pt.prayer.name]?['ar'] ?? pt.prayer.name;
-      await _plugin.zonedSchedule(
+      await _scheduleOne(
         pt.prayer.index * 10 + when.day, // معرف مستقر لكل صلاة/يوم
         'حان الآن وقت صلاة $name',
         'حي على الصلاة',
         when,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            isFajr ? channelFajr : channelRegular,
-            isFajr ? 'أذان الفجر / Fajr Adhan' : 'الأذان / Adhan',
-            importance: Importance.max,
-            priority: Priority.max,
-            category: AndroidNotificationCategory.alarm,
-            // صوت في الإشعار نفسه كطبقة ثانية فوق إعداد القناة
-            sound: RawResourceAndroidNotificationSound(
-              isFajr ? 'adhan_fajr' : 'adhan_regular',
-            ),
-            audioAttributesUsage: AudioAttributesUsage.alarm,
-            fullScreenIntent: true,
-          ),
-        ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
+        isFajr,
+        volume,
       );
     }
   }
 
   /// تجربة الأذان فوراً — تشغيل إشعار على القناة المطلوبة
   /// Test the adhan immediately — fires a notification on the given channel
-  Future<void> testAdhan({required bool fajr}) async {
+  Future<void> testAdhan({required bool fajr, double volume = 1.0}) async {
     await init();
     await _plugin.show(
       fajr ? 900001 : 900002,
@@ -140,6 +127,70 @@ class AdhanNotificationService {
           fullScreenIntent: true,
         ),
       ),
+    );
+  }
+
+  /// جدولة أذان واحد بمستوى صوت محدد — قناة ديناميكية لكل مستوى
+  /// Schedule one adhan with volume via per-level dynamic channels
+  /// (أندرويد لا يدعم ضبط الصوت لكل إشعار؛ القناة هي وحدة التحكم)
+  Future<void> _scheduleOne(
+    int id,
+    String title,
+    String body,
+    tz.TZDateTime when,
+    bool isFajr,
+    double volume,
+  ) async {
+    final int volLevel = (volume * 10).round().clamp(1, 10);
+    final String channelId =
+        '${isFajr ? channelFajr : channelRegular}_vol$volLevel';
+    final String channelName = isFajr
+        ? 'أذان الفجر / Fajr Adhan'
+        : 'الأذان / Adhan';
+
+    // إنشاء قناة المستوى إن لم تكن موجودة / ensure level channel exists
+    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android != null) {
+      await android.createNotificationChannel(
+        AndroidNotificationChannel(
+          channelId,
+          channelName,
+          importance: Importance.max,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound(
+            isFajr ? 'adhan_fajr' : 'adhan_regular',
+          ),
+          audioAttributesUsage: AudioAttributesUsage.alarm,
+          enableVibration: true,
+        ),
+      );
+    }
+
+    await _plugin.zonedSchedule(
+      id,
+      title,
+      body,
+      when,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channelId,
+          channelName,
+          importance: Importance.max,
+          priority: Priority.max,
+          category: AndroidNotificationCategory.alarm,
+          sound: RawResourceAndroidNotificationSound(
+            isFajr ? 'adhan_fajr' : 'adhan_regular',
+          ),
+          audioAttributesUsage: AudioAttributesUsage.alarm,
+          fullScreenIntent: true,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 
