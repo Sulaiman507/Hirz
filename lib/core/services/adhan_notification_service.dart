@@ -1,6 +1,7 @@
 // خدمة إشعارات الأذان — قناتان بصوت المؤذن المدمج
 // Adhan notification service — two channels with bundled muezzin audio
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
@@ -77,8 +78,8 @@ class AdhanNotificationService {
     await android.createNotificationChannel(fajr);
   }
 
-  /// جدولة أذانات يوم كامل (اليوم + الغد) بعد إلغاء القديمة
-  /// Schedule a full day of adhans (today + tomorrow) after cancelling old ones
+  /// جدولة أذانات 7 أيام قادمة بعد إلغاء القديمة — يقاوم إعادة تشغيل الجهاز
+  /// Schedule a week of adhans after cancelling old ones — survives reboots
   Future<void> scheduleAdhan(
     List<PrayerTime> times, {
     double volume = 1.0,
@@ -86,24 +87,39 @@ class AdhanNotificationService {
     await init();
     await cancelAll();
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    int scheduled = 0;
     for (final PrayerTime pt in times) {
       if (pt.prayer == Prayer.sunrise)
         continue; // الشروق ليس أذاناً / no adhan at sunrise
       final tz.TZDateTime when = tz.TZDateTime.from(pt.time, tz.local);
       if (!when.isAfter(now)) continue; // فات وقته / already passed
-      final bool isFajr = pt.prayer == Prayer.fajr;
-      final String name =
-          kAdhanPrayerNames[pt.prayer.name]?['ar'] ?? pt.prayer.name;
-      await _scheduleOne(
-        pt.prayer.index * 10 + when.day, // معرف مستقر لكل صلاة/يوم
-        'حان الآن وقت صلاة $name',
-        'حي على الصلاة',
-        when,
-        isFajr,
-        volume,
-      );
+      try {
+        await _scheduleOne(
+          _stableId(pt.prayer, when),
+          'حان الآن وقت صلاة ${_prayerNameAr(pt)}',
+          'حي على الصلاة',
+          when,
+          pt.prayer == Prayer.fajr,
+          volume,
+        );
+        scheduled++;
+      } catch (e) {
+        // فشل أذان واحد لا يوقف البقية — نسجله للمشخص
+        // one failure doesn't abort the rest — logged for diagnostics
+        debugPrint('Hirz: failed to schedule ${pt.prayer.name}: $e');
+      }
     }
+    debugPrint(
+      'Hirz: scheduled $scheduled adhans (volume ${(volume * 100).round()}%)',
+    );
   }
+
+  String _prayerNameAr(PrayerTime pt) =>
+      kAdhanPrayerNames[pt.prayer.name]?['ar'] ?? pt.prayer.name;
+
+  /// معرف مستقر: يوم-شه-سنة + الصلاة / stable id: date + prayer
+  static int _stableId(Prayer prayer, tz.TZDateTime when) =>
+      prayer.index * 100000 + when.year * 400 + when.month * 31 + when.day;
 
   /// تجربة الأذان فوراً — تشغيل إشعار على القناة المطلوبة
   /// Test the adhan immediately — fires a notification on the given channel
@@ -196,6 +212,25 @@ class AdhanNotificationService {
 
   /// إلغاء كل الأذانات المجدولة / cancel all scheduled adhans
   Future<void> cancelAll() => _plugin.cancelAll();
+
+  /// عدد الأذانات المنتظرة حالياً — للتشخيص في الإعدادات
+  /// count of pending scheduled notifications — for diagnostics UI
+  Future<int> pendingCount() async {
+    await init();
+    final List<PendingNotificationRequest> pending = await _plugin
+        .pendingNotificationRequests();
+    return pending.length;
+  }
+
+  /// هل إذن الإشعارات نفسه ممنوح؟ / are notifications enabled at all?
+  Future<bool?> notificationsEnabled() async {
+    await init();
+    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    return android?.areNotificationsEnabled();
+  }
 
   /// طلب إذن الإشعارات (أندرويد 13+) / request POST_NOTIFICATIONS (Android 13+)
   Future<void> ensurePermission() async {

@@ -1,6 +1,7 @@
 // حِرز — نقطة الدخول / Hirz entry point
 // ProviderScope → قراءة الإعدادات → MaterialApp مع ثيم ولغة ديناميكيين
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,8 +12,11 @@ import 'core/l10n/app_localizations.dart';
 import 'core/services/adhan_notification_service.dart';
 import 'core/theme/app_theme.dart';
 import 'domain/entities/app_settings.dart';
+import 'domain/entities/city.dart';
 import 'domain/entities/prayer_time.dart';
 import 'presentation/providers/settings_providers.dart';
+import 'presentation/providers/app_providers.dart';
+import 'presentation/providers/city_providers.dart';
 import 'presentation/providers/prayer_providers.dart';
 import 'presentation/screens/home_screen.dart';
 
@@ -111,7 +115,10 @@ class _AdhanSchedulerState extends ConsumerState<_AdhanScheduler> {
     ref.listenManual(tomorrowTimesProvider, (_, __) => _reschedule());
   }
 
-  /// يلغي الكل إذا كان معطلاً، وإلا يجدول اليوم + الغد
+  /// يلغي الكل إذا كان معطلاً، وإلا يجدول أسبوعاً كاملاً (اليوم + 6 أيام)
+  /// Cancels all when disabled; otherwise schedules a full week ahead.
+  /// أسبوع كامل يقاوم إعادة تشغيل الجهاز وأيام عدم فتح التطبيق
+  /// A week ahead survives reboots and days without opening the app
   void _reschedule() {
     final AppSettings? settings = ref.read(settingsProvider).valueOrNull;
     final AdhanNotificationService service = AdhanNotificationService.instance;
@@ -125,17 +132,26 @@ class _AdhanSchedulerState extends ConsumerState<_AdhanScheduler> {
           prayerTimesProvider.future,
         );
         final List<PrayerTime> all = List<PrayerTime>.of(today.times);
-        try {
-          final DailyPrayerTimes tomorrow = await ref.read(
-            tomorrowTimesProvider.future,
-          );
-          all.addAll(tomorrow.times);
-        } catch (_) {
-          // الغد اختياري — جدولة اليوم وحدها تكفي مؤقتاً
+        final getPrayerTimes = await ref.read(
+          getPrayerTimesUseCaseProvider.future,
+        );
+        final City city = await ref.read(selectedCityProvider.future);
+        for (int i = 1; i <= 6; i++) {
+          try {
+            final DailyPrayerTimes day = await getPrayerTimes(
+              city: city,
+              date: DateTime.now().add(Duration(days: i)),
+              settings: settings,
+            );
+            all.addAll(day.times);
+          } catch (_) {
+            // يوم فاشل لا يوقف البقية / one failed day doesn't abort the rest
+          }
         }
         await service.scheduleAdhan(all, volume: settings.adhanVolume);
-      } catch (_) {
-        // لا نعطل التطبيق عند فشل الجدولة
+      } catch (e) {
+        // نسجل الفشل بدل ابتلاعه — التشخيص أهم
+        debugPrint('Hirz: adhan scheduling failed: $e');
       }
     });
   }

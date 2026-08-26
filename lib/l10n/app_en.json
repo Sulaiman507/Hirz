@@ -106,6 +106,8 @@
  "adhanTestRegular": "Regular",
  "adhanTestFajr": "Fajr",
  "adhanTestOk": "✅ Test notification sent",
+ "schedDiag": "Scheduled adhans",
+ "notifBlocked": "Notifications blocked by system",
  "exactAlarmMissing": "Alarms & reminders permission is off — prayer adhans will not fire. Tap to enable",
  "exactAlarmGrant": "Enable",
  "locateMe": "Auto-locate my city",

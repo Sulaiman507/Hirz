@@ -266,6 +266,8 @@ class SettingsScreen extends ConsumerWidget {
                     // exact-alarm permission status — scheduling gate on Android 14+
                     _ExactAlarmStatusPanel(),
                     const SizedBox(height: 12),
+                    // لوحة تشخيص الجدولة / scheduling diagnostics panel
+                    _SchedulingDiagnosticsPanel(),
                     LuxuryPanel(
                       child: Row(
                         children: <Widget>[
@@ -410,6 +412,73 @@ class SettingsScreen extends ConsumerWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// لوحة تشخيص الجدولة — تعرض عدد الأذانات المنتظرة فعلياً في النظام
+/// Scheduling diagnostics — shows how many adhans are actually pending
+class _SchedulingDiagnosticsPanel extends ConsumerStatefulWidget {
+  const _SchedulingDiagnosticsPanel();
+
+  @override
+  ConsumerState<_SchedulingDiagnosticsPanel> createState() =>
+      _SchedulingDiagnosticsPanelState();
+}
+
+class _SchedulingDiagnosticsPanelState
+    extends ConsumerState<_SchedulingDiagnosticsPanel> {
+  int? _pending;
+  bool? _notifsEnabled;
+
+  @override
+  void initState() {
+    super.initState();
+    _refresh();
+    // تحديث عند أي تغيير إعدادات (تفعيل الأذان يعيد الجدولة)
+    ref.listenManual(settingsProvider, (_, __) => _refresh());
+  }
+
+  Future<void> _refresh() async {
+    final AdhanNotificationService service = AdhanNotificationService.instance;
+    // مهلة قصيرة لتسمح بإعادة الجدولة الجارية / allow in-flight reschedule
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+    final int pending = await service.pendingCount();
+    final bool? notifs = await service.notificationsEnabled();
+    if (mounted) {
+      setState(() {
+        _pending = pending;
+        _notifsEnabled = notifs;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    if (_pending == null) return const SizedBox.shrink();
+    final bool ok = _pending! > 0 && (_notifsEnabled ?? true);
+    return LuxuryPanel(
+      child: Row(
+        children: <Widget>[
+          Icon(
+            ok ? Icons.check_circle_rounded : Icons.warning_amber_rounded,
+            color: ok ? Colors.green : Theme.of(context).colorScheme.error,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              '${l10n.tr('schedDiag')}: $_pending'
+              '${(_notifsEnabled == false) ? ' ⚠️ ${l10n.tr('notifBlocked')}' : ''}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh_rounded),
+            onPressed: _refresh,
+          ),
+        ],
       ),
     );
   }
