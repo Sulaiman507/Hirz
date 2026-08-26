@@ -126,10 +126,10 @@ class AdhanNotificationService {
   Future<void> testAdhan({required bool fajr, double volume = 1.0}) async {
     await init();
     await _plugin.show(
-      fajr ? 900001 : 900002,
-      fajr ? 'تجربة أذان الفجر' : 'تجربة الأذان',
-      'هذه تجربة لصوت الأذان المدمج',
-      NotificationDetails(
+      id: fajr ? 900001 : 900002,
+      title: fajr ? 'تجربة أذان الفجر' : 'تجربة الأذان',
+      body: 'هذه تجربة لصوت الأذان المدمج',
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           fajr ? channelFajr : channelRegular,
           fajr ? 'أذان الفجر / Fajr Adhan' : 'الأذان / Adhan',
@@ -186,11 +186,11 @@ class AdhanNotificationService {
     }
 
     await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      when,
-      NotificationDetails(
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: when,
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           channelId,
           channelName,
