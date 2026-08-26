@@ -261,41 +261,6 @@ class SettingsScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    // حالة إذن المنبه الدقيق — شرط عمل الجدولة على أندرويد 14+
-                    // exact-alarm permission status — scheduling gate on Android 14+
-                    _ExactAlarmStatusPanel(),
-                    const SizedBox(height: 12),
-                    // تشخيص مباشر لعدد الأذانات المجدولة فعلياً في النظام
-                    _AdhanPendingCountRow(),
-                    const SizedBox(height: 8),
-                    // زر اختبار جدولة بعد دقيقة — لتشخيص فوري
-                    _ScheduleTestRow(),
-                    const SizedBox(height: 12),
-                    // مستوى صوت الأذان / Adhan volume
-                    LuxuryPanel(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          const Icon(Icons.volume_down_rounded),
-                          Expanded(
-                            child: Slider(
-                              value: settings.adhanVolume,
-                              min: 0.1,
-                              max: 1.0,
-                              divisions: 9,
-                              label: '${(settings.adhanVolume * 100).round()}%',
-                              onChanged: (double v) =>
-                                  notifier.updateAdhanVolume(v),
-                            ),
-                          ),
-                          const Icon(Icons.volume_up_rounded),
-                        ],
-                      ),
-                    ),
                     const SizedBox(height: 22),
 
                     // ── نوع الخط / Font family ─────────────────────────

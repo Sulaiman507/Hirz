@@ -38,7 +38,6 @@ class AppSettings {
   final String fontFamily; // 'Amiri' | 'Cairo'
   final bool
   adhanEnabled; // إشعار الأذان عند وقت الصلاة / adhan notification at prayer time
-  final double adhanVolume; // مستوى صوت الأذان 0.1 ← 1.0 / adhan volume level
 
   /// فروق الإقامة الافتراضية بالدقائق / Default iqamah offsets in minutes
   static const Map<String, int> defaultIqamahOffsets = {
@@ -60,7 +59,6 @@ class AppSettings {
     this.fontThickness = 1.0,
     this.fontFamily = 'Amiri',
     this.adhanEnabled = false,
-    this.adhanVolume = 1.0,
   });
 
   /// نسخة محدّثة بحقول اختيارية / Updated copy with optional overrides
@@ -74,7 +72,6 @@ class AppSettings {
     double? fontThickness,
     String? fontFamily,
     bool? adhanEnabled,
-    double? adhanVolume,
   }) {
     return AppSettings(
       languageCode: languageCode ?? this.languageCode,
@@ -86,7 +83,6 @@ class AppSettings {
       fontThickness: fontThickness ?? this.fontThickness,
       fontFamily: fontFamily ?? this.fontFamily,
       adhanEnabled: adhanEnabled ?? this.adhanEnabled,
-      adhanVolume: adhanVolume ?? this.adhanVolume,
     );
   }
 }

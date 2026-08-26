@@ -80,19 +80,15 @@ class AdhanNotificationService {
 
   /// جدولة أذانات 7 أيام قادمة بعد إلغاء القديمة — يقاوم إعادة تشغيل الجهاز
   /// Schedule a week of adhans after cancelling old ones — survives reboots
-  Future<void> scheduleAdhan(
-    List<PrayerTime> times, {
-    double volume = 1.0,
-  }) async {
+  Future<void> scheduleAdhan(List<PrayerTime> times) async {
     await init();
     await cancelAll();
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     int scheduled = 0;
     for (final PrayerTime pt in times) {
-      if (pt.prayer == Prayer.sunrise)
-        continue; // الشروق ليس أذاناً / no adhan at sunrise
+      if (pt.prayer == Prayer.sunrise) continue;
       final tz.TZDateTime when = tz.TZDateTime.from(pt.time, tz.local);
-      if (!when.isAfter(now)) continue; // فات وقته / already passed
+      if (!when.isAfter(now)) continue;
       try {
         await scheduleOne(
           _stableId(pt.prayer, when),
@@ -100,18 +96,13 @@ class AdhanNotificationService {
           'حي على الصلاة',
           when,
           pt.prayer == Prayer.fajr,
-          volume,
         );
         scheduled++;
       } catch (e) {
-        // فشل أذان واحد لا يوقف البقية — نسجله للمشخص
-        // one failure doesn't abort the rest — logged for diagnostics
         debugPrint('Hirz: failed to schedule ${pt.prayer.name}: $e');
       }
     }
-    debugPrint(
-      'Hirz: scheduled $scheduled adhans (volume ${(volume * 100).round()}%)',
-    );
+    debugPrint('Hirz: scheduled $scheduled adhans');
   }
 
   String _prayerNameAr(PrayerTime pt) =>
@@ -123,7 +114,7 @@ class AdhanNotificationService {
 
   /// تجربة الأذان فوراً — تشغيل إشعار على القناة المطلوبة
   /// Test the adhan immediately — fires a notification on the given channel
-  Future<void> testAdhan({required bool fajr, double volume = 1.0}) async {
+  Future<void> testAdhan({required bool fajr}) async {
     await init();
     await _plugin.show(
       fajr ? 900001 : 900002,
@@ -155,35 +146,8 @@ class AdhanNotificationService {
     String body,
     tz.TZDateTime when,
     bool isFajr,
-    double volume,
   ) async {
-    final int volLevel = (volume * 10).round().clamp(1, 10);
-    final String channelId =
-        '${isFajr ? channelFajr : channelRegular}_vol$volLevel';
-    final String channelName = isFajr
-        ? 'أذان الفجر / Fajr Adhan'
-        : 'الأذان / Adhan';
-
-    // إنشاء قناة المستوى إن لم تكن موجودة / ensure level channel exists
-    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    if (android != null) {
-      await android.createNotificationChannel(
-        AndroidNotificationChannel(
-          channelId,
-          channelName,
-          importance: Importance.max,
-          playSound: true,
-          sound: RawResourceAndroidNotificationSound(
-            isFajr ? 'adhan_fajr' : 'adhan_regular',
-          ),
-          audioAttributesUsage: AudioAttributesUsage.alarm,
-          enableVibration: true,
-        ),
-      );
-    }
+    final String channelId = isFajr ? channelFajr : channelRegular;
 
     await _plugin.zonedSchedule(
       id,
@@ -193,7 +157,7 @@ class AdhanNotificationService {
       NotificationDetails(
         android: AndroidNotificationDetails(
           channelId,
-          channelName,
+          'الأذان / Adhan',
           importance: Importance.max,
           priority: Priority.max,
           category: AndroidNotificationCategory.alarm,
