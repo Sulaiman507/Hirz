@@ -286,6 +286,9 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
                     // تشخيص مباشر لعدد الأذانات المجدولة فعلياً في النظام
                     _AdhanPendingCountRow(),
+                    const SizedBox(height: 8),
+                    // زر اختبار جدولة بعد دقيقة — لتشخيص فوري
+                    _ScheduleTestRow(),
                     const SizedBox(height: 12),
                     // مستوى صوت الأذان / Adhan volume
                     LuxuryPanel(
@@ -554,6 +557,67 @@ class _AdhanPendingCountRow extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+/// صف اختبار جدولة بعد دقيقة — لتشخيص فوري
+/// Test schedule button — schedules a test notification 1 minute from now
+class _ScheduleTestRow extends ConsumerWidget {
+  const _ScheduleTestRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    return LuxuryPanel(
+      child: Row(
+        children: <Widget>[
+          const Icon(Icons.alarm_add_rounded),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              l10n.tr('scheduleTest'),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () async {
+              final service = AdhanNotificationService.instance;
+              final tz.TZDateTime when = tz.TZDateTime.now(
+                tz.local,
+              ).add(const Duration(minutes: 1));
+              try {
+                await service._scheduleOne(
+                  999999,
+                  'اختبار جدولة — ${l10n.tr('scheduleTest')}',
+                  'هذا اختبار جدولة بعد دقيقة واحدة',
+                  when,
+                  false,
+                  1.0,
+                );
+                final count = await service.pendingCount();
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '✅ اختبار الجدولة نجح — الأذانات المجدولة: $count',
+                      ),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('❌ فشل اختبار الجدولة: $e')),
+                  );
+                }
+              }
+            },
+            icon: const Icon(Icons.play_arrow_rounded),
+            label: Text(l10n.tr('scheduleTest')),
+          ),
+        ],
+      ),
     );
   }
 }
