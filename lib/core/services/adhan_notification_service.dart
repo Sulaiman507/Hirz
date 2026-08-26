@@ -94,7 +94,7 @@ class AdhanNotificationService {
       final tz.TZDateTime when = tz.TZDateTime.from(pt.time, tz.local);
       if (!when.isAfter(now)) continue; // فات وقته / already passed
       try {
-        await service.scheduleOne(
+        await scheduleOne(
           _stableId(pt.prayer, when),
           'حان الآن وقت صلاة ${_prayerNameAr(pt)}',
           'حي على الصلاة',
