@@ -119,8 +119,8 @@ void main() {
       expect(fajr.time.hour, lessThan(6), reason: 'فجر جاكرتا مبكر');
       expect(
         dhuhr.time.hour,
-        inExclusiveRange(11, 14),
-        reason: 'ظهر جاكرتا حول الظهيرة',
+        inExclusiveRange(10, 14),
+        reason: 'ظهر جاكرتا حوالي الظهيرة',
       );
     });
 
@@ -178,7 +178,11 @@ void main() {
           channelFor(0.1),
           '${AdhanNotificationService.channelRegular}_vol1',
         );
-        expect(channelFor(0.15), channelFor(0.1)); // التقريب يثبت المستوى
+        expect(channelFor(0.14), channelFor(0.1)); // round(1.4)=1 → نفس المستوى
+        expect(
+          channelFor(0.15),
+          channelFor(0.2),
+        ); // round(1.5)=2 → banker's-free rounding up
         expect(channelFor(0.64), channelFor(0.6));
         // فجر وغير فجر قناتان مختلفتان لنفس المستوى
         final int volFajr = (0.6 * 10).round().clamp(1, 10);
