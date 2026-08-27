@@ -256,16 +256,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-// يعيد تشغيل التطبيق بعد الإقلاع لتفعيل reschedule callback
-// Restarts the app after boot to trigger reschedule callback
+// بعد الإقلاع، الجدولة التالية تلقائية عند فتح التطبيق.
+// بعد reboot، نعتمد على reschedule callback عند أول فتح.
+// After boot, the next open triggers reschedule automatically.
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent != null && Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-            Log.i("Hirz", "BootReceiver: rescheduling adhans");
-            Intent i = new Intent(context, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(i);
+            Log.i("Hirz", "BootReceiver: boot completed, adhan reschedule will run on next app open");
         }
     }
 }
