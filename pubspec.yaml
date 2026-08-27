@@ -9,7 +9,7 @@ dependencies:
   intl: any  # flutter_localizations يثبّت إصدار intl الصارم — any يمنع تعارض الحل
   flutter_riverpod: ^2.6.1
   adhan: ^2.0.0
-  timezone: ^0.9.4
+  timezone: ^0.11.1
   shared_preferences: ^2.3.5
   flutter_animate: ^4.5.2
   flutter_local_notifications: ^22.3.0
