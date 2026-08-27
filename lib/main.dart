@@ -153,7 +153,7 @@ class _AdhanSchedulerState extends ConsumerState<_AdhanScheduler> {
             // يوم فاشل لا يوقف البقية / one failed day doesn't abort the rest
           }
         }
-        await service.scheduleAdhan(all);
+        await service.scheduleAdhan(all, timezoneId: city.timezoneId);
       } catch (e) {
         // نسجل الفشل بدل ابتلاعه — التشخيص أهم
         debugPrint('Hirz: adhan scheduling failed: $e');

@@ -83,14 +83,20 @@ class AdhanNotificationService {
 
   /// جدولة أذانات 7 أيام قادمة بعد إلغاء القديمة — يقاوم إعادة تشغيل الجهاز
   /// Schedule a week of adhans after cancelling old ones — survives reboots
-  Future<void> scheduleAdhan(List<PrayerTime> times) async {
+  Future<void> scheduleAdhan(
+    List<PrayerTime> times, {
+    String? timezoneId,
+  }) async {
     await init();
     await cancelAll();
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    final tz.Location location = timezoneId != null && timezoneId.isNotEmpty
+        ? tz.getLocation(timezoneId)
+        : tz.local;
+    final tz.TZDateTime now = tz.TZDateTime.now(location);
     int scheduled = 0;
     for (final PrayerTime pt in times) {
       if (pt.prayer == Prayer.sunrise) continue;
-      final tz.TZDateTime when = tz.TZDateTime.from(pt.time, tz.local);
+      final tz.TZDateTime when = tz.TZDateTime.from(pt.time, location);
       if (!when.isAfter(now)) continue;
       try {
         await scheduleOne(
