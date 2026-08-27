@@ -17,12 +17,12 @@ KEEP_XML = """<?xml version="1.0" encoding="utf-8"?>
 
 
 def add_keep_xml() -> None:
-    raw_dir = os.path.join(SCAFFOLD, 'android/app/src/main/res/raw')
-    os.makedirs(raw_dir, exist_ok=True)
-    path = os.path.join(raw_dir, 'keep.xml')
+    xml_dir = os.path.join(SCAFFOLD, 'android/app/src/main/res/xml')
+    os.makedirs(xml_dir, exist_ok=True)
+    path = os.path.join(xml_dir, 'keep.xml')
     with open(path, 'w', encoding='utf-8') as f:
         f.write(KEEP_XML)
-    print('keep.xml written to res/raw')
+    print('keep.xml written to res/xml')
 
 
 if __name__ == '__main__':

@@ -257,6 +257,22 @@ class SettingsScreen extends ConsumerWidget {
                               await notifier.updateAdhanEnabled(v);
                             },
                           ),
+                          IconButton(
+                            tooltip: l10n.tr('adhanTest'),
+                            icon: const Icon(Icons.play_arrow_rounded),
+                            onPressed: () async {
+                              await AdhanNotificationService.instance
+                                  .testAdhan(fajr: false);
+                            },
+                          ),
+                          IconButton(
+                            tooltip: l10n.tr('adhanTestFajr'),
+                            icon: const Icon(Icons.wb_twilight_rounded),
+                            onPressed: () async {
+                              await AdhanNotificationService.instance
+                                  .testAdhan(fajr: true);
+                            },
+                          ),
                         ],
                       ),
                     ),
