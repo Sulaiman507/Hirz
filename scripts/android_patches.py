@@ -192,7 +192,7 @@ def patch_gradle_desugaring() -> None:
                 dep_line = (
                     '    coreLibraryDesugaring('
                     '"com.android.tools:desugar_jdk_libs:'
-                    + DESUGAR_VERSION + ')\n'
+                    + DESUGAR_VERSION + '")\n'
                 )
             else:
                 content = content.replace(
