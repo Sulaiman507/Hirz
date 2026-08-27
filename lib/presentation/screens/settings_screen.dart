@@ -262,6 +262,14 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 22),
 
+                    // ── تشخيص الجدولة / Scheduling diagnostics ─────────
+                    const _SchedulingDiagnosticsPanel(),
+                    const SizedBox(height: 22),
+
+                    // ── إذن المنبه الدقيق / Exact alarm status ──────────
+                    const _ExactAlarmStatusPanel(),
+                    const SizedBox(height: 22),
+
                     // ── نوع الخط / Font family ─────────────────────────
                     LuxurySectionTitle(
                       title: l10n.tr('fontFamily'),
