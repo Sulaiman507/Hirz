@@ -452,28 +452,40 @@ class _ExactAlarmStatusPanelState
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    if (_checking || _granted == null || _granted!) {
-      return const SizedBox.shrink(); // كل شيء سليم — لا نعرض شيئاً
+    if (_checking || _granted == null) {
+      return const LuxuryPanel(
+        child: SizedBox(
+          height: 32,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        ),
+      );
     }
+    final bool ok = _granted!;
     return LuxuryPanel(
       child: Row(
         children: <Widget>[
+          Icon(
+            ok ? Icons.check_circle_rounded : Icons.warning_amber_rounded,
+            color: ok ? Colors.green : Theme.of(context).colorScheme.error,
+          ),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
-              l10n.tr('exactAlarmMissing'),
+              ok ? l10n.tr('exactAlarmGranted') : l10n.tr('exactAlarmMissing'),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.error,
+                color: ok ? null : Theme.of(context).colorScheme.error,
               ),
             ),
           ),
-          TextButton.icon(
-            onPressed: () async {
-              await AdhanNotificationService.instance.ensurePermission();
-              await _check();
-            },
-            icon: const Icon(Icons.alarm_on_rounded),
-            label: Text(l10n.tr('exactAlarmGrant')),
-          ),
+          if (!ok)
+            TextButton.icon(
+              onPressed: () async {
+                await AdhanNotificationService.instance.ensurePermission();
+                await _check();
+              },
+              icon: const Icon(Icons.alarm_on_rounded),
+              label: Text(l10n.tr('exactAlarmGrant')),
+            ),
         ],
       ),
     );
