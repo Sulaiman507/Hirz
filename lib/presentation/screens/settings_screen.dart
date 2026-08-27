@@ -273,6 +273,14 @@ class SettingsScreen extends ConsumerWidget {
                                   .testAdhan(fajr: true);
                             },
                           ),
+                          IconButton(
+                            tooltip: 'اختبار جدولة بعد دقيقة',
+                            icon: const Icon(Icons.timer_outlined),
+                            onPressed: () async {
+                              await AdhanNotificationService.instance
+                                  .testScheduleOnce();
+                            },
+                          ),
                         ],
                       ),
                     ),

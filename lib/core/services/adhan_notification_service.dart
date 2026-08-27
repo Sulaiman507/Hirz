@@ -121,6 +121,22 @@ class AdhanNotificationService {
   static int _stableId(Prayer prayer, tz.TZDateTime when) =>
       prayer.index * 100000 + when.year * 400 + when.month * 31 + when.day;
 
+  /// تجربة الجدولة الفعلية — يضيف إشعار بعد دقيقة لاختبار مسار الجدولة
+  /// Test scheduled path — schedules a notification 1 minute from now
+  Future<void> testScheduleOnce() async {
+    await init();
+    final tz.Location location = tz.local;
+    final tz.TZDateTime when = tz.TZDateTime.now(location).add(const Duration(minutes: 1));
+    final int id = DateTime.now().millisecondsSinceEpoch % 100000;
+    await scheduleOne(
+      id,
+      'اختبار جدولة الأذان',
+      'هذا إشعار تجريبي بعد دقيقة — لو وصلت فالجدولة شغالة',
+      when,
+      false,
+    );
+  }
+
   /// تجربة الأذان فوراً — تشغيل إشعار على القناة المطلوبة
   /// Test the adhan immediately — fires a notification on the given channel
   Future<void> testAdhan({required bool fajr}) async {
