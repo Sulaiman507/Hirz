@@ -40,7 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// Auto-refresh date + times at midnight
   void _scheduleMidnightRefresh() {
     final DateTime now = DateTime.now();
-    final DateTime nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    final DateTime nextMidnight = now.add(const Duration(days: 1));
     _midnightTimer?.cancel();
     _midnightTimer = Timer(nextMidnight.difference(now), () {
       if (!mounted) return;
