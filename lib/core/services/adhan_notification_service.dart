@@ -40,7 +40,7 @@ class AdhanNotificationService {
       '@mipmap/ic_launcher',
     );
     await _plugin.initialize(
-      const InitializationSettings(android: android),
+      settings: const InitializationSettings(android: android),
       onDidReceiveNotificationResponse: (_) {},
     );
     await _createChannels();
