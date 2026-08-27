@@ -127,14 +127,6 @@ class AdhanNotificationService {
   /// Test scheduled path — schedules a notification 1 minute from now
   Future<void> testScheduleOnce() async {
     await init();
-    final AppSettings settings = AppSettings(
-      languageCode: 'ar',
-      isDarkMode: false,
-      method: CalculationMethod.ummAlQura,
-      madhab: Madhab.shafi,
-      use24HourFormat: false,
-      iqamahOffsets: AppSettings.defaultIqamahOffsets,
-    );
     final City fallbackCity = City(
       id: 'test',
       nameEn: 'Test',
