@@ -39,7 +39,10 @@ class AdhanNotificationService {
     const AndroidInitializationSettings android = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
-    await _plugin.initialize(const InitializationSettings(android: android));
+    await _plugin.initialize(
+      const InitializationSettings(android: android),
+      onDidReceiveNotificationResponse: (_) {},
+    );
     await _createChannels();
     _initialized = true;
   }
@@ -169,8 +172,6 @@ class AdhanNotificationService {
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 
