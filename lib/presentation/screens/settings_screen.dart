@@ -279,7 +279,6 @@ class SettingsScreen extends ConsumerWidget {
                             onPressed: () async {
                               final bool ok = await AdhanNotificationService.instance
                                   .testScheduleOnce();
-                              if (!mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(ok
