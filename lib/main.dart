@@ -127,6 +127,12 @@ class _AdhanSchedulerState extends ConsumerState<_AdhanScheduler> {
     }
     Future<void>(() async {
       try {
+        await service.requireExactAlarm();
+      } on StateError catch (_) {
+        debugPrint('Hirz: exact alarm not granted, skip scheduling');
+        return;
+      } catch (_) {}
+      try {
         final DailyPrayerTimes today = await ref.read(
           prayerTimesProvider.future,
         );

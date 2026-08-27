@@ -212,6 +212,21 @@ class AdhanNotificationService {
     }
   }
 
+  /// يتحقق من إذن الجدولة الدقيقة — يرمي خطأ واضح إذا غير مفعّل
+  /// Checks exact-alarm permission; throws if not granted so UI can react
+  Future<void> requireExactAlarm() async {
+    await init();
+    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    if (android == null) return;
+    final bool? granted = await android.canScheduleExactNotifications();
+    if (granted != true) {
+      throw StateError('EXACT_ALARM_NOT_GRANTED');
+    }
+  }
+
   /// هل إذن الجدولة الدقيقة ممنوح؟ / is exact alarm permission granted?
   /// null = غير معروف على هذه المنصة / unknown on this platform
   Future<bool?> exactAlarmGranted() async {
