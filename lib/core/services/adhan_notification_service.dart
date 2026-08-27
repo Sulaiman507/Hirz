@@ -7,6 +7,8 @@ import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../domain/entities/prayer_time.dart';
+import '../../domain/entities/app_settings.dart';
+import '../../domain/entities/city.dart';
 
 /// أسماء الصلوات بالعربية والإنجليزية للإشعار / Prayer names for the notification
 const Map<String, Map<String, String>> kAdhanPrayerNames =
@@ -125,16 +127,40 @@ class AdhanNotificationService {
   /// Test scheduled path — schedules a notification 1 minute from now
   Future<void> testScheduleOnce() async {
     await init();
-    final tz.Location location = tz.local;
+    final AppSettings settings = AppSettings(
+      languageCode: 'ar',
+      isDarkMode: false,
+      method: CalculationMethod.ummAlQura,
+      madhab: Madhab.shafi,
+      use24HourFormat: false,
+      iqamahOffsets: AppSettings.defaultIqamahOffsets,
+    );
+    final City fallbackCity = City(
+      id: 'test',
+      nameEn: 'Test',
+      nameAr: 'اختبار',
+      countryEn: '',
+      countryAr: '',
+      latitude: 0,
+      longitude: 0,
+      timezoneOffsetHours: 0,
+      timezoneId: DateTime.now().timeZoneName,
+    );
+    final tz.Location location = tz.getLocation(fallbackCity.timezoneId!);
     final tz.TZDateTime when = tz.TZDateTime.now(location).add(const Duration(minutes: 1));
     final int id = DateTime.now().millisecondsSinceEpoch % 100000;
-    await scheduleOne(
-      id,
-      'اختبار جدولة الأذان',
-      'هذا إشعار تجريبي بعد دقيقة — لو وصلت فالجدولة شغالة',
-      when,
-      false,
-    );
+    try {
+      await scheduleOne(
+        id,
+        'اختبار جدولة الأذان',
+        'هذا إشعار تجريبي بعد دقيقة — لو وصلت فالجدولة شغالة',
+        when,
+        false,
+      );
+      debugPrint('Hirz: testScheduleOnce fired OK id=$id when=$when');
+    } catch (e) {
+      debugPrint('Hirz: testScheduleOnce FAILED: $e');
+    }
   }
 
   /// تجربة الأذان فوراً — تشغيل إشعار على القناة المطلوبة
