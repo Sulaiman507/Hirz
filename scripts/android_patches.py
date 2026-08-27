@@ -4,6 +4,7 @@
 ١) حقن الصلاحيات في AndroidManifest.xml (إشعارات + منبه دقيق + اهتزاز + اقلاع)
 ٢) نسخ ملفات الأذان إلى android/app/src/main/res/raw لقنوات الإشعار
 ٣) تمكين core library desugaring (مطلوب لمكتبة الإشعارات مع minSdk < 26)
+٤) كتابة BootReceiver.class + تسجيله في الـ manifest لإعادة جدولة الأذان بعد reboot
 """
 import os
 import re
@@ -59,7 +60,6 @@ def patch_root_subprojects_floor() -> None:
     """فرض حد أدنى compileSdk=36 على كل موديولات Android (بما فيها plugins).
 
     Force a compileSdk floor of 36 across all Android subprojects (plugins).
-    Flutter's template root build file may not exist as .kts — handle both.
     """
     for candidate in (
         'android/build.gradle.kts',
@@ -157,7 +157,6 @@ def patch_gradle_desugaring() -> None:
             content = f.read()
         # رفع compileSdk لمتطلبات geolocator/notifications
         # القالب يستخدم flutter.compileSdkVersion (رمز) → نستبدله برقم صريح 36
-        # template uses symbolic flutter.compileSdkVersion → replace with literal 36
         new_content = re.sub(
             r'compileSdk\s*=\s*flutter\.compileSdkVersion',
             'compileSdk = 36',
@@ -193,7 +192,7 @@ def patch_gradle_desugaring() -> None:
                 dep_line = (
                     '    coreLibraryDesugaring('
                     '"com.android.tools:desugar_jdk_libs:'
-                    + DESUGAR_VERSION + '")\n'
+                    + DESUGAR_VERSION + ')\n'
                 )
             else:
                 content = content.replace(
@@ -221,23 +220,14 @@ def patch_gradle_desugaring() -> None:
     print('gradle: WARNING no build.gradle found')
 
 
-if __name__ == '__main__':
-    patch_manifest()
-    copy_audio()
-    patch_gradle_desugaring()
-    patch_root_subprojects_floor()
-
-    # keep.xml: منع shrinkResources من حذف أصوات الأذان في release
-    # keep.xml: prevent shrinkResources from stripping adhan sounds in release
-    import subprocess
-    subprocess.run(['python3', os.path.join(ROOT, 'scripts', 'add_keep_xml.py')], check=False)
-
-    # BootReceiver: إعادة جدولة الأذان عند إقلاع الجهاز
-    # BootReceiver: reschedule adhan after device boot
-    _write_boot_receiver()
-    patch_boot_receiver_manifest()
+# keep.xml: منع shrinkResources من حذف أصوات الأذان في release
+# keep.xml: prevent shrinkResources from stripping adhan sounds in release
+import subprocess
+subprocess.run(['python3', os.path.join(ROOT, 'scripts', 'add_keep_xml.py')], check=False)
 
 
+# BootReceiver: إعادة جدولة الأذان عند إقلاع الجهاز
+# BootReceiver: reschedule adhan after device boot
 def _boot_receiver_package() -> str:
     # نحاول قراءة package من AndroidManifest.xml
     try:
@@ -306,3 +296,12 @@ def patch_boot_receiver_manifest() -> None:
     with open(path, 'w', encoding='utf-8') as f:
         f.write(content)
     print('manifest: injected BootReceiver')
+
+
+if __name__ == '__main__':
+    patch_manifest()
+    copy_audio()
+    patch_gradle_desugaring()
+    patch_root_subprojects_floor()
+    _write_boot_receiver()
+    patch_boot_receiver_manifest()
