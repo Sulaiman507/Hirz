@@ -231,3 +231,78 @@ if __name__ == '__main__':
     # keep.xml: prevent shrinkResources from stripping adhan sounds in release
     import subprocess
     subprocess.run(['python3', os.path.join(ROOT, 'scripts', 'add_keep_xml.py')], check=False)
+
+    # BootReceiver: إعادة جدولة الأذان عند إقلاع الجهاز
+    # BootReceiver: reschedule adhan after device boot
+    _write_boot_receiver()
+    patch_boot_receiver_manifest()
+
+
+def _boot_receiver_package() -> str:
+    # نحاول قراءة package من AndroidManifest.xml
+    try:
+        path = os.path.join(SCAFFOLD, 'android/app/src/main/AndroidManifest.xml')
+        with open(path, encoding='utf-8') as f:
+            content = f.read()
+        m = re.search(r'package="([^"]+)"', content)
+        if m is not None and m.group(1) is not None and m.group(1).strip() != '':
+            return m.group(1).strip()
+    except Exception:
+        pass
+    return 'dev.hirz'
+
+
+def _write_boot_receiver() -> None:
+    pkg = _boot_receiver_package()
+    pkg_dir = pkg.replace('.', os.sep)
+    java_dir = os.path.join(SCAFFOLD, 'android/app/src/main/java', pkg_dir)
+    os.makedirs(java_dir, exist_ok=True)
+    receiver_path = os.path.join(java_dir, 'BootReceiver.java')
+    with open(receiver_path, 'w', encoding='utf-8') as f:
+        f.write('''package ''' + pkg + ''';
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+// يعيد تشغيل التطبيق بعد الإقلاع لتفعيل reschedule callback
+// Restarts the app after boot to trigger reschedule callback
+public class BootReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent != null && Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+            Log.i("Hirz", "BootReceiver: rescheduling adhans");
+            Intent i = new Intent(context, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }
+    }
+}
+''')
+    print('BootReceiver written to', receiver_path)
+
+
+def patch_boot_receiver_manifest() -> None:
+    path = os.path.join(SCAFFOLD, 'android/app/src/main/AndroidManifest.xml')
+    with open(path, encoding='utf-8') as f:
+        content = f.read()
+    pkg = _boot_receiver_package()
+    receiver_block = (
+        '        <receiver\n'
+        '            android:name=".BootReceiver"\n'
+        '            android:enabled="true"\n'
+        '            android:exported="true">\n'
+        '            <intent-filter>\n'
+        '                <action android:name="android.intent.action.BOOT_COMPLETED"/>\n'
+        '                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>\n'
+        '            </intent-filter>\n'
+        '        </receiver>\n'
+    )
+    if 'BootReceiver' in content:
+        print('manifest: BootReceiver already present')
+        return
+    content = content.replace('</application>', receiver_block + '    </application>', 1)
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print('manifest: injected BootReceiver')
