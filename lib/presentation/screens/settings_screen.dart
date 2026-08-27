@@ -277,8 +277,17 @@ class SettingsScreen extends ConsumerWidget {
                             tooltip: 'اختبار جدولة بعد دقيقة',
                             icon: const Icon(Icons.timer_outlined),
                             onPressed: () async {
-                              await AdhanNotificationService.instance
+                              final bool ok = await AdhanNotificationService.instance
                                   .testScheduleOnce();
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(ok
+                                      ? '✅ تم جدولة اختبار الأذان بعد دقيقة'
+                                      : '❌ فشل جدولة الاختبار — تأكد من إذن المنبه الدقيق'),
+                                  duration: const Duration(seconds: 3),
+                                ),
+                              );
                             },
                           ),
                         ],

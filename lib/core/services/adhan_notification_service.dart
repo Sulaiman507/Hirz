@@ -124,23 +124,18 @@ class AdhanNotificationService {
 
   /// تجربة الجدولة الفعلية — يضيف إشعار بعد دقيقة لاختبار مسار الجدولة
   /// Test scheduled path — schedules a notification 1 minute from now
-  Future<void> testScheduleOnce() async {
+  Future<bool> testScheduleOnce() async {
     await init();
-    final City fallbackCity = City(
-      id: 'test',
-      nameEn: 'Test',
-      nameAr: 'اختبار',
-      countryEn: '',
-      countryAr: '',
-      latitude: 0,
-      longitude: 0,
-      timezoneOffsetHours: 0,
-      timezoneId: DateTime.now().timeZoneName,
-    );
-    final tz.Location location = tz.getLocation(fallbackCity.timezoneId!);
-    final tz.TZDateTime when = tz.TZDateTime.now(location).add(const Duration(minutes: 1));
-    final int id = DateTime.now().millisecondsSinceEpoch % 100000;
     try {
+      await requireExactAlarm();
+    } on StateError {
+      debugPrint('Hirz: testScheduleOnce blocked — exact alarm not granted');
+      return false;
+    } catch (_) {}
+    try {
+      final tz.Location location = tz.local;
+      final tz.TZDateTime when = tz.TZDateTime.now(location).add(const Duration(minutes: 1));
+      final int id = DateTime.now().millisecondsSinceEpoch % 100000;
       await scheduleOne(
         id,
         'اختبار جدولة الأذان',
@@ -148,9 +143,11 @@ class AdhanNotificationService {
         when,
         false,
       );
-      debugPrint('Hirz: testScheduleOnce fired OK id=$id when=$when');
+      debugPrint('Hirz: testScheduleOnce OK id=$id when=$when');
+      return true;
     } catch (e) {
       debugPrint('Hirz: testScheduleOnce FAILED: $e');
+      return false;
     }
   }
 
