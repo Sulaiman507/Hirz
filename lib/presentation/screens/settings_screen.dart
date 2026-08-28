@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app_settings/app_settings.dart';
 
 import '../../core/services/adhan_notification_service.dart';
 import '../../domain/entities/app_settings.dart';
@@ -520,6 +521,14 @@ class _ExactAlarmStatusPanelState
               },
               icon: const Icon(Icons.alarm_on_rounded),
               label: Text(l10n.tr('exactAlarmGrant')),
+            ),
+          if (!ok)
+            TextButton.icon(
+              onPressed: () async {
+                await AdhanNotificationService.instance.openAppSettings();
+              },
+              icon: const Icon(Icons.settings_rounded),
+              label: const Text('إعدادات'),
             ),
         ],
       ),
