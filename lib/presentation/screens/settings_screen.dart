@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:app_settings/app_settings.dart' as app_settings;
 
 import '../../core/services/adhan_notification_service.dart';
 import '../../domain/entities/app_settings.dart';
@@ -524,7 +525,7 @@ class _ExactAlarmStatusPanelState
           if (!ok)
             TextButton.icon(
               onPressed: () async {
-                await openAppSettings();
+                await app_settings.AppSettings.openAppSettings();
               },
               icon: const Icon(Icons.settings_rounded),
               label: const Text('إعدادات'),
