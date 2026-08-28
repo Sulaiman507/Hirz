@@ -255,6 +255,25 @@ class SettingsScreen extends ConsumerWidget {
                                     .ensurePermission();
                               }
                               await notifier.updateAdhanEnabled(v);
+                              if (v) {
+                                final bool? granted = await AdhanNotificationService
+                                    .instance
+                                    .exactAlarmGranted();
+                                if (granted != true) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                        '⚠️ المنبه الدقيق مطلوب — الإعدادات → التطبيقات → حِرز → الأذان',
+                                      ),
+                                      duration: const Duration(seconds: 6),
+                                      action: SnackBarAction(
+                                        label: 'حسناً',
+                                        onPressed: () {},
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
                             },
                           ),
                           IconButton(
