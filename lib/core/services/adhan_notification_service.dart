@@ -133,8 +133,12 @@ class AdhanNotificationService {
     } catch (_) {}
     try {
       final tz.Location location = tz.local;
-      final tz.TZDateTime when = tz.TZDateTime.now(location).add(const Duration(minutes: 1));
+      final tz.TZDateTime now = tz.TZDateTime.now(location);
+      final tz.TZDateTime when = now.add(const Duration(minutes: 1));
       final int id = DateTime.now().millisecondsSinceEpoch % 100000;
+      debugPrint(
+        'Hirz: testScheduleOnce now=$now when=$when location=${location.name}',
+      );
       await scheduleOne(
         id,
         'اختبار جدولة الأذان',
@@ -142,7 +146,8 @@ class AdhanNotificationService {
         when,
         false,
       );
-      debugPrint('Hirz: testScheduleOnce OK id=$id when=$when');
+      final pending = await pendingCount();
+      debugPrint('Hirz: testScheduleOnce OK id=$id pendingNow=$pending');
       return true;
     } catch (e) {
       debugPrint('Hirz: testScheduleOnce FAILED: $e');
