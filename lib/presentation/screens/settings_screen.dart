@@ -261,18 +261,7 @@ class SettingsScreen extends ConsumerWidget {
                                     .instance
                                     .exactAlarmGranted();
                                 if (granted != true) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text(
-                                        '⚠️ المنبه الدقيق مطلوب — الإعدادات → التطبيقات → حِرز → الأذان',
-                                      ),
-                                      duration: const Duration(seconds: 6),
-                                      action: SnackBarAction(
-                                        label: 'حسناً',
-                                        onPressed: () {},
-                                      ),
-                                    ),
-                                  );
+                                  await app_settings.AppSettings.openAppSettings();
                                 }
                               }
                             },
@@ -513,15 +502,6 @@ class _ExactAlarmStatusPanelState
               ),
             ),
           ),
-          if (!ok)
-            TextButton.icon(
-              onPressed: () async {
-                await AdhanNotificationService.instance.ensurePermission();
-                await _check();
-              },
-              icon: const Icon(Icons.alarm_on_rounded),
-              label: Text(l10n.tr('exactAlarmGrant')),
-            ),
           if (!ok)
             TextButton.icon(
               onPressed: () async {
