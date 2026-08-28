@@ -277,4 +277,15 @@ class AdhanNotificationService {
         >();
     return android?.canScheduleExactNotifications();
   }
+
+  /// افتح صفحة إعدادات التطبيق — لتعديل إذن المنبه الدقيق يدوياً
+  /// Open app settings page — to manually grant exact alarm permission
+  Future<void> openAppSettings() async {
+    await init();
+    final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    await android?.openAppSettings();
+  }
 }

@@ -3,7 +3,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_settings/app_settings.dart' show openAppSettings;
 
 import '../../core/services/adhan_notification_service.dart';
 import '../../domain/entities/app_settings.dart';
