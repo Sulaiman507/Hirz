@@ -33,12 +33,11 @@ final Provider<PrayerTimesLocalDatasource> prayerTimesLocalDatasourceProvider =
     );
 
 /// SettingsLocalDatasource — مطلوب للإعدادات + الإشعارات
-final Provider<SettingsLocalDatasource> settingsLocalDatasourceProvider =
-    Provider<SettingsLocalDatasource>((Ref ref) {
-      final SharedPreferences prefs = ref.watch(sharedPreferencesProvider).valueOrNull ??
-          throw StateError('SharedPreferences not loaded');
-      return SettingsLocalDatasource(prefs);
-    });
+final FutureProvider<SettingsLocalDatasource> settingsLocalDatasourceProvider =
+    FutureProvider<SettingsLocalDatasource>((Ref ref) async {
+  final SharedPreferences prefs = await ref.watch(sharedPreferencesProvider.future);
+  return SettingsLocalDatasource(prefs);
+});
 
 /// المستودعات / Repositories
 final FutureProvider<CityRepository> cityRepositoryProvider =

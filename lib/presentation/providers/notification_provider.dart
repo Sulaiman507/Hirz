@@ -13,6 +13,9 @@ import '../../domain/entities/prayer_time.dart';
 import '../../domain/usecases/get_prayer_times.dart';
 import '../../domain/usecases/notification_usecases.dart';
 import 'app_providers.dart';
+import 'settings_providers.dart';
+import 'prayer_providers.dart';
+import 'city_providers.dart';
 
 /// مزود إعدادات الإشعارات / Notification settings notifier
 class NotificationNotifier extends AsyncNotifier<NotificationSettings> {
@@ -83,15 +86,15 @@ class NotificationNotifier extends AsyncNotifier<NotificationSettings> {
 /// المزود الرئيسي للإعدادات / Main notification provider
 final AsyncNotifierProvider<NotificationNotifier, NotificationSettings>
 notificationProvider =
-    AsyncNotifierProvider<NotificationNotifier, NotificationNotifier>(
+    AsyncNotifierProvider<NotificationNotifier, NotificationSettings>(
   NotificationNotifier.new,
 );
 
 /// خدمة الإشعارات كـ provider / notification service provider
 final Provider<AdhanNotificationService> adhanNotificationServiceProvider =
-    Provider<AdhanNotificationService>((ProviderRef<AdhanNotificationService> ref) {
-  return AdhanNotificationService.instance;
-});
+    Provider<AdhanNotificationService>(
+  (Ref ref) => AdhanNotificationService.instance,
+);
 
 /// حالة الجدولة / scheduling state
 class SchedulingState {
@@ -191,6 +194,5 @@ class AutoSchedulingNotifier extends StateNotifier<SchedulingState> {
 final StateNotifierProvider<AutoSchedulingNotifier, SchedulingState>
 autoSchedulingProvider =
     StateNotifierProvider<AutoSchedulingNotifier, SchedulingState>(
-  (StateNotifierProviderRef<AutoSchedulingNotifier, SchedulingState> ref) =>
-      AutoSchedulingNotifier(ref),
+  (Ref ref) => AutoSchedulingNotifier(ref),
 );

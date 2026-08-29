@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
-import '../../domain/entities/prayer_time.dart';
 import '../../domain/entities/notification_settings.dart';
 
 /// أسماء الصلوات بالعربية والإنجليزية للإشعار / Prayer names for notifications

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/prayer_time.dart';
+import '../../domain/entities/notification_settings.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../providers/settings_providers.dart';
 import '../providers/notification_provider.dart';

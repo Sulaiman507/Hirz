@@ -1,6 +1,8 @@
 // حالات استخدام الإشعارات / Notification use cases
 // تفصل منطق الجدولة عن الـ provider
 
+import 'package:timezone/timezone.dart' as tz;
+
 import '../../core/services/adhan_notification_service.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/city.dart';
@@ -75,7 +77,7 @@ class ScheduleAdhansUseCase {
           alertType: pn.type,
         );
         scheduled++;
-      } catch (e) {
+      } catch (_) {
         failed++;
       }
 
@@ -88,12 +90,12 @@ class ScheduleAdhansUseCase {
         if (iqamahWhen.isAfter(now)) {
           try {
             await _service.scheduleIqamah(
-              id: id + 500000, // تفادي تصادم المعرفات / avoid id collision
+              id: id + 500000,
               prayerName: pt.prayer.name,
               when: iqamahWhen,
             );
             scheduled++;
-          } catch (e) {
+          } catch (_) {
             failed++;
           }
         }

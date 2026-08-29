@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
 import '../../domain/entities/notification_settings.dart';
+import '../../domain/entities/prayer_time.dart';
 import '../providers/notification_provider.dart';
 
 /// صف إعدادات صلاة واحدة / Single prayer notification row
