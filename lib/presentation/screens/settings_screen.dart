@@ -8,7 +8,9 @@ import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../../core/l10n/app_localizations.dart';
 import '../providers/settings_providers.dart';
+import '../providers/notification_provider.dart';
 import '../widgets/luxury_components.dart';
+import '../widgets/notification_settings_panel.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -17,6 +19,9 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final AsyncValue<AppSettings> settingsAsync = ref.watch(settingsProvider);
+    final AsyncValue<NotificationSettings> notifAsync = ref.watch(
+      notificationProvider,
+    );
 
     return Scaffold(
       backgroundColor: null,
@@ -26,6 +31,8 @@ class SettingsScreen extends ConsumerWidget {
             Center(child: Text(l10n.tr('error'))),
         data: (AppSettings settings) {
           final SettingsNotifier notifier = ref.read(settingsProvider.notifier);
+          final NotificationSettings notifSettings =
+              notifAsync.valueOrNull ?? NotificationSettings.defaults();
 
           return Column(
             children: <Widget>[
@@ -233,6 +240,43 @@ class SettingsScreen extends ConsumerWidget {
                                   ),
                                 )
                                 .toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+
+                    // ── إشعارات الصلوات / Prayer notifications ────────
+                    LuxurySectionTitle(
+                      title: l10n.tr('notifTitle'),
+                      icon: Icons.notifications_active,
+                    ),
+                    LuxuryPanel(
+                      child: Column(
+                        children: <Widget>[
+                          SwitchListTile(
+                            title: Text(l10n.tr('notifEnable')),
+                            value: notifSettings.masterEnabled,
+                            onChanged: (bool v) => ref
+                                .read(notificationProvider.notifier)
+                                .toggleMaster(v),
+                          ),
+                          const Divider(height: 1),
+                          // قائمة الصلوات
+                          ...Prayer.values.where((Prayer p) => p != Prayer.sunrise).map(
+                                (Prayer prayer) => PrayerNotificationTile(
+                                  prayer: prayer,
+                                  label: l10n.tr(prayer.name),
+                                ),
+                              ),
+                          const Divider(height: 1),
+                          SwitchListTile(
+                            title: Text(l10n.tr('notifIqamah')),
+                            subtitle: Text(l10n.tr('notifIqamahNote')),
+                            value: notifSettings.iqamahEnabled,
+                            onChanged: (bool v) => ref
+                                .read(notificationProvider.notifier)
+                                .toggleIqamah(v),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 22),

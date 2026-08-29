@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
 """تعديلات أندرويد بعد flutter create في CI / Native Android patches after scaffold.
 
-١) حقن الصلاحيات في AndroidManifest.xml (موقع)
-٢) تمكين core library desugaring (مطلوب لمكتبة الإشعارات مع minSdk < 26)
+١) حقن الصلاحيات في AndroidManifest.xml (إشعارات + منبه دقيق + اهتزاز + اقلاع)
+٢) نسخ ملفات الصوت إلى android/app/src/main/res/raw
+٣) تمكين core library desugaring (مطلوب لمكتبة الإشعارات مع minSdk < 26)
+٤) كتابة keep.xml لمنع shrinkResources من حذف الأصوات
 """
 import os
 import re
+import shutil
+import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCAFFOLD = os.path.join(ROOT, 'scaffold')
 
 PERMISSIONS = (
+    'android.permission.POST_NOTIFICATIONS',
+    'android.permission.USE_FULL_SCREEN_INTENT',
+    'android.permission.SCHEDULE_EXACT_ALARM',
+    'android.permission.USE_EXACT_ALARM',
+    'android.permission.VIBRATE',
+    'android.permission.RECEIVE_BOOT_COMPLETED',
     'android.permission.ACCESS_FINE_LOCATION',
     'android.permission.ACCESS_COARSE_LOCATION',
 )
@@ -33,6 +43,38 @@ def patch_manifest() -> None:
     with open(path, 'w', encoding='utf-8') as f:
         f.write(content)
     print('manifest: injected', len(missing), 'permissions')
+
+
+def copy_audio() -> None:
+    src_dir = os.path.join(ROOT, 'assets/audio')
+    raw_dir = os.path.join(SCAFFOLD, 'android/app/src/main/res/raw')
+    os.makedirs(raw_dir, exist_ok=True)
+    for name in os.listdir(src_dir):
+        if name.endswith('.mp3'):
+            shutil.copy(os.path.join(src_dir, name), os.path.join(raw_dir, name))
+            print('audio:', name, '-> res/raw')
+
+
+def add_keep_xml() -> None:
+    raw_dir = os.path.join(SCAFFOLD, 'android/app/src/main/res/raw')
+    if not os.path.isdir(raw_dir):
+        print('keep.xml: res/raw not found, skipping')
+        return
+    xml_dir = os.path.join(SCAFFOLD, 'android/app/src/main/res/xml')
+    os.makedirs(xml_dir, exist_ok=True)
+    path = os.path.join(xml_dir, 'keep.xml')
+    keeps = []
+    for name in os.listdir(raw_dir):
+        if name.endswith('.mp3'):
+            keeps.append(f'@raw/{name.replace(".mp3", "")}')
+    if not keeps:
+        print('keep.xml: no audio files found')
+        return
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write('<?xml version="1.0" encoding="utf-8"?>\n')
+        f.write('<resources xmlns:tools="http://schemas.android.com/tools"\n')
+        f.write(f'    tools:keep="{",".join(keeps)}"/>\n')
+    print('keep.xml written with', len(keeps), 'entries')
 
 
 DESUGAR_VERSION = '2.1.4'
@@ -202,11 +244,9 @@ def patch_gradle_desugaring() -> None:
     print('gradle: WARNING no build.gradle found')
 
 
-# keep.xml: منع shrinkResources من حذف أصوات الأذان في release
-
-
-
 if __name__ == '__main__':
     patch_manifest()
+    copy_audio()
+    add_keep_xml()
     patch_gradle_desugaring()
     patch_root_subprojects_floor()

@@ -32,6 +32,14 @@ final Provider<PrayerTimesLocalDatasource> prayerTimesLocalDatasourceProvider =
       (Ref ref) => const PrayerTimesLocalDatasource(),
     );
 
+/// SettingsLocalDatasource — مطلوب للإعدادات + الإشعارات
+final Provider<SettingsLocalDatasource> settingsLocalDatasourceProvider =
+    Provider<SettingsLocalDatasource>((Ref ref) {
+      final SharedPreferences prefs = ref.watch(sharedPreferencesProvider).valueOrNull ??
+          throw StateError('SharedPreferences not loaded');
+      return SettingsLocalDatasource(prefs);
+    });
+
 /// المستودعات / Repositories
 final FutureProvider<CityRepository> cityRepositoryProvider =
     FutureProvider<CityRepository>((Ref ref) async {

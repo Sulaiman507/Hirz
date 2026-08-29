@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/app_settings.dart';
+import '../../domain/entities/notification_settings.dart';
+import '../../domain/entities/prayer_time.dart';
 
 /// مفاتيح التخزين / Storage keys
 abstract class SettingsKeys {
@@ -18,6 +20,10 @@ abstract class SettingsKeys {
   static const String savedCustomCity = 'saved_custom_city';
   static const String fontFamily = 'font_family';
   static const String fontThickness = 'font_thickness';
+  // ── إشعارات الصلوات / Prayer notifications ──
+  static const String notifMaster = 'notif_master';
+  static const String notifIqamah = 'notif_iqamah';
+  static const String notifPrayerPrefix = 'notif_prayer_'; // + prayer.name
 }
 
 /// مصدر الإعدادات بأنواع صريحة — لا dynamic عائم
@@ -91,6 +97,44 @@ class SettingsLocalDatasource {
     );
     await _prefs.setString(SettingsKeys.fontFamily, settings.fontFamily);
     await _prefs.setDouble(SettingsKeys.fontThickness, settings.fontThickness);
+  }
+
+  // ── إشعارات الصلوات / Prayer notifications ──
+
+  /// قراءة إعدادات الإشعارات / Load notification settings
+  NotificationSettings loadNotifications() {
+    final bool master = _prefs.getBool(SettingsKeys.notifMaster) ?? false;
+    final bool iqamah = _prefs.getBool(SettingsKeys.notifIqamah) ?? false;
+    final Map<Prayer, PrayerNotification> prayers =
+        <Prayer, PrayerNotification>{};
+    for (final Prayer prayer in Prayer.values) {
+      final String? raw = _prefs.getString(
+        SettingsKeys.notifPrayerPrefix + prayer.name,
+      );
+      prayers[prayer] = raw != null
+          ? PrayerNotification.load(raw)
+          : const PrayerNotification(enabled: false);
+    }
+    return NotificationSettings(
+      masterEnabled: master,
+      iqamahEnabled: iqamah,
+      prayers: prayers,
+    );
+  }
+
+  /// حفظ إعدادات الإشعارات / Save notification settings
+  Future<void> saveNotifications(NotificationSettings settings) async {
+    await _prefs.setBool(SettingsKeys.notifMaster, settings.masterEnabled);
+    await _prefs.setBool(SettingsKeys.notifIqamah, settings.iqamahEnabled);
+    for (final Prayer prayer in Prayer.values) {
+      final PrayerNotification? pn = settings.prayers[prayer];
+      if (pn != null) {
+        await _prefs.setString(
+          SettingsKeys.notifPrayerPrefix + prayer.name,
+          pn.storeKey(),
+        );
+      }
+    }
   }
 
   Map<String, int> _loadIqamahOffsets() {
