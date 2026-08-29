@@ -251,18 +251,10 @@ class SettingsScreen extends ConsumerWidget {
                           Switch(
                             value: settings.adhanEnabled,
                             onChanged: (bool v) async {
+                              await notifier.updateAdhanEnabled(v);
                               if (v) {
                                 await AdhanNotificationService.instance
                                     .ensurePermission();
-                              }
-                              await notifier.updateAdhanEnabled(v);
-                              if (v) {
-                                final bool? granted = await AdhanNotificationService
-                                    .instance
-                                    .exactAlarmGranted();
-                                if (granted != true) {
-                                  await app_settings.AppSettings.openAppSettings();
-                                }
                               }
                             },
                           ),
