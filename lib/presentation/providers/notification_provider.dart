@@ -1,7 +1,6 @@
 // مزود إشعارات الصلوات / Prayer notification provider
 // يقرأ إعدادات الإشعارات ويوفر دوال التحديث
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/services/adhan_notification_service.dart';
@@ -10,7 +9,6 @@ import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/city.dart';
 import '../../domain/entities/notification_settings.dart';
 import '../../domain/entities/prayer_time.dart';
-import '../../domain/usecases/get_prayer_times.dart';
 import '../../domain/usecases/notification_usecases.dart';
 import 'app_providers.dart';
 import 'settings_providers.dart';

@@ -144,8 +144,9 @@ class SettingsScreen extends ConsumerWidget {
                                 value: method,
                                 groupValue: settings.method,
                                 onChanged: (CalculationMethod? value) {
-                                  if (value != null)
+                                  if (value != null) {
                                     notifier.updateMethod(value);
+                                  }
                                 },
                               ),
                             )

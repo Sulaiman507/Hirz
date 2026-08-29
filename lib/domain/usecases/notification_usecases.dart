@@ -4,8 +4,6 @@
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../core/services/adhan_notification_service.dart';
-import '../../domain/entities/app_settings.dart';
-import '../../domain/entities/city.dart';
 import '../../domain/entities/notification_settings.dart';
 import '../../domain/entities/prayer_time.dart';
 
