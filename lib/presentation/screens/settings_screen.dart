@@ -129,28 +129,29 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     LuxuryPanel(
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Column(
-                        children: CalculationMethod.values
-                            .map(
-                              (
-                                CalculationMethod method,
-                              ) => RadioListTile<CalculationMethod>(
-                                title: Text(
-                                  l10n.tr(
-                                    'method${method.jsonId.substring(0, 1).toUpperCase()}${method.jsonId.substring(1)}',
+                      child: RadioGroup<CalculationMethod>(
+                        groupValue: settings.method,
+                        onChanged: (CalculationMethod? value) {
+                          if (value != null) {
+                            notifier.updateMethod(value);
+                          }
+                        },
+                        child: Column(
+                          children: CalculationMethod.values
+                              .map(
+                                (CalculationMethod method) =>
+                                    RadioListTile<CalculationMethod>(
+                                  title: Text(
+                                    l10n.tr(
+                                      'method${method.jsonId.substring(0, 1).toUpperCase()}${method.jsonId.substring(1)}',
+                                    ),
                                   ),
+                                  dense: true,
+                                  value: method,
                                 ),
-                                dense: true,
-                                value: method,
-                                groupValue: settings.method,
-                                onChanged: (CalculationMethod? value) {
-                                  if (value != null) {
-                                    notifier.updateMethod(value);
-                                  }
-                                },
-                              ),
-                            )
-                            .toList(),
+                              )
+                              .toList(),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 22),
