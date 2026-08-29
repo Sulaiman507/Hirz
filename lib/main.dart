@@ -10,12 +10,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'core/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'domain/entities/app_settings.dart';
-import 'domain/entities/city.dart';
-import 'domain/entities/prayer_time.dart';
 import 'presentation/providers/settings_providers.dart';
-import 'presentation/providers/app_providers.dart';
-import 'presentation/providers/city_providers.dart';
-import 'presentation/providers/prayer_providers.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main() {
