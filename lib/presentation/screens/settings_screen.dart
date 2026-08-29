@@ -12,6 +12,7 @@ import '../providers/settings_providers.dart';
 import '../providers/notification_provider.dart';
 import '../widgets/luxury_components.dart';
 import '../widgets/notification_settings_panel.dart';
+import '../widgets/notification_diagnostics_panel.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -282,6 +283,10 @@ class SettingsScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 22),
+
+                    // ── تشخيص الإشعارات / Notification diagnostics ────
+                    const NotificationDiagnosticsPanel(),
                     const SizedBox(height: 22),
 
                     // ── نوع الخط / Font family ─────────────────────────
