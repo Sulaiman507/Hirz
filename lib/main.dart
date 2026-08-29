@@ -8,7 +8,6 @@ import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
 import 'core/l10n/app_localizations.dart';
-import 'core/services/adhan_notification_service.dart';
 import 'core/theme/app_theme.dart';
 import 'domain/entities/app_settings.dart';
 import 'domain/entities/city.dart';
@@ -75,7 +74,7 @@ class HirzApp extends ConsumerWidget {
             fontThickness: settings.fontThickness,
           ),
           themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          home: const _AdhanScheduler(child: HomeScreen()),
+          home: const HomeScreen(),
         );
       },
     );
@@ -90,77 +89,4 @@ class HirzApp extends ConsumerWidget {
       home: const Scaffold(body: Center(child: CircularProgressIndicator())),
     );
   }
-}
-
-/// مستمع الجدولة: يعيد جدولة الأذان عند أي تغيير (مدينة/إعدادات/تفعيل)
-/// Scheduling listener: reschedules the adhan on any relevant change
-class _AdhanScheduler extends ConsumerStatefulWidget {
-  const _AdhanScheduler({required this.child});
-
-  final Widget child;
-
-  @override
-  ConsumerState<_AdhanScheduler> createState() => _AdhanSchedulerState();
-}
-
-class _AdhanSchedulerState extends ConsumerState<_AdhanScheduler> {
-  @override
-  void initState() {
-    super.initState();
-    // جدولة أولى بعد أول إطار ثم استماع دائم للتغييرات
-    WidgetsBinding.instance.addPostFrameCallback((_) => _reschedule());
-    ref.listenManual(settingsProvider, (_, __) => _reschedule());
-    ref.listenManual(prayerTimesProvider, (_, __) => _reschedule());
-    ref.listenManual(tomorrowTimesProvider, (_, __) => _reschedule());
-  }
-
-  /// يلغي الكل إذا كان معطلاً، وإلا يجدول أسبوعاً كاملاً (اليوم + 6 أيام)
-  /// Cancels all when disabled; otherwise schedules a full week ahead.
-  /// أسبوع كامل يقاوم إعادة تشغيل الجهاز وأيام عدم فتح التطبيق
-  /// A week ahead survives reboots and days without opening the app
-  void _reschedule() {
-    final AppSettings? settings = ref.read(settingsProvider).valueOrNull;
-    final AdhanNotificationService service = AdhanNotificationService.instance;
-    if (settings == null || !settings.adhanEnabled) {
-      service.cancelAll();
-      return;
-    }
-    Future<void>(() async {
-      try {
-        await service.requireExactAlarm();
-      } on StateError catch (_) {
-        debugPrint('Hirz: exact alarm not granted, skip scheduling');
-        return;
-      } catch (_) {}
-      try {
-        final DailyPrayerTimes today = await ref.read(
-          prayerTimesProvider.future,
-        );
-        final List<PrayerTime> all = List<PrayerTime>.of(today.times);
-        final getPrayerTimes = await ref.read(
-          getPrayerTimesUseCaseProvider.future,
-        );
-        final City city = await ref.read(selectedCityProvider.future);
-        for (int i = 1; i <= 6; i++) {
-          try {
-            final DailyPrayerTimes day = await getPrayerTimes(
-              city: city,
-              date: DateTime.now().add(Duration(days: i)),
-              settings: settings,
-            );
-            all.addAll(day.times);
-          } catch (_) {
-            // يوم فاشل لا يوقف البقية / one failed day doesn't abort the rest
-          }
-        }
-        await service.scheduleAdhan(all, timezoneId: city.timezoneId);
-      } catch (e) {
-        // نسجل الفشل بدل ابتلاعه — التشخيص أهم
-        debugPrint('Hirz: adhan scheduling failed: $e');
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => widget.child;
 }

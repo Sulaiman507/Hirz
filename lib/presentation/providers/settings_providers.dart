@@ -84,12 +84,6 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
     if (current == null) return;
     await _save(current.copyWith(fontFamily: family));
   }
-
-  Future<void> updateAdhanEnabled(bool enabled) async {
-    final AppSettings? current = state.valueOrNull;
-    if (current == null) return;
-    await _save(current.copyWith(adhanEnabled: enabled));
-  }
 }
 
 /// المزود الرئيسي للإعدادات / The main settings provider

@@ -18,7 +18,6 @@ abstract class SettingsKeys {
   static const String savedCustomCity = 'saved_custom_city';
   static const String fontFamily = 'font_family';
   static const String fontThickness = 'font_thickness';
-  static const String adhanEnabled = 'adhan_enabled';
 }
 
 /// مصدر الإعدادات بأنواع صريحة — لا dynamic عائم
@@ -63,8 +62,6 @@ class SettingsLocalDatasource {
     final double fontThicknessRaw =
         _prefs.getDouble(SettingsKeys.fontThickness) ?? 1.0;
     final double fontThickness = fontThicknessRaw.clamp(0.5, 2.0);
-    final bool adhanEnabled =
-        _prefs.getBool(SettingsKeys.adhanEnabled) ?? false;
 
     return AppSettings(
       languageCode: languageCode,
@@ -75,7 +72,6 @@ class SettingsLocalDatasource {
       iqamahOffsets: iqamahOffsets,
       fontFamily: fontFamily,
       fontThickness: fontThickness,
-      adhanEnabled: adhanEnabled,
     );
   }
 
@@ -95,7 +91,6 @@ class SettingsLocalDatasource {
     );
     await _prefs.setString(SettingsKeys.fontFamily, settings.fontFamily);
     await _prefs.setDouble(SettingsKeys.fontThickness, settings.fontThickness);
-    await _prefs.setBool(SettingsKeys.adhanEnabled, settings.adhanEnabled);
   }
 
   Map<String, int> _loadIqamahOffsets() {

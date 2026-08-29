@@ -53,8 +53,6 @@ void main() {
         'fontFamily', 'fontThickness', 'fontAmiri', 'fontCairo',
         'fontThin', 'fontThick', 'searchCity', 'noResults', 'close',
         'settingsTitle', 'manualCoordinates',
-        'adhanTitle', 'adhanEnable', 'adhanTest',
-        'adhanTestRegular', 'adhanTestFajr',
         'locateMe', 'locatedTo', 'locationFailed',
       ];
       for (final String key in requiredKeys) {

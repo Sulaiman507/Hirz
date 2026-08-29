@@ -1,25 +1,16 @@
 #!/usr/bin/env python3
 """تعديلات أندرويد بعد flutter create في CI / Native Android patches after scaffold.
 
-١) حقن الصلاحيات في AndroidManifest.xml (إشعارات + منبه دقيق + اهتزاز + اقلاع)
-٢) نسخ ملفات الأذان إلى android/app/src/main/res/raw لقنوات الإشعار
-٣) تمكين core library desugaring (مطلوب لمكتبة الإشعارات مع minSdk < 26)
-٤) كتابة BootReceiver.class + تسجيله في الـ manifest لإعادة جدولة الأذان بعد reboot
+١) حقن الصلاحيات في AndroidManifest.xml (موقع)
+٢) تمكين core library desugaring (مطلوب لمكتبة الإشعارات مع minSdk < 26)
 """
 import os
 import re
-import shutil
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCAFFOLD = os.path.join(ROOT, 'scaffold')
 
 PERMISSIONS = (
-    'android.permission.POST_NOTIFICATIONS',
-    'android.permission.USE_FULL_SCREEN_INTENT',
-    'android.permission.SCHEDULE_EXACT_ALARM',
-    'android.permission.USE_EXACT_ALARM',
-    'android.permission.VIBRATE',
-    'android.permission.RECEIVE_BOOT_COMPLETED',
     'android.permission.ACCESS_FINE_LOCATION',
     'android.permission.ACCESS_COARSE_LOCATION',
 )
@@ -42,15 +33,6 @@ def patch_manifest() -> None:
     with open(path, 'w', encoding='utf-8') as f:
         f.write(content)
     print('manifest: injected', len(missing), 'permissions')
-
-
-def copy_audio() -> None:
-    src_dir = os.path.join(ROOT, 'assets/audio')
-    raw_dir = os.path.join(SCAFFOLD, 'android/app/src/main/res/raw')
-    os.makedirs(raw_dir, exist_ok=True)
-    for name in ('adhan_regular.mp3', 'adhan_fajr.mp3'):
-        shutil.copy(os.path.join(src_dir, name), os.path.join(raw_dir, name))
-        print('audio:', name, '-> res/raw')
 
 
 DESUGAR_VERSION = '2.1.4'
@@ -221,85 +203,10 @@ def patch_gradle_desugaring() -> None:
 
 
 # keep.xml: منع shrinkResources من حذف أصوات الأذان في release
-# keep.xml: prevent shrinkResources from stripping adhan sounds in release
-import subprocess
-subprocess.run(['python3', os.path.join(ROOT, 'scripts', 'add_keep_xml.py')], check=False)
 
-
-# BootReceiver: إعادة جدولة الأذان عند إقلاع الجهاز
-# BootReceiver: reschedule adhan after device boot
-def _boot_receiver_package() -> str:
-    # نحاول قراءة package من AndroidManifest.xml
-    try:
-        path = os.path.join(SCAFFOLD, 'android/app/src/main/AndroidManifest.xml')
-        with open(path, encoding='utf-8') as f:
-            content = f.read()
-        m = re.search(r'package="([^"]+)"', content)
-        if m is not None and m.group(1) is not None and m.group(1).strip() != '':
-            return m.group(1).strip()
-    except Exception:
-        pass
-    return 'dev.hirz'
-
-
-def _write_boot_receiver() -> None:
-    pkg = _boot_receiver_package()
-    pkg_dir = pkg.replace('.', os.sep)
-    java_dir = os.path.join(SCAFFOLD, 'android/app/src/main/java', pkg_dir)
-    os.makedirs(java_dir, exist_ok=True)
-    receiver_path = os.path.join(java_dir, 'BootReceiver.java')
-    with open(receiver_path, 'w', encoding='utf-8') as f:
-        f.write('''package ''' + pkg + ''';
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-
-// بعد الإقلاع، الجدولة التالية تلقائية عند فتح التطبيق.
-// بعد reboot، نعتمد على reschedule callback عند أول فتح.
-// After boot, the next open triggers reschedule automatically.
-public class BootReceiver extends BroadcastReceiver {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent != null && Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-            Log.i("Hirz", "BootReceiver: boot completed, adhan reschedule will run on next app open");
-        }
-    }
-}
-''')
-    print('BootReceiver written to', receiver_path)
-
-
-def patch_boot_receiver_manifest() -> None:
-    path = os.path.join(SCAFFOLD, 'android/app/src/main/AndroidManifest.xml')
-    with open(path, encoding='utf-8') as f:
-        content = f.read()
-    pkg = _boot_receiver_package()
-    receiver_block = (
-        '        <receiver\n'
-        '            android:name=".BootReceiver"\n'
-        '            android:enabled="true"\n'
-        '            android:exported="true">\n'
-        '            <intent-filter>\n'
-        '                <action android:name="android.intent.action.BOOT_COMPLETED"/>\n'
-        '                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>\n'
-        '            </intent-filter>\n'
-        '        </receiver>\n'
-    )
-    if 'BootReceiver' in content:
-        print('manifest: BootReceiver already present')
-        return
-    content = content.replace('</application>', receiver_block + '    </application>', 1)
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(content)
-    print('manifest: injected BootReceiver')
 
 
 if __name__ == '__main__':
     patch_manifest()
-    copy_audio()
     patch_gradle_desugaring()
     patch_root_subprojects_floor()
-    _write_boot_receiver()
-    patch_boot_receiver_manifest()
