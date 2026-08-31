@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/app_settings.dart';
 import 'app_providers.dart';
 
-/// حالة الإعدادات القابلة للتعديل / Editable settings state
+/// حالة الإعدادات القابلة للتعديل
 class SettingsNotifier extends AsyncNotifier<AppSettings> {
   @override
   Future<AppSettings> build() async {
@@ -15,16 +15,12 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
     return getSettings();
   }
 
-  /// حفظ بعد أي تعديل — مع معالجة أخطاء وإعادة الحالة عند الفشل
-  /// Persist after any change — with error handling and state revert
   Future<void> _save(AppSettings next) async {
     try {
       final saveSettings = await ref.read(saveSettingsUseCaseProvider.future);
       await saveSettings(next);
-      // حدّث UI فقط بعد نجاح الحفظ الفعلي / update UI only after real success
       state = AsyncValue<AppSettings>.data(next);
     } catch (e, st) {
-      // أبلغ بالفشل بدل إخفائه / surface the failure instead of swallowing it
       state = AsyncValue<AppSettings>.error(e, st);
       assert(() {
         debugPrint('Hirz: settings save failed: $e');
@@ -86,6 +82,6 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   }
 }
 
-/// المزود الرئيسي للإعدادات / The main settings provider
+/// المزود الرئيسي للإعدادات
 final AsyncNotifierProvider<SettingsNotifier, AppSettings> settingsProvider =
     AsyncNotifierProvider<SettingsNotifier, AppSettings>(SettingsNotifier.new);

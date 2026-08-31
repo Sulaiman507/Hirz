@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/city.dart';
 import 'app_providers.dart';
 
-/// المدينة الافتراضية: مكة المكرمة / Default city: Makkah
+/// المدينة الافتراضية: مكة المكرمة
 const City defaultCity = City(
   id: 'sa_makkah',
   nameEn: 'Makkah',
@@ -18,31 +18,30 @@ const City defaultCity = City(
   timezoneOffsetHours: 3,
 );
 
-/// نص البحث الحالي / Current search query
+/// نص البحث الحالي
 final StateProvider<String> citySearchQueryProvider = StateProvider<String>(
-  (Ref ref) => '',
+  (ref) => '',
 );
 
-/// كل المدن المدمجة / All bundled cities
+/// كل المدن المدمجة
 final FutureProvider<List<City>> citiesProvider = FutureProvider<List<City>>((
-  Ref ref,
+  ref,
 ) async {
   final getAllCities = await ref.watch(getAllCitiesUseCaseProvider.future);
   return getAllCities();
 });
 
-/// المدن بعد البحث / Filtered cities after search
+/// المدن بعد البحث
 final FutureProvider<List<City>> filteredCitiesProvider =
-    FutureProvider<List<City>>((Ref ref) async {
-      final String query = ref.watch(citySearchQueryProvider);
-      final searchCities = await ref.watch(searchCitiesUseCaseProvider.future);
-      return searchCities(query);
-    });
+    FutureProvider<List<City>>((ref) async {
+  final String query = ref.watch(citySearchQueryProvider);
+  final searchCities = await ref.watch(searchCitiesUseCaseProvider.future);
+  return searchCities(query);
+});
 
 /// المدينة المختارة: المحفوظة أو مكة افتراضياً
-/// Selected city: the saved one, or Makkah by default
 final FutureProvider<City> selectedCityProvider = FutureProvider<City>((
-  Ref ref,
+  ref,
 ) async {
   final getSavedCity = await ref.watch(getSavedCityUseCaseProvider.future);
   final City? saved = await getSavedCity();
@@ -50,7 +49,6 @@ final FutureProvider<City> selectedCityProvider = FutureProvider<City>((
 });
 
 /// حفظ مدينة جديدة وإعادة حساب المواقيت
-/// Save a city and invalidate dependents
 Future<void> selectCity(WidgetRef ref, City city) async {
   final saveCity = await ref.read(saveCityUseCaseProvider.future);
   await saveCity(city);

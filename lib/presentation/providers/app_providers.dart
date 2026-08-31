@@ -20,26 +20,27 @@ import '../../domain/usecases/settings_usecases.dart';
 /// SharedPreferences — يُحمّل مرة واحدة / Loaded once
 final FutureProvider<SharedPreferences> sharedPreferencesProvider =
     FutureProvider<SharedPreferences>(
-      (Ref ref) async => SharedPreferences.getInstance(),
+      (ref) async => SharedPreferences.getInstance(),
     );
 
 /// مصادر البيانات / Datasources
 final Provider<CityLocalDatasource> cityLocalDatasourceProvider =
-    Provider<CityLocalDatasource>((Ref ref) => CityLocalDatasource());
+    Provider<CityLocalDatasource>((ref) => CityLocalDatasource());
 
 final Provider<PrayerTimesLocalDatasource> prayerTimesLocalDatasourceProvider =
     Provider<PrayerTimesLocalDatasource>(
-      (Ref ref) => const PrayerTimesLocalDatasource(),
+      (ref) => const PrayerTimesLocalDatasource(),
     );
 
-final Provider<SettingsLocalDatasource> settingsLocalDatasourceProvider =
-    Provider<SettingsLocalDatasource>((Ref ref) {
-      throw StateError('Use settingsLocalDatasourceProvider instead');
+final FutureProvider<SettingsLocalDatasource> settingsLocalDatasourceProvider =
+    FutureProvider<SettingsLocalDatasource>((ref) async {
+      final SharedPreferences prefs = await ref.watch(sharedPreferencesProvider.future);
+      return SettingsLocalDatasource(prefs);
     });
 
 /// المستودعات / Repositories
 final FutureProvider<CityRepository> cityRepositoryProvider =
-    FutureProvider<CityRepository>((Ref ref) async {
+    FutureProvider<CityRepository>((ref) async {
       final SharedPreferences prefs = await ref.watch(
         sharedPreferencesProvider.future,
       );
@@ -48,13 +49,13 @@ final FutureProvider<CityRepository> cityRepositoryProvider =
 
 final Provider<PrayerTimesRepository> prayerTimesRepositoryProvider =
     Provider<PrayerTimesRepository>(
-      (Ref ref) => PrayerTimesRepositoryImpl(
+      (ref) => PrayerTimesRepositoryImpl(
         ref.read(prayerTimesLocalDatasourceProvider),
       ),
     );
 
 final FutureProvider<SettingsRepository> settingsRepositoryProvider =
-    FutureProvider<SettingsRepository>((Ref ref) async {
+    FutureProvider<SettingsRepository>((ref) async {
       final SharedPreferences prefs = await ref.watch(
         sharedPreferencesProvider.future,
       );
@@ -63,7 +64,7 @@ final FutureProvider<SettingsRepository> settingsRepositoryProvider =
 
 /// حالات الاستخدام / Use cases
 final FutureProvider<GetPrayerTimes> getPrayerTimesUseCaseProvider =
-    FutureProvider<GetPrayerTimes>((Ref ref) async {
+    FutureProvider<GetPrayerTimes>((ref) async {
       final PrayerTimesRepository repository = ref.watch(
         prayerTimesRepositoryProvider,
       );
@@ -71,7 +72,7 @@ final FutureProvider<GetPrayerTimes> getPrayerTimesUseCaseProvider =
     });
 
 final FutureProvider<SearchCities> searchCitiesUseCaseProvider =
-    FutureProvider<SearchCities>((Ref ref) async {
+    FutureProvider<SearchCities>((ref) async {
       final CityRepository repository = await ref.watch(
         cityRepositoryProvider.future,
       );
@@ -79,7 +80,7 @@ final FutureProvider<SearchCities> searchCitiesUseCaseProvider =
     });
 
 final FutureProvider<GetAllCities> getAllCitiesUseCaseProvider =
-    FutureProvider<GetAllCities>((Ref ref) async {
+    FutureProvider<GetAllCities>((ref) async {
       final CityRepository repository = await ref.watch(
         cityRepositoryProvider.future,
       );
@@ -87,7 +88,7 @@ final FutureProvider<GetAllCities> getAllCitiesUseCaseProvider =
     });
 
 final FutureProvider<GetSavedCity> getSavedCityUseCaseProvider =
-    FutureProvider<GetSavedCity>((Ref ref) async {
+    FutureProvider<GetSavedCity>((ref) async {
       final CityRepository repository = await ref.watch(
         cityRepositoryProvider.future,
       );
@@ -95,7 +96,7 @@ final FutureProvider<GetSavedCity> getSavedCityUseCaseProvider =
     });
 
 final FutureProvider<SaveCity> saveCityUseCaseProvider =
-    FutureProvider<SaveCity>((Ref ref) async {
+    FutureProvider<SaveCity>((ref) async {
       final CityRepository repository = await ref.watch(
         cityRepositoryProvider.future,
       );
@@ -103,7 +104,7 @@ final FutureProvider<SaveCity> saveCityUseCaseProvider =
     });
 
 final FutureProvider<GetSettings> getSettingsUseCaseProvider =
-    FutureProvider<GetSettings>((Ref ref) async {
+    FutureProvider<GetSettings>((ref) async {
       final SettingsRepository repository = await ref.watch(
         settingsRepositoryProvider.future,
       );
@@ -111,7 +112,7 @@ final FutureProvider<GetSettings> getSettingsUseCaseProvider =
     });
 
 final FutureProvider<SaveSettings> saveSettingsUseCaseProvider =
-    FutureProvider<SaveSettings>((Ref ref) async {
+    FutureProvider<SaveSettings>((ref) async {
       final SettingsRepository repository = await ref.watch(
         settingsRepositoryProvider.future,
       );
