@@ -12,6 +12,7 @@ import 'core/theme/app_theme.dart';
 import 'domain/entities/app_settings.dart';
 import 'presentation/providers/settings_providers.dart';
 import 'presentation/providers/notification_provider.dart';
+import 'presentation/providers/city_providers.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main() {

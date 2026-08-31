@@ -12,7 +12,6 @@ import '../../domain/entities/prayer_time.dart';
 import '../../domain/usecases/notification_usecases.dart';
 import 'app_providers.dart';
 import 'settings_providers.dart';
-import 'prayer_providers.dart';
 import 'city_providers.dart';
 
 /// مزود إعدادات الإشعارات / Notification settings notifier
@@ -96,7 +95,7 @@ final Provider<AdhanNotificationService> adhanNotificationServiceProvider =
 
 /// إعادة جدولة الإشعارات يدويًا / Manual reschedule
 /// تُستدعى من main.dart عند فتح التطبيق أو تغيير الإعدادات
-Future<int> rescheduleNotifications(Ref ref) async {
+Future<int> rescheduleNotifications(WidgetRef ref) async {
   try {
     final NotificationSettings notifSettings =
         await ref.read(notificationProvider.future);
