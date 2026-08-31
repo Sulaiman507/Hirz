@@ -1,22 +1,27 @@
 name: hirz
 description: حِرز — تطبيق مواقيت صلاة يعمل بدون إنترنت
 version: 1.0.0+1
+publish_to: none
+
 environment:
-  sdk: ">=3.4.0 <4.0.0"
+  sdk: ^3.12.0
+
 dependencies:
   flutter: { sdk: flutter }
   flutter_localizations: { sdk: flutter }
-  intl: any  # flutter_localizations يثبّت إصدار intl الصارم — any يمنع تعارض الحل
-  flutter_riverpod: ^2.6.1
+  flutter_riverpod: ^3.4.2
   adhan: ^2.0.0
   timezone: ^0.11.1
-  shared_preferences: ^2.3.5
+  shared_preferences: ^2.5.5
   flutter_animate: ^4.5.2
-  geolocator: ^13.0.1
+  geolocator: ^14.0.0
   geocoding: ^3.0.0
+  intl: any
+
 dev_dependencies:
   flutter_test: { sdk: flutter }
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
+
 flutter:
   uses-material-design: true
   assets:
