@@ -94,103 +94,46 @@ final Provider<AdhanNotificationService> adhanNotificationServiceProvider =
   (Ref ref) => AdhanNotificationService.instance,
 );
 
-/// حالة الجدولة / scheduling state
-class SchedulingState {
-  final bool isScheduling;
-  final int scheduled;
-  final int failed;
-  final bool exactAlarmGranted;
-
-  const SchedulingState({
-    this.isScheduling = false,
-    this.scheduled = 0,
-    this.failed = 0,
-    this.exactAlarmGranted = false,
-  });
-
-  SchedulingState copyWith({
-    bool? isScheduling,
-    int? scheduled,
-    int? failed,
-    bool? exactAlarmGranted,
-  }) {
-    return SchedulingState(
-      isScheduling: isScheduling ?? this.isScheduling,
-      scheduled: scheduled ?? this.scheduled,
-      failed: failed ?? this.failed,
-      exactAlarmGranted: exactAlarmGranted ?? this.exactAlarmGranted,
-    );
-  }
-}
-
-/// مزود الجدولة التلقائية / Auto-scheduling notifier
-class AutoSchedulingNotifier extends StateNotifier<SchedulingState> {
-  AutoSchedulingNotifier(this._ref) : super(const SchedulingState()) {
-    // إعادة الجدولة عند أي تغيير / reschedule on any change
-    _ref.listen(settingsProvider, (_, __) => _schedule());
-    _ref.listen(prayerTimesProvider, (_, __) => _schedule());
-    _ref.listen(tomorrowTimesProvider, (_, __) => _schedule());
-    _ref.listen(notificationProvider, (_, __) => _schedule());
-    _ref.listen(selectedCityProvider, (_, __) => _schedule());
-  }
-
-  final Ref _ref;
-
-  /// إعادة الجدولة يدويًا (من main.dart) / manual reschedule (from main.dart)
-  void reschedule() => _schedule();
-
-  Future<void> _schedule() async {
-    state = state.copyWith(isScheduling: true);
-    try {
-      final NotificationSettings notifSettings =
-          await _ref.read(notificationProvider.future);
-      if (!notifSettings.masterEnabled) {
-        await AdhanNotificationService.instance.cancelAll();
-        state = const SchedulingState();
-        return;
-      }
-
-      // جمع 7 أيام / collect 7 days
-      final List<PrayerTime> all = <PrayerTime>[];
-      final getPrayerTimes = await _ref.read(
-        getPrayerTimesUseCaseProvider.future,
-      );
-      final City city = await _ref.read(selectedCityProvider.future);
-      final AppSettings settings = await _ref.read(settingsProvider.future);
-      for (int i = 0; i <= 6; i++) {
-        try {
-          final DailyPrayerTimes day = await getPrayerTimes(
-            city: city,
-            date: DateTime.now().add(Duration(days: i)),
-            settings: settings,
-          );
-          all.addAll(day.times);
-        } catch (_) {}
-      }
-
-      final ScheduleAdhansUseCase useCase = ScheduleAdhansUseCase(
-        AdhanNotificationService.instance,
-      );
-      final ScheduleResult result = await useCase.call(
-        times: all,
-        settings: notifSettings,
-        iqamahOffsets: settings.iqamahOffsets,
-        timezoneId: city.timezoneId,
-      );
-      state = SchedulingState(
-        scheduled: result.scheduled,
-        failed: result.failed,
-        exactAlarmGranted: result.exactAlarmGranted,
-      );
-    } catch (_) {
-      state = const SchedulingState();
+/// إعادة جدولة الإشعارات يدويًا / Manual reschedule
+/// تُستدعى من main.dart عند فتح التطبيق أو تغيير الإعدادات
+Future<int> rescheduleNotifications(Ref ref) async {
+  try {
+    final NotificationSettings notifSettings =
+        await ref.read(notificationProvider.future);
+    if (!notifSettings.masterEnabled) {
+      await AdhanNotificationService.instance.cancelAll();
+      return 0;
     }
+
+    // جمع 7 أيام / collect 7 days
+    final List<PrayerTime> all = <PrayerTime>[];
+    final getPrayerTimes = await ref.read(
+      getPrayerTimesUseCaseProvider.future,
+    );
+    final City city = await ref.read(selectedCityProvider.future);
+    final AppSettings settings = await ref.read(settingsProvider.future);
+    for (int i = 0; i <= 6; i++) {
+      try {
+        final DailyPrayerTimes day = await getPrayerTimes(
+          city: city,
+          date: DateTime.now().add(Duration(days: i)),
+          settings: settings,
+        );
+        all.addAll(day.times);
+      } catch (_) {}
+    }
+
+    final ScheduleAdhansUseCase useCase = ScheduleAdhansUseCase(
+      AdhanNotificationService.instance,
+    );
+    final ScheduleResult result = await useCase.call(
+      times: all,
+      settings: notifSettings,
+      iqamahOffsets: settings.iqamahOffsets,
+      timezoneId: city.timezoneId,
+    );
+    return result.scheduled;
+  } catch (_) {
+    return 0;
   }
 }
-
-/// مزود الجدولة التلقائية / Auto-scheduling provider
-final StateNotifierProvider<AutoSchedulingNotifier, SchedulingState>
-autoSchedulingProvider =
-    StateNotifierProvider<AutoSchedulingNotifier, SchedulingState>(
-  (Ref ref) => AutoSchedulingNotifier(ref),
-);

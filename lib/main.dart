@@ -12,7 +12,6 @@ import 'core/theme/app_theme.dart';
 import 'domain/entities/app_settings.dart';
 import 'presentation/providers/settings_providers.dart';
 import 'presentation/providers/notification_provider.dart';
-import 'presentation/providers/city_providers.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main() {
@@ -106,17 +105,17 @@ class _NotificationSchedulerState extends ConsumerState<_NotificationScheduler> 
     super.initState();
     // جدولة أولى بعد أول إطار
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(autoSchedulingProvider.notifier).reschedule();
+      rescheduleNotifications(ref);
     });
     // استماع دائم للتغييرات
     ref.listenManual(settingsProvider, (_, __) {
-      ref.read(autoSchedulingProvider.notifier).reschedule();
+      rescheduleNotifications(ref);
     });
     ref.listenManual(notificationProvider, (_, __) {
-      ref.read(autoSchedulingProvider.notifier).reschedule();
+      rescheduleNotifications(ref);
     });
     ref.listenManual(selectedCityProvider, (_, __) {
-      ref.read(autoSchedulingProvider.notifier).reschedule();
+      rescheduleNotifications(ref);
     });
   }
 
