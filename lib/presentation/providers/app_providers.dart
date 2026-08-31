@@ -32,12 +32,10 @@ final Provider<PrayerTimesLocalDatasource> prayerTimesLocalDatasourceProvider =
       (Ref ref) => const PrayerTimesLocalDatasource(),
     );
 
-/// SettingsLocalDatasource — مطلوب للإعدادات + الإشعارات
-final FutureProvider<SettingsLocalDatasource> settingsLocalDatasourceProvider =
-    FutureProvider<SettingsLocalDatasource>((Ref ref) async {
-  final SharedPreferences prefs = await ref.watch(sharedPreferencesProvider.future);
-  return SettingsLocalDatasource(prefs);
-});
+final Provider<SettingsLocalDatasource> settingsLocalDatasourceProvider =
+    Provider<SettingsLocalDatasource>((Ref ref) {
+      throw StateError('Use settingsLocalDatasourceProvider instead');
+    });
 
 /// المستودعات / Repositories
 final FutureProvider<CityRepository> cityRepositoryProvider =

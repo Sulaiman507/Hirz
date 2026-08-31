@@ -11,8 +11,6 @@ import 'core/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'domain/entities/app_settings.dart';
 import 'presentation/providers/settings_providers.dart';
-import 'presentation/providers/notification_provider.dart';
-import 'presentation/providers/city_providers.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main() {
@@ -71,7 +69,7 @@ class HirzApp extends ConsumerWidget {
             fontThickness: settings.fontThickness,
           ),
           themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          home: const _NotificationScheduler(child: HomeScreen()),
+          home: const HomeScreen(),
         );
       },
     );
@@ -86,40 +84,4 @@ class HirzApp extends ConsumerWidget {
       home: const Scaffold(body: Center(child: CircularProgressIndicator())),
     );
   }
-}
-
-/// مستمع الجدولة: يعيد جدولة الإشعارات عند أي تغيير (مدينة/إعدادات/تفعيل)
-/// Scheduling listener: reschedules notifications on any relevant change
-class _NotificationScheduler extends ConsumerStatefulWidget {
-  const _NotificationScheduler({required this.child});
-
-  final Widget child;
-
-  @override
-  ConsumerState<_NotificationScheduler> createState() =>
-      _NotificationSchedulerState();
-}
-
-class _NotificationSchedulerState extends ConsumerState<_NotificationScheduler> {
-  @override
-  void initState() {
-    super.initState();
-    // جدولة أولى بعد أول إطار
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      rescheduleNotifications(ref);
-    });
-    // استماع دائم للتغييرات
-    ref.listenManual(settingsProvider, (_, __) {
-      rescheduleNotifications(ref);
-    });
-    ref.listenManual(notificationProvider, (_, __) {
-      rescheduleNotifications(ref);
-    });
-    ref.listenManual(selectedCityProvider, (_, __) {
-      rescheduleNotifications(ref);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => widget.child;
 }
