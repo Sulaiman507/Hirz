@@ -15,12 +15,14 @@ class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
   final VoidCallback? onTap;
+  final Color? backgroundColor;
 
   const GlassCard({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(20),
     this.onTap,
+    this.backgroundColor,
   });
 
   @override
@@ -35,9 +37,10 @@ class GlassCard extends StatelessWidget {
         decoration: BoxDecoration(
           // زجاج داكن/فاتح بدون blur — تعتيم كافٍ لوضوح النصوص
           // glass tint without blur — enough opacity for legible text
-          color: isDark
-              ? const Color(0xFF101A38).withValues(alpha: 0.62)
-              : Colors.white.withValues(alpha: 0.72),
+          color: backgroundColor ??
+              (isDark
+                  ? const Color(0xFF101A38).withValues(alpha: 0.62)
+                  : Colors.white.withValues(alpha: 0.72)),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: const Color(0xFFD4AF37)
