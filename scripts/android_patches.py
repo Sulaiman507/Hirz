@@ -137,7 +137,7 @@ def patch_gradle_desugaring() -> None:
             continue
         with open(path, encoding='utf-8') as f:
             content = f.read()
-        # رفع compileSdk لمتطلبات geolocator/notifications
+        # رفع compileSdk لمتطلبات geolocator
         # القالب يستخدم flutter.compileSdkVersion (رمز) → نستبدله برقم صريح 36
         new_content = re.sub(
             r'compileSdk\s*=\s*flutter\.compileSdkVersion',
