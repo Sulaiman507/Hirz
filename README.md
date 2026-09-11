@@ -54,12 +54,6 @@ lib/
 | `intl` | any | تنسيق التواريخ والأوقات |
 | `flutter_animate` | ^4.5.2 | الأنيميشن والانتقالات |
 
-## 🚀 التشغيل | Getting Started
-
-```bash
-flutter pub get
-flutter run
-```
 
 يتطلب Flutter 3.22+ و Dart 3.4+.
 
