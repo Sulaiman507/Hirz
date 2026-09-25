@@ -114,15 +114,15 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
   /// For rare manual cities with no inherited tzid: returns Etc/UTC (fixed
   /// offset, DST-agnostic — close enough for offline prayer apps).
   tz.Location _locationFor(City city) {
+    if (!_tzInitialized) {
+      tzdata.initializeTimeZones();
+      _tzInitialized = true;
+    }
     final String? tzId = city.timezoneId;
     if (tzId == null || tzId.isEmpty) {
       return tz.getLocation('Etc/UTC'); // تحفظ بدل Etc/GMT (±sign flipped)
     }
     try {
-      if (!_tzInitialized) {
-        tzdata.initializeTimeZones();
-        _tzInitialized = true;
-      }
       return tz.getLocation(tzId);
     } catch (e) {
       assert(() {
@@ -136,15 +136,15 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
   /// الإزاحة الفعلية للمدينة في التاريخ المطلوب — تدعم DST تلقائياً
   /// Effective offset for the city on the given date — DST-aware
   Duration _effectiveOffset(City city, DateTime date) {
+    if (!_tzInitialized) {
+      tzdata.initializeTimeZones();
+      _tzInitialized = true;
+    }
     final String? tzId = city.timezoneId;
     if (tzId == null || tzId.isEmpty) {
       return Duration(minutes: (city.timezoneOffsetHours * 60).round());
     }
     try {
-      if (!_tzInitialized) {
-        tzdata.initializeTimeZones();
-        _tzInitialized = true;
-      }
       final tz.Location location = tz.getLocation(tzId);
       // منتصف الظهر بتاريخ المدينة — نقطة تمثيل دقيقة للإزاحة اليومية
       // Local noon on that date — accurate representative instant
