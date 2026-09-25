@@ -6,6 +6,7 @@ import 'package:hirz/data/datasources/prayer_times_local_datasource.dart';
 import 'package:hirz/domain/entities/app_settings.dart';
 import 'package:hirz/domain/entities/city.dart';
 import 'package:hirz/domain/entities/prayer_time.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 City _city({
   String id = 'test_city',
@@ -104,6 +105,29 @@ void main() {
         expect(pt.iqamahTime.isUtc, isFalse);
       }
       expect(times.date.isUtc, isFalse);
+    });
+
+    test('كل الأوقات تمثل منطقة المدينة عبر TZDateTime (وليس وقت الجهاز)', () async {
+      // الجوهر: الأوقات يجب أن تكون TZDateTime في منطقة المدينة، حتى لو
+      // منطقة الجهاز مختلفة — هكذا تحمل المقارنات/العدّاد instant صحيح.
+      //
+      // Core: returned times must be TZDateTime in the city's zone, so the
+      // countdown/comparisons carry a correct instant regardless of device tz.
+      final City riyadh = _city(
+        id: 'sa_riyadh',
+        tzId: 'Asia/Riyadh',
+        methodId: 'ummAlQura',
+      );
+      final DailyPrayerTimes times = await datasource.getPrayerTimes(
+        city: riyadh,
+        date: DateTime(2026, 8, 23),
+        settings: _settings(),
+      );
+      for (final PrayerTime pt in times.times) {
+        expect(pt.time, isA<tz.TZDateTime>());
+        expect((pt.time as tz.TZDateTime).location.name, 'Asia/Riyadh');
+      }
+      expect(times.date, isA<tz.TZDateTime>());
     });
   });
 }

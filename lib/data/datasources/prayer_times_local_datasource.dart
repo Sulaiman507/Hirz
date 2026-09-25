@@ -75,29 +75,62 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
       );
     }
 
-    // ── تطبيع النوع / Kind normalization (إصلاح جذري) ──
-    // adhan يعيد القيم بتوقيت المدينة لكن بنوع UTC (isUtc=true).
-    // مزجها مع DateTime.now() المحلي يفسد المقارنات والعدّاد لباقي المدن.
-    // الحل: نبني DateTime محلياً خالصاً بنفس قيم الحقول المعروضة.
+    // ── توحيد المنطقة الزمنية / timezone-aware normalization ──
+    // adhan يرجع الأوقات بتوقيت المدينة لكن بنوع UTC (isUtc=true) — أي أن
+    // الحقول (ساعة/دقيقة) صحيحة محلياً للمدينة لكن الـ epoch كأنها UTC.
+    // مزجها مع DateTime.now() المحلي يفسد المقارنات والعدّاد لأي مدينة
+    // وقتها يختلف عن وقت الجهاز.
     //
-    // adhan returns city-local values but tagged as UTC (isUtc=true).
-    // Mixing with local DateTime.now() breaks comparisons/countdown for
-    // most cities. Fix: rebuild as pure local DateTimes with the same
-    // displayed field values.
-    DateTime normalize(DateTime t) =>
-        DateTime(t.year, t.month, t.day, t.hour, t.minute, t.second);
+    // الحل: نعيد بناء كل وقت كـ TZDateTime في منطقة المدينة من حقول
+    // wall-clock نفسها. TZDateTime يحمل الـ instant الصحيح (epoch) مع
+    // مجلدات محلية للمدينة — فيتعامل معها العدّاد والمقارنات صح مهما كانت
+    // منطقة الجهاز، وتُعرض الأوقات بتوقيت المدينة دائماً.
+    //
+    // adhan returns city-local times tagged as UTC (fields = city wall-clock,
+    // epoch interpreted as UTC). Mixing with device-local DateTime.now()
+    // breaks comparisons for any city whose offset differs from the device.
+    // Fix: rebuild each time as a TZDateTime in the city's zone from the same
+    // wall-clock fields — correct instant (epoch) + city-local fields.
+    final tz.Location cityLoc = _locationFor(city);
+    tz.TZDateTime inCityZone(DateTime t) => tz.TZDateTime(
+        cityLoc, t.year, t.month, t.day, t.hour, t.minute, t.second);
 
     return DailyPrayerTimes(
-      date: normalize(date),
+      date: inCityZone(date),
       times: <PrayerTime>[
-        build(Prayer.fajr, normalize(raw.fajr)),
-        build(Prayer.sunrise, normalize(raw.sunrise)),
-        build(Prayer.dhuhr, normalize(raw.dhuhr)),
-        build(Prayer.asr, normalize(raw.asr)),
-        build(Prayer.maghrib, normalize(raw.maghrib)),
-        build(Prayer.isha, normalize(raw.isha)),
+        build(Prayer.fajr, inCityZone(raw.fajr)),
+        build(Prayer.sunrise, inCityZone(raw.sunrise)),
+        build(Prayer.dhuhr, inCityZone(raw.dhuhr)),
+        build(Prayer.asr, inCityZone(raw.asr)),
+        build(Prayer.maghrib, inCityZone(raw.maghrib)),
+        build(Prayer.isha, inCityZone(raw.isha)),
       ],
     );
+  }
+
+  /// منطقة المدينة (IANA) — صالحة فقط للمدن ذات الـ timezoneId الحقيقي
+  /// Zone is valid only for cities with a real IANA tzid in cities.json or
+  /// manual cities that inherited one from nearestKnownCity (≤300km).
+  /// For rare manual cities with no inherited tzid: returns Etc/UTC (fixed
+  /// offset, DST-agnostic — close enough for offline prayer apps).
+  tz.Location _locationFor(City city) {
+    final String? tzId = city.timezoneId;
+    if (tzId == null || tzId.isEmpty) {
+      return tz.getLocation('Etc/UTC'); // تحفظ بدل Etc/GMT (±sign flipped)
+    }
+    try {
+      if (!_tzInitialized) {
+        tzdata.initializeTimeZones();
+        _tzInitialized = true;
+      }
+      return tz.getLocation(tzId);
+    } catch (e) {
+      assert(() {
+        debugPrint('Hirz: timezone lookup failed for "$tzId": $e');
+        return true;
+      }());
+      return tz.getLocation('Etc/UTC');
+    }
   }
 
   /// الإزاحة الفعلية للمدينة في التاريخ المطلوب — تدعم DST تلقائياً
