@@ -39,9 +39,12 @@ final FutureProvider<DailyPrayerTimes> tomorrowTimesProvider =
       final getPrayerTimes = await ref.watch(
         getPrayerTimesUseCaseProvider.future,
       );
+      // غداً كتاريتا/كنداري (آمن مع DST) — لا إضافة 24 ساعة
+      // Tomorrow as a calendar date (DST-safe), not +24h
+      final DateTime now = DateTime.now();
       return getPrayerTimes(
         city: city,
-        date: DateTime.now().add(const Duration(days: 1)),
+        date: DateTime(now.year, now.month, now.day + 1),
         settings: settings,
       );
     });

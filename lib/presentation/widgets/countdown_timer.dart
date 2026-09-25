@@ -57,6 +57,9 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
       // Today's prayers done — computed in _buildTomorrowCountdown
       _remaining = Duration.zero;
       _progress = 1.0;
+      // مسح الصلاة المخزنة ليتحول build إلى فرع فجر الغد
+      // Clear cached next so build switches to tomorrow's fajr branch
+      _nextPrayer = null;
       return;
     }
     _nextPrayer = next;
