@@ -94,14 +94,21 @@ class SettingsLocalDatasource {
   }
 
   Map<String, int> _loadIqamahOffsets() {
+    // ابدأ دائماً من الافتراضيات ثم ادمج المخزَّن فوقها — أي مفتاح ناقص في
+    // التخزين (بيانات قديمة أو تالفة) يعود للافتراضي بدل أن يُفقد.
+    // Always start from defaults, then merge stored values on top — any key
+    // missing from storage (old/corrupt data) falls back instead of dropping.
+    final Map<String, int> offsets =
+        Map<String, int>.from(AppSettings.defaultIqamahOffsets);
     final String? raw = _prefs.getString(SettingsKeys.iqamahOffsets);
     if (raw == null || raw.isEmpty) {
-      return Map<String, int>.from(AppSettings.defaultIqamahOffsets);
+      return offsets;
     }
     final Map<String, dynamic> decoded =
         jsonDecode(raw) as Map<String, dynamic>;
-    return decoded.map<String, int>(
-      (String key, dynamic value) => MapEntry<String, int>(key, value as int),
-    );
+    for (final MapEntry<String, dynamic> entry in decoded.entries) {
+      offsets[entry.key] = entry.value as int;
+    }
+    return offsets;
   }
 }

@@ -101,6 +101,19 @@ void main() {
       expect(loaded.iqamahOffsets['maghrib'], 10);
     });
 
-
+    test('فروق إقامة جزئية تُكمَّل من الافتراضيات / partial offsets merge with defaults', () async {
+      // تخزين قديم/ناقص فيه مفتاح واحد فقط — بقية الصلوات يجب أن تعود
+      // للافتراضي بدل أن تُفقد (إصلاح المتانة).
+      // A partial/legacy stored map with a single key — the rest must fall
+      // back to defaults instead of being dropped (robustness fix).
+      final SettingsLocalDatasource ds = await _datasourceWith(
+        <String, Object>{'iqamah_offsets': '{"fajr":50}'},
+      );
+      final AppSettings s = ds.load();
+      expect(s.iqamahOffsets['fajr'], 50); // القيمة المخزنة محفوظة
+      expect(s.iqamahOffsets['dhuhr'], 15); // ناقص → الافتراضي
+      expect(s.iqamahOffsets['isha'], 20); // ناقص → الافتراضي
+      expect(s.iqamahOffsets.keys, AppSettings.defaultIqamahOffsets.keys);
+    });
   });
 }

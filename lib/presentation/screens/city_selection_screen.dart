@@ -33,6 +33,16 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
   bool _locating = false;
 
   @override
+  void initState() {
+    super.initState();
+    // تنظيف بحث جلسة سابقة عند فتح الشاشة من جديد — وإلا تبقى القائمة
+    // مفلترة ببحث قديم بينما الحقل فارغ.
+    // Clear any stale query from a previous visit — otherwise the list stays
+    // filtered by an old search while the field appears empty.
+    ref.read(citySearchQueryProvider.notifier).state = '';
+  }
+
+  @override
   void dispose() {
     _debounce?.cancel();
     _searchController.dispose();
