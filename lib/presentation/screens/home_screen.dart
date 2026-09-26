@@ -48,7 +48,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (!mounted) return;
       ref.invalidate(prayerTimesProvider);
       ref.invalidate(tomorrowTimesProvider);
-      ref.invalidate(nextPrayerInfoProvider);
       setState(() {}); // تحديث التاريخ / refresh the date header
       _scheduleMidnightRefresh(); // جدولة الليلة القادمة / schedule next night
     });

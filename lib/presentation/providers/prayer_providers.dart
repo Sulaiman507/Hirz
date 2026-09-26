@@ -20,16 +20,6 @@ prayerTimesProvider = FutureProvider<DailyPrayerTimes>((Ref ref) async {
   return getPrayerTimes(city: city, date: DateTime.now(), settings: settings);
 });
 
-/// معلومات الصلاة القادمة (الاسم + الوقت) للعدّاد التنازلي
-/// Next prayer info for the countdown timer
-final FutureProvider<PrayerTime?> nextPrayerInfoProvider =
-    FutureProvider<PrayerTime?>((Ref ref) async {
-      final DailyPrayerTimes times = await ref.watch(
-        prayerTimesProvider.future,
-      );
-      return times.nextPrayer(DateTime.now());
-    });
-
 /// مواقيت الغد — تُستخدم عندما تنتهي صلوات اليوم (بعد العشاء)
 /// Tomorrow's times — used when today's prayers are over (after isha)
 final FutureProvider<DailyPrayerTimes> tomorrowTimesProvider =
