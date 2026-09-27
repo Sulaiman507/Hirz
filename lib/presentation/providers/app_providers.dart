@@ -15,6 +15,7 @@ import '../../domain/repositories/prayer_times_repository.dart';
 import '../../domain/repositories/settings_repository.dart';
 import '../../domain/usecases/city_usecases.dart';
 import '../../domain/usecases/get_prayer_times.dart';
+import '../../domain/usecases/get_prayer_times_flow.dart';
 import '../../domain/usecases/settings_usecases.dart';
 
 /// SharedPreferences — يُحمّل مرة واحدة / Loaded once
@@ -70,6 +71,12 @@ final FutureProvider<GetPrayerTimes> getPrayerTimesUseCaseProvider =
       );
       return GetPrayerTimes(repository);
     });
+
+/// مُنسّق اليوم/الغد — يتغذى من نفس المستودع
+final Provider<GetPrayerTimesFlow> getPrayerTimesFlowProvider =
+    Provider<GetPrayerTimesFlow>(
+      (ref) => GetPrayerTimesFlow(ref.watch(prayerTimesRepositoryProvider)),
+    );
 
 final FutureProvider<SearchCities> searchCitiesUseCaseProvider =
     FutureProvider<SearchCities>((ref) async {

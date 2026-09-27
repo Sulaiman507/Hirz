@@ -16,8 +16,8 @@ final FutureProvider<DailyPrayerTimes>
 prayerTimesProvider = FutureProvider<DailyPrayerTimes>((Ref ref) async {
   final City city = await ref.watch(selectedCityProvider.future);
   final AppSettings settings = await ref.watch(settingsProvider.future);
-  final getPrayerTimes = await ref.watch(getPrayerTimesUseCaseProvider.future);
-  return getPrayerTimes(city: city, date: DateTime.now(), settings: settings);
+  final GetPrayerTimesFlow flow = ref.watch(getPrayerTimesFlowProvider);
+  return flow.today(city: city, settings: settings);
 });
 
 /// مواقيت الغد — تُستخدم عندما تنتهي صلوات اليوم (بعد العشاء)
@@ -26,15 +26,6 @@ final FutureProvider<DailyPrayerTimes> tomorrowTimesProvider =
     FutureProvider<DailyPrayerTimes>((Ref ref) async {
       final City city = await ref.watch(selectedCityProvider.future);
       final AppSettings settings = await ref.watch(settingsProvider.future);
-      final getPrayerTimes = await ref.watch(
-        getPrayerTimesUseCaseProvider.future,
-      );
-      // غداً كتاريتا/كنداري (آمن مع DST) — لا إضافة 24 ساعة
-      // Tomorrow as a calendar date (DST-safe), not +24h
-      final DateTime now = DateTime.now();
-      return getPrayerTimes(
-        city: city,
-        date: DateTime(now.year, now.month, now.day + 1),
-        settings: settings,
-      );
+      final GetPrayerTimesFlow flow = ref.watch(getPrayerTimesFlowProvider);
+      return flow.tomorrow(city: city, settings: settings);
     });
