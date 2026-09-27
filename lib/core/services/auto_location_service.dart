@@ -1,12 +1,11 @@
 // خدمة تحديد الموقع التلقائي — GPS → أقرب مدينة مدمجة
 // Auto-location service: GPS fix → nearest bundled city
 
-import 'dart:math' as math;
-
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../domain/entities/city.dart';
+import '../utils/geo_utils.dart';
 
 /// نتيجة التحديد التلقائي / auto-location result
 class LocationResult {
@@ -63,7 +62,7 @@ class AutoLocationService {
     City best = cities.first;
     double bestKm = double.infinity;
     for (final City c in cities) {
-      final double km = _haversineKm(
+      final double km = haversineKm(
         position.latitude,
         position.longitude,
         c.latitude,
@@ -101,25 +100,4 @@ class AutoLocationService {
       return null; // بلا إنترنت نكتفي بأقرب مدينة مدمجة
     }
   }
-
-  /// مسافة هافرسين بالكيلومتر / haversine distance in km
-  static double _haversineKm(
-    double lat1,
-    double lon1,
-    double lat2,
-    double lon2,
-  ) {
-    const double r = 6371.0;
-    final double dLat = _deg2rad(lat2 - lat1);
-    final double dLon = _deg2rad(lon2 - lon1);
-    final double a =
-        math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_deg2rad(lat1)) *
-            math.cos(_deg2rad(lat2)) *
-            math.sin(dLon / 2) *
-            math.sin(dLon / 2);
-    return r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
-  }
-
-  static double _deg2rad(double deg) => deg * math.pi / 180.0;
 }
