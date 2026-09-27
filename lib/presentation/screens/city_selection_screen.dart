@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../core/l10n/app_localizations.dart';
-import '../../core/services/auto_location_service.dart';
+import '../../services/auto_location_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format_utils.dart';
 import '../../domain/entities/city.dart';

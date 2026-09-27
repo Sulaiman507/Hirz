@@ -4,8 +4,8 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../domain/entities/city.dart';
-import '../utils/geo_utils.dart';
+import '../domain/entities/city.dart';
+import '../core/utils/geo_utils.dart';
 
 /// نتيجة التحديد التلقائي / auto-location result
 class LocationResult {

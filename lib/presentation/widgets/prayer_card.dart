@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/l10n/app_localizations.dart';
 import '../../core/utils/time_formatter.dart';
-import '../../core/widgets/glass_card.dart';
+import 'glass_card.dart';
 import '../../domain/entities/prayer_time.dart';
 import 'prayer_badge.dart';
 import 'shimmer_text.dart';
