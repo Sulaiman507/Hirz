@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
-import '../../core/utils/nearest_city.dart';
+import '../../domain/usecases/nearest_city_usecase.dart';
 import '../../domain/entities/city.dart';
 import '../providers/city_providers.dart';
 
@@ -83,11 +83,15 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
     // fixes DST and regional-method loss for manual cities.
     final List<City> known =
         ref.read(citiesProvider).valueOrNull ?? const <City>[];
-    final City? nearest = nearestKnownCity(
+    final NearestCityResult nearestResult = findNearestCity(
       latitude: latitude,
       longitude: longitude,
-      known: known,
+      cities: known,
+      maxKm: 300,
+      includeCustom: false,
+      requireTzOrMethod: true,
     );
+    final City? nearest = nearestResult.city;
     final City city = nearest == null
         ? draft
         : draft.copyWith(

@@ -5,7 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../domain/entities/city.dart';
-import '../core/utils/geo_utils.dart';
+import '../domain/usecases/nearest_city_usecase.dart';
 
 /// نتيجة التحديد التلقائي / auto-location result
 class LocationResult {
@@ -59,24 +59,15 @@ class AutoLocationService {
 
   /// أقرب مدينة من القائمة المدمجة / nearest bundled city by haversine
   LocationResult nearestCity(List<City> cities, Position position) {
-    City best = cities.first;
-    double bestKm = double.infinity;
-    for (final City c in cities) {
-      final double km = haversineKm(
-        position.latitude,
-        position.longitude,
-        c.latitude,
-        c.longitude,
-      );
-      if (km < bestKm) {
-        bestKm = km;
-        best = c;
-      }
-    }
+    final NearestCityResult result = findNearestCity(
+      latitude: position.latitude,
+      longitude: position.longitude,
+      cities: cities,
+    );
     return LocationResult(
-      city: best,
-      distanceKm: bestKm,
-      isApproximate: bestKm > 50, // أبعد من 50كم → تقدير تقريبي
+      city: result.city!,
+      distanceKm: result.distanceKm,
+      isApproximate: result.distanceKm > 50, // أبعد من 50كم → تقدير تقريبي
     );
   }
 

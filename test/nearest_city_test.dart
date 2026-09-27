@@ -2,7 +2,7 @@
 // تغطي وراثة التوقيت/الطريقة وتجاهل المدن المخصصة وحد maxKm
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hirz/core/utils/nearest_city.dart';
+import 'package:hirz/domain/usecases/nearest_city_usecase.dart';
 import 'package:hirz/domain/entities/city.dart';
 
 City _city(
@@ -47,31 +47,40 @@ void main() {
 
   group('nearestKnownCity', () {
     test('يرجع أقرب مدينة مع وراثة التوقيت والطريقة', () {
-      final City? near = nearestKnownCity(
+      final City? near = findNearestCity(
         latitude: 21.5,
         longitude: 40.0,
-        known: <City>[makkah, riyadh],
-      );
+        cities: <City>[makkah, riyadh],
+        maxKm: 300,
+        includeCustom: false,
+        requireTzOrMethod: true,
+      ).city;
       expect(near?.id, 'sa_makkah');
       expect(near?.timezoneId, 'Asia/Riyadh');
       expect(near?.methodId, 'ummAlQura');
     });
 
     test('يتجاوز المدن المخصصة', () {
-      final City? near = nearestKnownCity(
+      final City? near = findNearestCity(
         latitude: 24.0,
         longitude: 40.0,
-        known: <City>[custom, makkah, riyadh],
-      );
+        cities: <City>[custom, makkah, riyadh],
+        maxKm: 300,
+        includeCustom: false,
+        requireTzOrMethod: true,
+      ).city;
       expect(near?.id, 'sa_makkah');
     });
 
     test('يرجع null خارج حد maxKm الافتراضي (300)', () {
-      final City? near = nearestKnownCity(
+      final City? near = findNearestCity(
         latitude: 50.0,
         longitude: -120.0,
-        known: <City>[makkah, riyadh],
-      );
+        cities: <City>[makkah, riyadh],
+        maxKm: 300,
+        includeCustom: false,
+        requireTzOrMethod: true,
+      ).city;
       expect(near, isNull);
     });
   });
