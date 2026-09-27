@@ -27,7 +27,6 @@ flutter:
   assets:
     - assets/data/
     - lib/l10n/
-    - assets/audio/
   fonts:
     - family: Amiri
       fonts:
