@@ -1,31 +1,45 @@
 // providers الإعدادات: AsyncNotifier مع دوال تحديث وحفظ
 // Settings providers: AsyncNotifier with update + persist helpers
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/app_settings.dart';
 import 'app_providers.dart';
 
+/// طباعة تشخيصية في وضع التطوير فقط / debug-only logging
+void _debugLog(String message) {
+  if (kDebugMode) debugPrint(message);
+}
+
 /// حالة الإعدادات القابلة للتعديل
 class SettingsNotifier extends AsyncNotifier<AppSettings> {
+  /// مؤقت تأجيل حفظ سماكة الخط — يمنع الكتابة للقرص مع كل حركة للسلايدر
+  /// Debounce for font-thickness persistence — avoids disk writes per slider tick
+  Timer? _thicknessPersistTimer;
+
   @override
   Future<AppSettings> build() async {
     final getSettings = await ref.watch(getSettingsUseCaseProvider.future);
     return getSettings();
   }
 
+  /// كتابة الإعدادات للقرص دون لمس الحالة / persist without touching state
+  Future<void> _persist(AppSettings settings) async {
+    final saveSettings = await ref.read(saveSettingsUseCaseProvider.future);
+    await saveSettings(settings);
+  }
+
   Future<void> _save(AppSettings next) async {
     try {
-      final saveSettings = await ref.read(saveSettingsUseCaseProvider.future);
-      await saveSettings(next);
+      await _persist(next);
       state = AsyncValue<AppSettings>.data(next);
-    } catch (e, st) {
-      state = AsyncValue<AppSettings>.error(e, st);
-      assert(() {
-        debugPrint('Hirz: settings save failed: $e');
-        return true;
-      }());
+    } catch (e) {
+      // الفشل يُبقي الإعدادات القديمة — لا نمحو واجهة التطبيق بخطأ
+      // On failure keep the old settings — never blank the app on an error
+      _debugLog('Hirz: settings save failed: $e');
     }
   }
 
@@ -72,7 +86,21 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   Future<void> updateFontThickness(double thickness) async {
     final AppSettings? current = state.valueOrNull;
     if (current == null) return;
-    await _save(current.copyWith(fontThickness: thickness));
+    // معاينة حية فورية + حفظ مؤجل 600ms بعد توقف السحب
+    // Instant live preview + persist 600ms after the drag settles
+    state = AsyncValue<AppSettings>.data(
+      current.copyWith(fontThickness: thickness),
+    );
+    _thicknessPersistTimer?.cancel();
+    _thicknessPersistTimer = Timer(const Duration(milliseconds: 600), () async {
+      final AppSettings? latest = state.valueOrNull;
+      if (latest == null) return;
+      try {
+        await _persist(latest);
+      } catch (e) {
+        _debugLog('Hirz: font thickness persist failed: $e');
+      }
+    });
   }
 
   Future<void> updateFontFamily(String family) async {

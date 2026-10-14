@@ -57,13 +57,32 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
     return null;
   }
 
+  /// إزاحة UTC بالساعات: من -12 إلى +14 (أو فارغ = 0)
+  /// UTC offset in hours: -12..+14 (empty = 0)
+  String? _validateOffset(String? value) {
+    final String text = (value ?? '').trim();
+    if (text.isEmpty) return null;
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    final double? offset = double.tryParse(text);
+    if (offset == null || offset < -12 || offset > 14) {
+      return l10n.tr('invalidOffset');
+    }
+    return null;
+  }
+
   void _submit() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final String name = _nameController.text.trim();
     final double latitude = double.parse(_latController.text.trim());
     final double longitude = double.parse(_lngController.text.trim());
-    final double offset = double.tryParse(_offsetController.text.trim()) ?? 0.0;
+    // الحقل مُتحقق منه أعلاه — القيمة هنا مضمونة الصلاحية
+    // Validated above — the value here is guaranteed parseable
+    final double offset = double.parse(
+      _offsetController.text.trim().isEmpty
+          ? '0'
+          : _offsetController.text.trim(),
+    );
 
     final City draft = City(
       id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
@@ -141,8 +160,9 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
           const SizedBox(height: 12),
           TextFormField(
             controller: _offsetController,
-            keyboardType: TextInputType.number,
+            keyboardType: const TextInputType.numberWithOptions(signed: true),
             decoration: InputDecoration(labelText: l10n.tr('timezoneOffset')),
+            validator: _validateOffset,
           ),
           const SizedBox(height: 16),
           Row(

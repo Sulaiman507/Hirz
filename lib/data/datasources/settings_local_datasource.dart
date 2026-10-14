@@ -5,20 +5,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/app_settings.dart';
-
-/// مفاتيح التخزين / Storage keys
-abstract class SettingsKeys {
-  static const String languageCode = 'language_code';
-  static const String isDarkMode = 'is_dark_mode';
-  static const String calculationMethod = 'calculation_method';
-  static const String madhab = 'madhab';
-  static const String use24Hour = 'use_24_hour';
-  static const String iqamahOffsets = 'iqamah_offsets';
-  static const String savedCityId = 'saved_city_id';
-  static const String savedCustomCity = 'saved_custom_city';
-  static const String fontFamily = 'font_family';
-  static const String fontThickness = 'font_thickness';
-}
+import '../prefs_keys.dart';
 
 /// مصدر الإعدادات بأنواع صريحة — لا dynamic عائم
 /// Settings source with explicit types — no floating dynamic
@@ -30,11 +17,11 @@ class SettingsLocalDatasource {
   /// قراءة الإعدادات أو الافتراضيات / Read settings or defaults
   AppSettings load() {
     final String languageCode =
-        _prefs.getString(SettingsKeys.languageCode) ?? 'ar';
-    final bool isDarkMode = _prefs.getBool(SettingsKeys.isDarkMode) ?? false;
+        _prefs.getString(PrefsKeys.languageCode) ?? 'ar';
+    final bool isDarkMode = _prefs.getBool(PrefsKeys.isDarkMode) ?? false;
 
     final String methodRaw =
-        _prefs.getString(SettingsKeys.calculationMethod) ??
+        _prefs.getString(PrefsKeys.calculationMethod) ??
         CalculationMethod.auto.name;
     final CalculationMethod method = CalculationMethod.values.firstWhere(
       (CalculationMethod m) => m.name == methodRaw,
@@ -42,25 +29,25 @@ class SettingsLocalDatasource {
     );
 
     final String madhabRaw =
-        _prefs.getString(SettingsKeys.madhab) ?? Madhab.shafi.name;
+        _prefs.getString(PrefsKeys.madhab) ?? Madhab.shafi.name;
     final Madhab madhab = Madhab.values.firstWhere(
       (Madhab m) => m.name == madhabRaw,
       orElse: () => Madhab.shafi,
     );
 
-    final bool use24Hour = _prefs.getBool(SettingsKeys.use24Hour) ?? false;
+    final bool use24Hour = _prefs.getBool(PrefsKeys.use24Hour) ?? false;
 
     final Map<String, int> iqamahOffsets = _loadIqamahOffsets();
 
     final String fontFamilyRaw =
-        _prefs.getString(SettingsKeys.fontFamily) ?? 'Amiri';
+        _prefs.getString(PrefsKeys.fontFamily) ?? 'Amiri';
     // قيمة غير معروفة (خطأ قديم) → ارجع لافتراضي بدل انفجار
     final String fontFamily =
         (fontFamilyRaw == 'Amiri' || fontFamilyRaw == 'Cairo')
         ? fontFamilyRaw
         : 'Amiri';
     final double fontThicknessRaw =
-        _prefs.getDouble(SettingsKeys.fontThickness) ?? 1.0;
+        _prefs.getDouble(PrefsKeys.fontThickness) ?? 1.0;
     final double fontThickness = fontThicknessRaw.clamp(0.5, 2.0);
 
     return AppSettings(
@@ -77,20 +64,20 @@ class SettingsLocalDatasource {
 
   /// حفظ الإعدادات / Persist settings
   Future<void> save(AppSettings settings) async {
-    await _prefs.setString(SettingsKeys.languageCode, settings.languageCode);
-    await _prefs.setBool(SettingsKeys.isDarkMode, settings.isDarkMode);
-    await _prefs.setString(
-      SettingsKeys.calculationMethod,
-      settings.method.name,
-    );
-    await _prefs.setString(SettingsKeys.madhab, settings.madhab.name);
-    await _prefs.setBool(SettingsKeys.use24Hour, settings.use24HourFormat);
-    await _prefs.setString(
-      SettingsKeys.iqamahOffsets,
-      jsonEncode(settings.iqamahOffsets),
-    );
-    await _prefs.setString(SettingsKeys.fontFamily, settings.fontFamily);
-    await _prefs.setDouble(SettingsKeys.fontThickness, settings.fontThickness);
+    // كتابة متوازية — المفاتيح مستقلة / parallel writes — keys are independent
+    await Future.wait(<Future<void>>[
+      _prefs.setString(PrefsKeys.languageCode, settings.languageCode),
+      _prefs.setBool(PrefsKeys.isDarkMode, settings.isDarkMode),
+      _prefs.setString(PrefsKeys.calculationMethod, settings.method.name),
+      _prefs.setString(PrefsKeys.madhab, settings.madhab.name),
+      _prefs.setBool(PrefsKeys.use24Hour, settings.use24HourFormat),
+      _prefs.setString(
+        PrefsKeys.iqamahOffsets,
+        jsonEncode(settings.iqamahOffsets),
+      ),
+      _prefs.setString(PrefsKeys.fontFamily, settings.fontFamily),
+      _prefs.setDouble(PrefsKeys.fontThickness, settings.fontThickness),
+    ]);
   }
 
   Map<String, int> _loadIqamahOffsets() {
@@ -98,16 +85,26 @@ class SettingsLocalDatasource {
     // التخزين (بيانات قديمة أو تالفة) يعود للافتراضي بدل أن يُفقد.
     // Always start from defaults, then merge stored values on top — any key
     // missing from storage (old/corrupt data) falls back instead of dropping.
-    final Map<String, int> offsets =
-        Map<String, int>.from(AppSettings.defaultIqamahOffsets);
-    final String? raw = _prefs.getString(SettingsKeys.iqamahOffsets);
+    final Map<String, int> offsets = Map<String, int>.from(
+      AppSettings.defaultIqamahOffsets,
+    );
+    final String? raw = _prefs.getString(PrefsKeys.iqamahOffsets);
     if (raw == null || raw.isEmpty) {
       return offsets;
     }
-    final Map<String, dynamic> decoded =
-        jsonDecode(raw) as Map<String, dynamic>;
-    for (final MapEntry<String, dynamic> entry in decoded.entries) {
-      offsets[entry.key] = entry.value as int;
+    try {
+      final Map<String, dynamic> decoded =
+          jsonDecode(raw) as Map<String, dynamic>;
+      for (final MapEntry<String, dynamic> entry in decoded.entries) {
+        // تجاهل القيم غير الصالحة والمفاتيح الغريبة بدل الانهيار
+        // Ignore invalid values and unknown keys instead of crashing
+        final Object? value = entry.value;
+        if (value is int && offsets.containsKey(entry.key)) {
+          offsets[entry.key] = value;
+        }
+      }
+    } catch (_) {
+      // JSON تالف → الافتراضيات / corrupt JSON → defaults
     }
     return offsets;
   }

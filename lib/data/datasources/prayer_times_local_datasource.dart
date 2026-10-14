@@ -14,12 +14,32 @@ import '../../domain/entities/city.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../../domain/repositories/prayer_times_repository.dart';
 
+/// طباعة تشخيصية في وضع التطوير فقط / debug-only logging
+void _debugLog(String message) {
+  if (kDebugMode) debugPrint(message);
+}
+
 /// غلاف حساب المواقيت عبر adhan — يعمل بدون إنترنت بالكامل
 /// Offline prayer-times computation through the adhan library
 class PrayerTimesLocalDatasource implements PrayerTimesRepository {
   const PrayerTimesLocalDatasource();
 
   static bool _tzInitialized = false; // تهيئة tz مرة واحدة / init once
+
+  /// مطابقة نص الطريقة من JSON إلى enum — بحث O(1)
+  /// JSON method id → enum lookup (O(1))
+  static final Map<String, CalculationMethod> _methodById =
+      <String, CalculationMethod>{
+        for (final CalculationMethod m in CalculationMethod.values) m.jsonId: m,
+      };
+
+  /// تهيئة قاعدة بيانات المناطق الزمنية مرة واحدة / init tz DB once
+  static void _ensureTzInitialized() {
+    if (!_tzInitialized) {
+      tzdata.initializeTimeZones();
+      _tzInitialized = true;
+    }
+  }
 
   @override
   Future<DailyPrayerTimes> getPrayerTimes({
@@ -93,7 +113,14 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     // wall-clock fields — correct instant (epoch) + city-local fields.
     final tz.Location cityLoc = _locationFor(city);
     tz.TZDateTime inCityZone(DateTime t) => tz.TZDateTime(
-        cityLoc, t.year, t.month, t.day, t.hour, t.minute, t.second);
+      cityLoc,
+      t.year,
+      t.month,
+      t.day,
+      t.hour,
+      t.minute,
+      t.second,
+    );
 
     return DailyPrayerTimes(
       date: inCityZone(date),
@@ -114,10 +141,7 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
   /// For rare manual cities with no inherited tzid: returns Etc/UTC (fixed
   /// offset, DST-agnostic — close enough for offline prayer apps).
   tz.Location _locationFor(City city) {
-    if (!_tzInitialized) {
-      tzdata.initializeTimeZones();
-      _tzInitialized = true;
-    }
+    _ensureTzInitialized();
     final String? tzId = city.timezoneId;
     if (tzId == null || tzId.isEmpty) {
       return tz.getLocation('Etc/UTC'); // تحفظ بدل Etc/GMT (±sign flipped)
@@ -125,10 +149,7 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     try {
       return tz.getLocation(tzId);
     } catch (e) {
-      assert(() {
-        debugPrint('Hirz: timezone lookup failed for "$tzId": $e');
-        return true;
-      }());
+      _debugLog('Hirz: timezone lookup failed for "$tzId": $e');
       return tz.getLocation('Etc/UTC');
     }
   }
@@ -136,10 +157,7 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
   /// الإزاحة الفعلية للمدينة في التاريخ المطلوب — تدعم DST تلقائياً
   /// Effective offset for the city on the given date — DST-aware
   Duration _effectiveOffset(City city, DateTime date) {
-    if (!_tzInitialized) {
-      tzdata.initializeTimeZones();
-      _tzInitialized = true;
-    }
+    _ensureTzInitialized();
     final String? tzId = city.timezoneId;
     if (tzId == null || tzId.isEmpty) {
       return Duration(minutes: (city.timezoneOffsetHours * 60).round());
@@ -156,11 +174,7 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
       return Duration(minutes: offsetMinutes);
     } catch (e) {
       // معرف غير معروف → الإزاحة الاحتياطية / unknown id → fallback
-      // نطبع في debug فقط لتشخيص الأخطاء الحقيقية لاحقاً
-      assert(() {
-        debugPrint('Hirz: timezone lookup failed for "$tzId": $e');
-        return true;
-      }());
+      _debugLog('Hirz: timezone lookup failed for "$tzId": $e');
       return Duration(minutes: (city.timezoneOffsetHours * 60).round());
     }
   }
@@ -172,20 +186,12 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     if (settings.method == CalculationMethod.auto) {
       final String? cityMethod = city.methodId;
       if (cityMethod != null && cityMethod.isNotEmpty) {
-        final CalculationMethod? parsed = _methodById(cityMethod);
+        final CalculationMethod? parsed = _methodById[cityMethod];
         if (parsed != null) return parsed;
       }
       return CalculationMethod.ummAlQura; // احتياط معقول / sane fallback
     }
     return settings.method;
-  }
-
-  /// مطابقة نص الطريقة من JSON إلى enum / Map JSON string to enum
-  CalculationMethod? _methodById(String id) {
-    for (final CalculationMethod m in CalculationMethod.values) {
-      if (m.jsonId == id) return m;
-    }
-    return null;
   }
 
   /// مطابقة طريقة الحساب إلى adhan (أسماء snake_case)

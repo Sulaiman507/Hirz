@@ -2,7 +2,6 @@
 // الحالة الوحيدة التي نستخدم فيها setState (Timer) / The only setState use (Timer)
 
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,57 +26,15 @@ class CountdownTimer extends ConsumerStatefulWidget {
 
 class _CountdownTimerState extends ConsumerState<CountdownTimer> {
   Timer? _timer;
-  // الوقت المتبقي يُخزن هنا — الـ setState يعيد بناء هذا الويدجت فقط
-  // Remaining time stored here — setState rebuilds only this widget
-  Duration _remaining = Duration.zero;
-  double _progress = 0.0;
-  PrayerTime? _nextPrayer; // الصلاة القادمة المخزنة / cached next prayer
 
   @override
   void initState() {
     super.initState();
-    // تحديث كل ثانية / Tick every second
+    // تحديث كل ثانية — إعادة البناء تحسب كل شيء من البيانات مباشرة
+    // Tick every second — rebuild derives everything from provider data
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-      if (!mounted) return;
-      final DailyPrayerTimes? daily = ref.read(prayerTimesProvider).valueOrNull;
-      if (daily == null) return;
-      _recompute(daily);
-      setState(() {});
+      if (mounted) setState(() {});
     });
-  }
-
-  /// حساب المتبقي والتقدم — مقارنة موحّدة بالـ epoch milliseconds
-  /// Compute remaining + progress — unified via epoch ms comparison
-  /// (يتجنب مشاكل DateTime kind: UTC vs local)
-  void _recompute(DailyPrayerTimes daily) {
-    final int nowMs = DateTime.now().millisecondsSinceEpoch;
-    final PrayerTime? next = _findNextPrayer(daily, nowMs);
-    if (next == null) {
-      // صلوات اليوم انتهت — الحساب يتم في _buildTomorrowCountdown
-      // Today's prayers done — computed in _buildTomorrowCountdown
-      _remaining = Duration.zero;
-      _progress = 1.0;
-      // مسح الصلاة المخزنة ليتحول build إلى فرع فجر الغد
-      // Clear cached next so build switches to tomorrow's fajr branch
-      _nextPrayer = null;
-      return;
-    }
-    _nextPrayer = next;
-    _remaining = Duration(
-      milliseconds: next.time.millisecondsSinceEpoch - nowMs,
-    );
-    // الصلاة السابقة لحساب تقدم الحلقة / previous prayer for ring progress
-    PrayerTime? previous;
-    for (final PrayerTime pt in daily.times) {
-      if (pt.time.millisecondsSinceEpoch <= nowMs) previous = pt;
-    }
-    final int startMs =
-        previous?.time.millisecondsSinceEpoch ??
-        nowMs - const Duration(hours: 6).inMilliseconds;
-    final int spanMs = next.time.millisecondsSinceEpoch - startMs;
-    _progress = spanMs <= 0
-        ? 0.0
-        : 1.0 - (_remaining.inMilliseconds / max(spanMs, 1)).clamp(0.0, 1.0);
   }
 
   /// أول صلاة وقتها بعد الآن — بمقارنة epoch آمنة عبر الأنواع
@@ -87,6 +44,40 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
       if (pt.time.millisecondsSinceEpoch > nowMs) return pt;
     }
     return null;
+  }
+
+  /// آخر صلاة دخل وقتها (قبل الفجر = عشاء أمس)
+  /// Last prayer begun (before fajr = yesterday's isha)
+  PrayerTime _findCurrentPrayer(DailyPrayerTimes daily, int nowMs) {
+    PrayerTime current = daily.times.last;
+    for (final PrayerTime pt in daily.times) {
+      if (pt.time.millisecondsSinceEpoch <= nowMs) {
+        current = pt;
+      } else {
+        break;
+      }
+    }
+    return current;
+  }
+
+  /// تقدم الحلقة 0..1 من الصلاة السابقة إلى القادمة
+  /// Ring progress 0..1 from the previous prayer to the next
+  /// (قبل الفجر: نافذة تقديرية 6 ساعات — لا نملك وقت عشاء الأمس)
+  /// (Before fajr: estimated 6h window — yesterday's isha is unavailable)
+  double _ringProgress(DailyPrayerTimes daily, PrayerTime next, int nowMs) {
+    int? startMs;
+    for (final PrayerTime pt in daily.times) {
+      final int t = pt.time.millisecondsSinceEpoch;
+      if (t <= nowMs) {
+        startMs = t;
+      } else {
+        break;
+      }
+    }
+    final int s = startMs ?? nowMs - const Duration(hours: 6).inMilliseconds;
+    final int spanMs = next.time.millisecondsSinceEpoch - s;
+    if (spanMs <= 0) return 0.0;
+    return ((nowMs - s) / spanMs).clamp(0.0, 1.0);
   }
 
   /// عدّاد فجر الغد بعد انتهاء صلوات اليوم / Tomorrow-fajr countdown
@@ -110,16 +101,14 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
             children: <Widget>[
               Text(
                 l10n.tr('nextPrayer'),
-                style: Theme.of(
-                  context,
-                ).textTheme.labelLarge?.copyWith(color: AppColors.goldBright),
+                style: Theme.of(context).textTheme.labelLarge
+                    ?.copyWith(color: AppColors.goldBright),
               ),
               const SizedBox(height: 4),
               Text(
                 l10n.tr(fajr.prayer.name),
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               CircularCountdownRing(
@@ -142,9 +131,8 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                     Text(
                       l10n.tr('timeRemaining'),
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                        color: Theme.of(context).colorScheme.onSurface
+                            .withValues(alpha: 0.6),
                       ),
                     ),
                   ],
@@ -174,26 +162,20 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
       error: (Object error, StackTrace stack) =>
           GlassCard(child: Center(child: Text(l10n.tr('error')))),
       data: (DailyPrayerTimes daily) {
-        // إعادة الحساب عند تغير البيانات / recompute on data change
-        _recompute(daily);
-        final PrayerTime? next = _nextPrayer;
+        // كل القيم تُشتق هنا مباشرة — بلا حالة مخزنة تُعدَّل أثناء البناء
+        // Everything is derived here — no cached state mutated during build
+        final int nowMs = DateTime.now().millisecondsSinceEpoch;
+        final PrayerTime? next = _findNextPrayer(daily, nowMs);
         if (next == null) {
           // كل صلوات اليوم انتهت → العدّاد يتحول لفجر الغد
           // All today's prayers done → countdown switches to tomorrow's fajr
           return _buildTomorrowCountdown(l10n);
         }
-        // الصلاة الحالية — دائماً موجودة (قبل الفجر = العشاء)
-        // current prayer — always present (before fajr = isha)
-        PrayerTime? current;
-        for (final PrayerTime pt in daily.times) {
-          if (pt.time.millisecondsSinceEpoch <=
-              DateTime.now().millisecondsSinceEpoch) {
-            current = pt;
-          }
-        }
-        current ??= daily.times.last;
-        final Duration remaining = _remaining;
-        final double progress = _progress;
+        final PrayerTime current = _findCurrentPrayer(daily, nowMs);
+        final Duration remaining = Duration(
+          milliseconds: next.time.millisecondsSinceEpoch - nowMs,
+        );
+        final double progress = _ringProgress(daily, next, nowMs);
 
         return GlassCard(
           // خلفية بيج فاتحة هادئة للمربع / calm light-beige backdrop
@@ -213,9 +195,8 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                       l10n.tr(current.prayer.name),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
@@ -225,19 +206,16 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
               // next prayer: shimmering name at the center of the box
               ShimmerText(
                 l10n.tr(next.prayer.name),
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                baseColor: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.9),
+                style: Theme.of(context).textTheme.headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
+                baseColor: Theme.of(context).colorScheme.onSurface
+                    .withValues(alpha: 0.9),
               ),
               Text(
                 l10n.tr('nextPrayer'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.55),
+                  color: Theme.of(context).colorScheme.onSurface
+                      .withValues(alpha: 0.55),
                 ),
               ),
               const SizedBox(height: 16),
@@ -264,9 +242,8 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
                     Text(
                       l10n.tr('timeRemaining'),
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                        color: Theme.of(context).colorScheme.onSurface
+                            .withValues(alpha: 0.6),
                       ),
                     ),
                   ],

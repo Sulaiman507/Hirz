@@ -24,6 +24,7 @@
  "cancel": "إلغاء",
  "invalidLatitude": "خط العرض يجب أن يكون بين -90 و 90",
  "invalidLongitude": "خط الطول يجب أن يكون بين -180 و 180",
+ "invalidOffset": "إزاحة التوقيت يجب أن تكون بين -12 و +14",
  "invalidCoordinates": "الإحداثيات غير صالحة",
  "noResults": "لا توجد نتائج",
  "language": "اللغة",

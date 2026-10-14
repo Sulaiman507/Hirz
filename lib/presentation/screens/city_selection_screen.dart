@@ -97,7 +97,9 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
         ),
       );
       if (mounted) navigator.pop();
-    } on Exception {
+    } catch (_) {
+      // أي فشل (إذن، GPS، شبكة) → رسالة ودية بدل الانهيار
+      // Any failure (permission, GPS, network) → friendly message, no crash
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.tr('locationFailed'))),
       );
@@ -114,12 +116,10 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
     );
     final String languageCode =
         ref.watch(settingsProvider).valueOrNull?.languageCode ?? 'ar';
-    final int filteredCount =
-        ref.watch(filteredCitiesProvider).valueOrNull?.length ?? 0;
+    final int filteredCount = citiesAsync.valueOrNull?.length ?? 0;
 
     return Scaffold(
       // شاشة كاملة بدون شريط علوي / fullscreen without top bar
-      backgroundColor: null,
       body: Column(
         children: <Widget>[
           // حقل البحث + زر الإغلاق / search field + close button
@@ -169,9 +169,8 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
               child: Text(
                 l10n.tr('resultsCount').replaceAll('{n}', '$filteredCount'),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.55),
+                  color: Theme.of(context).colorScheme.onSurface
+                      .withValues(alpha: 0.55),
                 ),
               ),
             ),
@@ -394,9 +393,8 @@ class _LuxuryCityTile extends StatelessWidget {
                         name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme.of(context).textTheme.titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                       if (showCountry)
                         Text(
@@ -405,9 +403,8 @@ class _LuxuryCityTile extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.labelSmall
                               ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.55),
+                                color: Theme.of(context).colorScheme.onSurface
+                                    .withValues(alpha: 0.55),
                               ),
                         ),
                     ],
