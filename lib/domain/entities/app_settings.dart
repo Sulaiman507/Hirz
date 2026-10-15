@@ -31,8 +31,7 @@ class AppSettings {
   final CalculationMethod method;
   final Madhab madhab;
   final bool use24HourFormat;
-  final Map<String, int>
-  iqamahOffsets; // مفاتيح: fajr,sunrise,dhuhr,asr,maghrib,isha بالدقائق / keys in minutes
+  final Map<String, int> iqamahOffsets; // مفاتيح: fajr,sunrise,dhuhr,asr,maghrib,isha بالدقائق / keys in minutes
   final double
   fontThickness; // سماكة الخط: 0.5 أنحف ← 2.0 أسمن / font thickness multiplier
   final String fontFamily; // 'Amiri' | 'Cairo'
@@ -47,16 +46,18 @@ class AppSettings {
     'isha': 20,
   };
 
-  const AppSettings({
+  /// الخريطة تُغلَّف بغير قابلة للتعديل — أي تغيير يكون عبر copyWith فقط
+  /// The map is wrapped unmodifiable — changes go through copyWith only
+  AppSettings({
     required this.languageCode,
     required this.isDarkMode,
     required this.method,
     required this.madhab,
     required this.use24HourFormat,
-    required this.iqamahOffsets,
+    required Map<String, int> iqamahOffsets,
     this.fontThickness = 1.0,
     this.fontFamily = 'Amiri',
-  });
+  }) : iqamahOffsets = Map<String, int>.unmodifiable(iqamahOffsets);
 
   /// نسخة محدّثة بحقول اختيارية / Updated copy with optional overrides
   AppSettings copyWith({

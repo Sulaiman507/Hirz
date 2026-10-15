@@ -41,7 +41,7 @@ NearestCityResult findNearestCity({
       best = c;
     }
   }
-  final bool inRange = bestKm <= maxKm;
+  final bool inRange = best != null && bestKm <= maxKm;
   return NearestCityResult(
     city: inRange ? best : null,
     distanceKm: bestKm == double.infinity ? 0 : bestKm,

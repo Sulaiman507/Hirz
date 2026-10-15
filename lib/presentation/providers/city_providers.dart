@@ -16,6 +16,8 @@ const City defaultCity = City(
   latitude: 21.4225,
   longitude: 39.8262,
   timezoneOffsetHours: 3,
+  timezoneId: 'Asia/Riyadh',
+  methodId: 'ummAlQura',
 );
 
 /// نص البحث الحالي
@@ -34,10 +36,10 @@ final FutureProvider<List<City>> citiesProvider = FutureProvider<List<City>>((
 /// المدن بعد البحث
 final FutureProvider<List<City>> filteredCitiesProvider =
     FutureProvider<List<City>>((ref) async {
-  final String query = ref.watch(citySearchQueryProvider);
-  final searchCities = await ref.watch(searchCitiesUseCaseProvider.future);
-  return searchCities(query);
-});
+      final String query = ref.watch(citySearchQueryProvider);
+      final searchCities = await ref.watch(searchCitiesUseCaseProvider.future);
+      return searchCities(query);
+    });
 
 /// المدينة المختارة: المحفوظة أو مكة افتراضياً
 final FutureProvider<City> selectedCityProvider = FutureProvider<City>((

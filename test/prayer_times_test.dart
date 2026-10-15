@@ -56,7 +56,9 @@ const City oslo = City(
   timezoneOffsetHours: 1,
 );
 
-const AppSettings defaultSettings = AppSettings(
+/// ملاحظة: ليست const لأن مُنشئ AppSettings يغلّف iqamahOffsets بغير قابلة للتعديل
+/// Note: not const because AppSettings' constructor wraps iqamahOffsets as unmodifiable
+final AppSettings defaultSettings = AppSettings(
   languageCode: 'ar',
   isDarkMode: false,
   method: CalculationMethod.ummAlQura,
@@ -84,7 +86,8 @@ void main() {
         expect(
           times.times[i].time.isBefore(times.times[i + 1].time),
           isTrue,
-          reason: '${times.times[i].prayer} should be before ${times.times[i + 1].prayer}',
+          reason:
+              '${times.times[i].prayer} should be before ${times.times[i + 1].prayer}',
         );
       }
     });

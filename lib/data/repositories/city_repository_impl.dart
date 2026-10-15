@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/city.dart';
 import '../../domain/repositories/city_repository.dart';
 import '../datasources/city_local_datasource.dart';
-import '../datasources/settings_local_datasource.dart';
+import '../prefs_keys.dart';
 import '../models/city_model.dart';
 
 /// مستودع المدن: القائمة المدمجة + حفظ الاختيار في SharedPreferences
@@ -29,18 +29,25 @@ class CityRepositoryImpl implements CityRepository {
     final City? custom = await getSavedCustomCity();
     if (custom != null) return custom;
     // ثانياً: معرف مدينة من القائمة / Second: a listed city id
-    final String? cityId = _prefs.getString(SettingsKeys.savedCityId);
+    final String? cityId = _prefs.getString(PrefsKeys.savedCityId);
     if (cityId == null || cityId.isEmpty) return null;
     return _datasource.findById(cityId);
   }
 
   @override
   Future<City?> getSavedCustomCity() async {
-    final String? customRaw = _prefs.getString(SettingsKeys.savedCustomCity);
+    final String? customRaw = _prefs.getString(PrefsKeys.savedCustomCity);
     if (customRaw == null || customRaw.isEmpty) return null;
-    final Map<String, dynamic> decoded =
-        jsonDecode(customRaw) as Map<String, dynamic>;
-    return CityModel.fromJson(decoded);
+    try {
+      final Map<String, dynamic> decoded =
+          jsonDecode(customRaw) as Map<String, dynamic>;
+      return CityModel.fromJson(decoded);
+    } catch (_) {
+      // بيانات تالفة → امسحها وتجاهلها بدل تعطيل اختيار المدينة
+      // Corrupt data → clear and ignore instead of breaking city selection
+      await _prefs.remove(PrefsKeys.savedCustomCity);
+      return null;
+    }
   }
 
   @override
@@ -68,17 +75,17 @@ class CityRepositoryImpl implements CityRepository {
       await saveCustomCity(city);
       return;
     }
-    await _prefs.setString(SettingsKeys.savedCityId, city.id);
-    await _prefs.remove(SettingsKeys.savedCustomCity);
+    await _prefs.setString(PrefsKeys.savedCityId, city.id);
+    await _prefs.remove(PrefsKeys.savedCustomCity);
   }
 
   @override
   Future<void> saveCustomCity(City city) async {
     final CityModel model = CityModel.fromEntity(city);
     await _prefs.setString(
-      SettingsKeys.savedCustomCity,
+      PrefsKeys.savedCustomCity,
       jsonEncode(model.toJson()),
     );
-    await _prefs.remove(SettingsKeys.savedCityId);
+    await _prefs.remove(PrefsKeys.savedCityId);
   }
 }

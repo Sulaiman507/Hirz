@@ -70,7 +70,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final AppSettings settings =
         settingsAsync.valueOrNull ??
-        const AppSettings(
+        AppSettings(
           languageCode: 'ar',
           isDarkMode: false,
           method: CalculationMethod.auto,
@@ -81,7 +81,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       // شاشة كاملة بدون شريط علوي / fullscreen without top bar
-      backgroundColor: null,
       body: SafeArea(
         child: ListView(
           // تمرير iOS المرن — انزلاق ناعم وارتداد مطاطي عند الأطراف

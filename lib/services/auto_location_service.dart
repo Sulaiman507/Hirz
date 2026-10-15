@@ -64,8 +64,12 @@ class AutoLocationService {
       longitude: position.longitude,
       cities: cities,
     );
+    final City? city = result.city;
+    if (city == null) {
+      throw StateError('لا توجد مدن للمطابقة / no cities available to match');
+    }
     return LocationResult(
-      city: result.city!,
+      city: city,
       distanceKm: result.distanceKm,
       isApproximate: result.distanceKm > 50, // أبعد من 50كم → تقدير تقريبي
     );

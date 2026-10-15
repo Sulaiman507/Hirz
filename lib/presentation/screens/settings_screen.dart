@@ -19,7 +19,6 @@ class SettingsScreen extends ConsumerWidget {
     final AsyncValue<AppSettings> settingsAsync = ref.watch(settingsProvider);
 
     return Scaffold(
-      backgroundColor: null,
       body: settingsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (Object e, StackTrace s) =>
@@ -131,8 +130,9 @@ class SettingsScreen extends ConsumerWidget {
                         child: Column(
                           children: CalculationMethod.values
                               .map(
-                                (CalculationMethod method) =>
-                                    RadioListTile<CalculationMethod>(
+                                (
+                                  CalculationMethod method,
+                                ) => RadioListTile<CalculationMethod>(
                                   title: Text(
                                     l10n.tr(
                                       'method${method.jsonId.substring(0, 1).toUpperCase()}${method.jsonId.substring(1)}',
@@ -222,7 +222,6 @@ class SettingsScreen extends ConsumerWidget {
                                 ]
                                 .map(
                                   (Prayer prayer) => _IqamahOffsetRow(
-                                    prayerKey: prayer.name,
                                     label: l10n.tr(prayer.name),
                                     value:
                                         settings.iqamahOffsets[prayer.name] ??
@@ -305,13 +304,11 @@ class SettingsScreen extends ConsumerWidget {
 
 /// صف تعديل فرق الإقامة / Iqamah offset row with +/- buttons
 class _IqamahOffsetRow extends StatelessWidget {
-  final String prayerKey;
   final String label;
   final int value;
   final ValueChanged<int> onChanged;
 
   const _IqamahOffsetRow({
-    required this.prayerKey,
     required this.label,
     required this.value,
     required this.onChanged,
@@ -334,9 +331,8 @@ class _IqamahOffsetRow extends StatelessWidget {
             child: Text(
               '$value',
               textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
           IconButton(

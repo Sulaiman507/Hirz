@@ -8,13 +8,11 @@ import '../../data/datasources/city_local_datasource.dart';
 import '../../data/datasources/prayer_times_local_datasource.dart';
 import '../../data/datasources/settings_local_datasource.dart';
 import '../../data/repositories/city_repository_impl.dart';
-import '../../data/repositories/prayer_times_repository_impl.dart';
 import '../../data/repositories/settings_repository_impl.dart';
 import '../../domain/repositories/city_repository.dart';
 import '../../domain/repositories/prayer_times_repository.dart';
 import '../../domain/repositories/settings_repository.dart';
 import '../../domain/usecases/city_usecases.dart';
-import '../../domain/usecases/get_prayer_times.dart';
 import '../../domain/usecases/get_prayer_times_flow.dart';
 import '../../domain/usecases/settings_usecases.dart';
 
@@ -33,12 +31,6 @@ final Provider<PrayerTimesLocalDatasource> prayerTimesLocalDatasourceProvider =
       (ref) => const PrayerTimesLocalDatasource(),
     );
 
-final FutureProvider<SettingsLocalDatasource> settingsLocalDatasourceProvider =
-    FutureProvider<SettingsLocalDatasource>((ref) async {
-      final SharedPreferences prefs = await ref.watch(sharedPreferencesProvider.future);
-      return SettingsLocalDatasource(prefs);
-    });
-
 /// المستودعات / Repositories
 final FutureProvider<CityRepository> cityRepositoryProvider =
     FutureProvider<CityRepository>((ref) async {
@@ -48,11 +40,11 @@ final FutureProvider<CityRepository> cityRepositoryProvider =
       return CityRepositoryImpl(ref.read(cityLocalDatasourceProvider), prefs);
     });
 
+/// مصدر المواقيت ينفّذ عقد المستودع مباشرة (بلا غلاف تمرير)
+/// The datasource implements the repository contract directly (no pass-through wrapper)
 final Provider<PrayerTimesRepository> prayerTimesRepositoryProvider =
     Provider<PrayerTimesRepository>(
-      (ref) => PrayerTimesRepositoryImpl(
-        ref.read(prayerTimesLocalDatasourceProvider),
-      ),
+      (ref) => ref.watch(prayerTimesLocalDatasourceProvider),
     );
 
 final FutureProvider<SettingsRepository> settingsRepositoryProvider =
@@ -64,14 +56,6 @@ final FutureProvider<SettingsRepository> settingsRepositoryProvider =
     });
 
 /// حالات الاستخدام / Use cases
-final FutureProvider<GetPrayerTimes> getPrayerTimesUseCaseProvider =
-    FutureProvider<GetPrayerTimes>((ref) async {
-      final PrayerTimesRepository repository = ref.watch(
-        prayerTimesRepositoryProvider,
-      );
-      return GetPrayerTimes(repository);
-    });
-
 /// مُنسّق اليوم/الغد — يتغذى من نفس المستودع
 final Provider<GetPrayerTimesFlow> getPrayerTimesFlowProvider =
     Provider<GetPrayerTimesFlow>(
