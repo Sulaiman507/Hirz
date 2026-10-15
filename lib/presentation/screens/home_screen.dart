@@ -10,6 +10,7 @@ import '../../core/l10n/app_localizations.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/city.dart';
 import '../../domain/entities/prayer_time.dart';
+import '../providers/app_providers.dart';
 import '../providers/city_providers.dart';
 import '../providers/prayer_providers.dart';
 import '../providers/settings_providers.dart';
@@ -36,21 +37,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _scheduleMidnightRefresh();
   }
 
-  /// تحديث التاريخ والمواقيت عند منتصف الليل تلقائياً
-  /// Auto-refresh date + times at midnight
+  /// تحديث التاريخ والمواقيت عند منتصف الليل بتوقيت المدينة تلقائياً
+  /// (لا بتوقيت الجهاز — فالمدينة قد تكون في منطقة زمنية مختلفة)
+  /// Auto-refresh date + times at the CITY's midnight (not the device's —
+  /// the city may be in a different timezone)
   void _scheduleMidnightRefresh() {
-    final DateTime now = DateTime.now();
-    // منتصف الليل القادم (نصف الليل) — إضافة يوم كنداري آمنة مع DST
-    // Next midnight — calendar day +1 (DST-safe, not +24h)
-    final DateTime nextMidnight = DateTime(now.year, now.month, now.day + 1);
     _midnightTimer?.cancel();
-    _midnightTimer = Timer(nextMidnight.difference(now), () {
+    final City? city = ref.read(selectedCityProvider).valueOrNull;
+    final Duration wait = city == null
+        ? _untilDeviceMidnight()
+        : ref.read(getPrayerTimesFlowProvider).timeUntilCityMidnight(city);
+    _midnightTimer = Timer(wait, () {
       if (!mounted) return;
       ref.invalidate(prayerTimesProvider);
       ref.invalidate(tomorrowTimesProvider);
       setState(() {}); // تحديث التاريخ / refresh the date header
       _scheduleMidnightRefresh(); // جدولة الليلة القادمة / schedule next night
     });
+  }
+
+  /// احتياط: منتصف ليل الجهاز عند غياب المدينة
+  /// Fallback: device midnight when no city is selected yet
+  Duration _untilDeviceMidnight() {
+    final DateTime now = DateTime.now();
+    return DateTime(now.year, now.month, now.day + 1).difference(now);
   }
 
   @override
@@ -62,6 +72,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
+    // إعادة جدولة منتصف الليل عند تغيير المدينة (منطقة زمنية مختلفة)
+    // Reschedule midnight when the city changes (different timezone)
+    ref.listen<AsyncValue<City>>(selectedCityProvider, (_, __) {
+      _scheduleMidnightRefresh();
+    });
     final AsyncValue<AppSettings> settingsAsync = ref.watch(settingsProvider);
     final AsyncValue<City> cityAsync = ref.watch(selectedCityProvider);
     final AsyncValue<DailyPrayerTimes> timesAsync = ref.watch(

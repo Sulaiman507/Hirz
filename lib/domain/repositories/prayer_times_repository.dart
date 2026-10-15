@@ -13,4 +13,14 @@ abstract class PrayerTimesRepository {
     required DateTime date,
     required AppSettings settings,
   });
+
+  /// "الآن" بتوقيت المدينة (لحدود اليوم التقويمي) — يدعم DST، ويرجع للإزاحة
+  /// الثابتة للمدن اليدوية بلا timezoneId
+  /// "Now" in the city's timezone (for calendar-day boundaries) — DST-aware,
+  /// falling back to the fixed offset for manual cities without a timezoneId
+  DateTime cityNow(City city);
+
+  /// المدة حتى منتصف الليل القادم بتوقيت المدينة (لجدولة التحديث اليومي)
+  /// Duration until the next midnight in the city's timezone (for daily refresh)
+  Duration timeUntilCityMidnight(City city);
 }
