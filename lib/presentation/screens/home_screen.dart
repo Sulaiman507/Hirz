@@ -129,7 +129,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // زر المدينة / City button
             cityAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (Object e, StackTrace s) => const SizedBox.shrink(),
+              error: (Object e, StackTrace s) => Center(
+                child: TextButton(
+                  onPressed: () => ref.invalidate(selectedCityProvider),
+                  child: Text(l10n.tr('retry')),
+                ),
+              ),
               data: (City city) => _CityButton(city: city),
             ),
             const SizedBox(height: 16),
@@ -145,10 +150,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: CircularProgressIndicator(),
                 ),
               ),
-              error: (Object e, StackTrace s) =>
-                  Center(child: Text(l10n.tr('error'))),
+              error: (Object e, StackTrace s) => Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(l10n.tr('error')),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () => ref.invalidate(prayerTimesProvider),
+                      child: Text(l10n.tr('retry')),
+                    ),
+                  ],
+                ),
+              ),
               data: (DailyPrayerTimes daily) {
-                final DateTime now = DateTime.now();
+                // "الآن" بتوقيت المدينة مع نبضة كل ثانية — الشارات تتبدل
+                // لحظة دخول وقت الصلاة دون انتظار أي تحديث آخر
+                // City-local "now" on a one-second tick — badges flip the
+                // moment a prayer time arrives, no other rebuild needed
+                final DateTime now = ref.watch(cityNowProvider);
                 final PrayerTime? next = daily.nextPrayer(now);
                 // الصلاة الحالية = آخر صلاة دخل وقتها / current = last begun
                 final PrayerTime? current = daily.currentPrayer(now);

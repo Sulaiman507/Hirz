@@ -30,3 +30,32 @@ final FutureProvider<DailyPrayerTimes> tomorrowTimesProvider =
       final GetPrayerTimesFlow flow = ref.watch(getPrayerTimesFlowProvider);
       return flow.tomorrow(city: city, settings: settings);
     });
+
+/// نبضة كل ثانية — تُبقي الشارات والعدّاد لحظية دون انتظار إعادة بناء
+/// A one-second tick — keeps badges and countdown live without waiting
+/// for a provider invalidation to rebuild the screen
+final StreamProvider<DateTime> nowTickProvider =
+    StreamProvider<DateTime>((Ref ref) {
+      return Stream.periodic(
+        const Duration(seconds: 1),
+        (_) => DateTime.now(),
+      );
+    });
+
+/// "الآن" بتوقيت المدينة المختارة — المرجع الوحيد للمقارنات الزمنية
+/// في الواجهة (الشارات، العدّاد). يُعاد حسابه مع كل نبضة.
+/// "Now" in the selected city's timezone — the single reference for UI
+/// time comparisons (badges, countdown). Recomputed on every tick.
+///
+/// مهم: لا تستخدم DateTime.now() مباشرة للمقارنة مع المواقيت — للمدن
+/// اليدوية ذات الإزاحة الكسرية بلا timezoneId تُبنى الأوقات بانزياح
+/// يدوي متسق، وcityNow يعيد الانزياح نفسه.
+/// NOTE: never compare prayer times against raw DateTime.now() — for
+/// fractional-offset manual cities without a timezoneId the times are
+/// built with a consistent manual shift, and cityNow applies the same one.
+final Provider<DateTime> cityNowProvider = Provider<DateTime>((Ref ref) {
+  ref.watch(nowTickProvider);
+  final City? city = ref.watch(selectedCityProvider).valueOrNull;
+  if (city == null) return DateTime.now();
+  return ref.watch(getPrayerTimesFlowProvider).cityNow(city);
+});

@@ -214,7 +214,8 @@ class SettingsScreen extends ConsumerWidget {
                         children:
                             <Prayer>[
                                   Prayer.fajr,
-                                  Prayer.sunrise,
+                                  // الشروق ليس صلاة ذات إقامة — لا يُعرض هنا
+                                  // Sunrise has no iqamah — excluded here
                                   Prayer.dhuhr,
                                   Prayer.asr,
                                   Prayer.maghrib,

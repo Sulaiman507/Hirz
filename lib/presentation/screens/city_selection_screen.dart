@@ -13,6 +13,7 @@ import '../../services/auto_location_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format_utils.dart';
 import '../../domain/entities/city.dart';
+import '../providers/app_providers.dart';
 import '../providers/city_providers.dart';
 import '../providers/settings_providers.dart';
 import '../widgets/luxury_components.dart';
@@ -248,10 +249,19 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
                       return _LuxurySectionHeader(title: row);
                     }
                     final _SortedCity sc = row as _SortedCity;
+                    // إزاحة DST الحالية — لا القيمة الثابتة (لندن الآن +1 لا +0)
+                    // Current DST-aware offset — not the static value
+                    // (London today is +1, not +0)
+                    final double offsetHours =
+                        ref
+                            .watch(getPrayerTimesFlowProvider)
+                            .cityUtcOffsetNow(sc.city)
+                            .inMinutes /
+                        60.0;
                     return _LuxuryCityTile(
                       name: sc.label,
                       country: sc.countryLabel,
-                      offsetLabel: formatUtcOffset(sc.city.timezoneOffsetHours),
+                      offsetLabel: formatUtcOffset(offsetHours),
                       isCustom: sc.city.isCustom,
                       showCountry: false,
                       onTap: () async {

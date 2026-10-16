@@ -21,11 +21,19 @@ class DateHeader extends StatelessWidget {
     final String hijriText = formatHijri(hijri, languageCode);
 
     // الميلادي: اسم اليوم + رقم + اسم الشهر / Gregorian: day name + number + month
+    // حماية من فهرسة قوائم ناقصة (أصول تالفة) — لا RangeError
+    // Guard against missing lists (corrupt assets) — no RangeError
     final List<String> weekDays = l10n.trList('weekDays');
     final List<String> months = l10n.trList('gregorianMonths');
+    final String weekDay = weekDays.isEmpty
+        ? ''
+        : weekDays[date.weekday % 7];
+    final String month = months.isEmpty || date.month > months.length
+        ? ''
+        : months[date.month - 1];
     final String gregorianText = languageCode == 'ar'
-        ? '${weekDays[date.weekday % 7]} ${date.day} ${months[date.month - 1]} ${date.year}'
-        : '${weekDays[date.weekday % 7]}, ${months[date.month - 1]} ${date.day}, ${date.year}';
+        ? '$weekDay ${date.day} $month ${date.year}'
+        : '$weekDay, $month ${date.day}, ${date.year}';
 
     return Column(
       children: <Widget>[

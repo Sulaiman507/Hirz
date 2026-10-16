@@ -50,4 +50,16 @@ class GetPrayerTimesFlow {
   /// Duration until the next midnight in the city's timezone (daily refresh)
   Duration timeUntilCityMidnight(City city) =>
       _repository.timeUntilCityMidnight(city);
+
+  /// "الآن" بتوقيت المدينة — المرجع الوحيد للمقارنات الزمنية في الواجهة
+  /// (متسق أيضاً مع المدن اليدوية ذات الإزاحة الكسرية بلا timezoneId،
+  /// حيث تُبنى الأوقات بالانزياح اليدوي نفسه)
+  /// "Now" in the city's timezone — the single reference for UI time
+  /// comparisons (also consistent for fractional-offset manual cities
+  /// without a timezoneId, whose times use the same manual shift)
+  DateTime cityNow(City city) => _repository.cityNow(city);
+
+  /// إزاحة UTC الحالية للمدينة (DST-aware) — لعرضها في الواجهة
+  /// The city's current UTC offset (DST-aware) — for display
+  Duration cityUtcOffsetNow(City city) => _repository.cityUtcOffsetNow(city);
 }

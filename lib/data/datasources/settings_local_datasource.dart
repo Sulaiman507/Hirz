@@ -16,8 +16,14 @@ class SettingsLocalDatasource {
 
   /// قراءة الإعدادات أو الافتراضيات / Read settings or defaults
   AppSettings load() {
-    final String languageCode =
+    final String languageCodeRaw =
         _prefs.getString(PrefsKeys.languageCode) ?? 'ar';
+    // قيمة غير مدعومة (تالفة أو من نسخة قديمة) → عربية بدل انفجار الواجهة
+    // Unsupported value (corrupt or legacy) → Arabic instead of UI breakage
+    final String languageCode = (languageCodeRaw == 'ar' ||
+            languageCodeRaw == 'en')
+        ? languageCodeRaw
+        : 'ar';
     final bool isDarkMode = _prefs.getBool(PrefsKeys.isDarkMode) ?? false;
 
     final String methodRaw =

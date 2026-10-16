@@ -23,4 +23,10 @@ abstract class PrayerTimesRepository {
   /// المدة حتى منتصف الليل القادم بتوقيت المدينة (لجدولة التحديث اليومي)
   /// Duration until the next midnight in the city's timezone (for daily refresh)
   Duration timeUntilCityMidnight(City city);
+
+  /// إزاحة UTC الحالية للمدينة — تدعم DST تلقائياً عبر timezoneId،
+  /// وترجع للإزاحة الثابتة للمدن اليدوية بلا timezoneId
+  /// The city's current UTC offset — DST-aware via timezoneId,
+  /// falling back to the fixed offset for manual cities without one
+  Duration cityUtcOffsetNow(City city);
 }

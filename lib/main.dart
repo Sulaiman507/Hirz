@@ -35,7 +35,9 @@ class HirzApp extends ConsumerWidget {
 
     return settingsAsync.when(
       loading: () => _splash(),
-      error: (Object error, StackTrace stack) => _splash(),
+      // فشل تحميل الإعدادات: شاشة خطأ مع زر إعادة — لا تعليق أبدي
+      // Settings load failure: error screen with retry — no eternal hang
+      error: (Object error, StackTrace stack) => _errorSplash(ref),
       data: (AppSettings settings) {
         // الخط والسماكة من الإعدادات تُمرَّر فعلياً إلى MaterialApp
         // Font family + thickness from settings actually reach MaterialApp
@@ -73,6 +75,42 @@ class HirzApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       home: const Scaffold(body: Center(child: CircularProgressIndicator())),
+    );
+  }
+
+  /// شاشة خطأ بدء التشغيل مع زر إعادة المحاولة / Startup error with retry
+  Widget _errorSplash(WidgetRef ref) {
+    return MaterialApp(
+      title: 'حِرز',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light(),
+      supportedLocales: const <Locale>[Locale('ar'), Locale('en')],
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: Scaffold(
+        body: Builder(
+          builder: (BuildContext context) {
+            final AppLocalizations l10n = AppLocalizations.of(context);
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(l10n.tr('error')),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => ref.invalidate(settingsProvider),
+                    child: Text(l10n.tr('retry')),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

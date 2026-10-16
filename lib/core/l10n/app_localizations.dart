@@ -17,7 +17,10 @@ class AppLocalizations {
       _AppLocalizationsDelegate();
 
   static AppLocalizations of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+    // تدهور هادئ بدل انفجار null-check إن فشل تحميل الأصول
+    // Degrade gracefully instead of a null-check crash if assets fail to load
+    return Localizations.of<AppLocalizations>(context, AppLocalizations) ??
+        AppLocalizations(const Locale('ar'), const <String, dynamic>{});
   }
 
   /// هل اللغة الحالية عربية (RTL)؟ / Is the current locale Arabic (RTL)?

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/utils/format_utils.dart';
 import '../../domain/usecases/nearest_city_usecase.dart';
 import '../../domain/entities/city.dart';
 import '../providers/city_providers.dart';
@@ -39,9 +40,11 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
   }
 
   /// تحقق من نطاق الإحداثيات / Validate coordinate ranges
+  /// يقبل الأرقام العربية أيضاً (٢٤٫٥) عبر التطبيع قبل التحليل
+  /// Also accepts Arabic-Indic digits (٢٤٫٥) via normalization before parsing
   String? _validateLatitude(String? value) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    final double? lat = double.tryParse(value ?? '');
+    final double? lat = double.tryParse(normalizeNumericInput(value ?? ''));
     if (lat == null || lat < -90 || lat > 90) {
       return l10n.tr('invalidLatitude');
     }
@@ -50,7 +53,7 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
 
   String? _validateLongitude(String? value) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    final double? lng = double.tryParse(value ?? '');
+    final double? lng = double.tryParse(normalizeNumericInput(value ?? ''));
     if (lng == null || lng < -180 || lng > 180) {
       return l10n.tr('invalidLongitude');
     }
@@ -60,7 +63,7 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
   /// إزاحة UTC بالساعات: من -12 إلى +14 (أو فارغ = 0)
   /// UTC offset in hours: -12..+14 (empty = 0)
   String? _validateOffset(String? value) {
-    final String text = (value ?? '').trim();
+    final String text = normalizeNumericInput((value ?? '').trim());
     if (text.isEmpty) return null;
     final AppLocalizations l10n = AppLocalizations.of(context);
     final double? offset = double.tryParse(text);
@@ -74,14 +77,16 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final String name = _nameController.text.trim();
-    final double latitude = double.parse(_latController.text.trim());
-    final double longitude = double.parse(_lngController.text.trim());
+    final double latitude =
+        double.parse(normalizeNumericInput(_latController.text.trim()));
+    final double longitude =
+        double.parse(normalizeNumericInput(_lngController.text.trim()));
     // الحقل مُتحقق منه أعلاه — القيمة هنا مضمونة الصلاحية
     // Validated above — the value here is guaranteed parseable
     final double offset = double.parse(
-      _offsetController.text.trim().isEmpty
+      normalizeNumericInput(_offsetController.text.trim()).isEmpty
           ? '0'
-          : _offsetController.text.trim(),
+          : normalizeNumericInput(_offsetController.text.trim()),
     );
 
     final City draft = City(
@@ -141,7 +146,10 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
               Expanded(
                 child: TextFormField(
                   controller: _latController,
-                  keyboardType: TextInputType.number,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                    decimal: true,
+                  ),
                   decoration: InputDecoration(labelText: l10n.tr('latitude')),
                   validator: _validateLatitude,
                 ),
@@ -150,7 +158,10 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
               Expanded(
                 child: TextFormField(
                   controller: _lngController,
-                  keyboardType: TextInputType.number,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: true,
+                    decimal: true,
+                  ),
                   decoration: InputDecoration(labelText: l10n.tr('longitude')),
                   validator: _validateLongitude,
                 ),
@@ -160,7 +171,10 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
           const SizedBox(height: 12),
           TextFormField(
             controller: _offsetController,
-            keyboardType: const TextInputType.numberWithOptions(signed: true),
+            keyboardType: const TextInputType.numberWithOptions(
+              signed: true,
+              decimal: true,
+            ),
             decoration: InputDecoration(labelText: l10n.tr('timezoneOffset')),
             validator: _validateOffset,
           ),

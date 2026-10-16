@@ -90,11 +90,24 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
     return tomorrow.when(
       loading: () =>
           const GlassCard(child: Center(child: CircularProgressIndicator())),
-      error: (Object error, StackTrace stack) =>
-          GlassCard(child: Center(child: Text(l10n.tr('error')))),
+      error: (Object error, StackTrace stack) => GlassCard(
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(l10n.tr('error')),
+              TextButton(
+                onPressed: () => ref.invalidate(tomorrowTimesProvider),
+                child: Text(l10n.tr('retry')),
+              ),
+            ],
+          ),
+        ),
+      ),
       data: (DailyPrayerTimes tomorrowDaily) {
         final PrayerTime fajr = tomorrowDaily.times.first; // فجر الغد
-        final Duration remaining = fajr.time.difference(DateTime.now());
+        final DateTime now = ref.watch(cityNowProvider);
+        final Duration remaining = fajr.time.difference(now);
 
         return GlassCard(
           child: Column(
@@ -159,12 +172,28 @@ class _CountdownTimerState extends ConsumerState<CountdownTimer> {
     return times.when(
       loading: () =>
           const GlassCard(child: Center(child: CircularProgressIndicator())),
-      error: (Object error, StackTrace stack) =>
-          GlassCard(child: Center(child: Text(l10n.tr('error')))),
+      error: (Object error, StackTrace stack) => GlassCard(
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(l10n.tr('error')),
+              TextButton(
+                onPressed: () => ref.invalidate(prayerTimesProvider),
+                child: Text(l10n.tr('retry')),
+              ),
+            ],
+          ),
+        ),
+      ),
       data: (DailyPrayerTimes daily) {
         // كل القيم تُشتق هنا مباشرة — بلا حالة مخزنة تُعدَّل أثناء البناء
         // Everything is derived here — no cached state mutated during build
-        final int nowMs = DateTime.now().millisecondsSinceEpoch;
+        // "الآن" بتوقيت المدينة (متسق مع انزياح المدن اليدوية الكسرية)
+        // City-local "now" (consistent with fractional manual-city shifts)
+        final int nowMs = ref
+            .watch(cityNowProvider)
+            .millisecondsSinceEpoch;
         final PrayerTime? next = _findNextPrayer(daily, nowMs);
         if (next == null) {
           // كل صلوات اليوم انتهت → العدّاد يتحول لفجر الغد
