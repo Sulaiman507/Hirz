@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/theme/safe_margins.dart';
 import '../../services/auto_location_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/format_utils.dart';
@@ -125,11 +126,11 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
         children: <Widget>[
           // حقل البحث + زر الإغلاق / search field + close button
           Padding(
-            // SafeArea يدوية: ارتفاع شريط الحالة + التنفس الأصلي
-            // Manual SafeArea: status-bar height + original breathing room
-            padding: EdgeInsets.fromLTRB(
+            // المسافة الآمنة العلوية المصممة (32) — بديلة لمساحة النظام
+            // Designed top safe margin (32) — replaces the system inset
+            padding: const EdgeInsets.fromLTRB(
               16,
-              MediaQuery.paddingOf(context).top + 12,
+              kSafeMarginTop,
               8,
               8,
             ),

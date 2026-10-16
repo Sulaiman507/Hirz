@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/theme/safe_margins.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/city.dart';
 import '../../domain/entities/prayer_time.dart';
@@ -95,15 +96,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
 
     return Scaffold(
-      // شاشة كاملة بدون شريط علوي / fullscreen without top bar
-      body: SafeArea(
-        child: ListView(
+      // الوضع الغامر: شريط النظام مخفي لكن النظام ما زال يبلّغ عن مساحته —
+      // نتجاهلها تماماً، وحشوة القائمة (16) تعطي التنفس الكافي
+      // Immersive: the system still reports the hidden bar's inset — ignore
+      // it entirely; the list's own 16px padding gives enough breathing room
+      body: ListView(
           // تمرير iOS المرن — انزلاق ناعم وارتداد مطاطي عند الأطراف
           // iOS-style elastic scroll — smooth glide + gentle edge bounce
           physics: const BouncingScrollPhysics(
             decelerationRate: ScrollDecelerationRate.fast,
           ),
-          padding: const EdgeInsets.all(16),
+          // المسافة الآمنة العلوية المصممة (32) — بديلة لمساحة النظام
+          // Designed top safe margin (32) — replaces the system inset
+          padding: const EdgeInsets.fromLTRB(
+            16,
+            kSafeMarginTop,
+            16,
+            kSafeMarginBottom,
+          ),
           children: <Widget>[
             // صف التاريخ + زر الإعدادات بجانبه / date row + settings beside it
             Row(
@@ -192,7 +202,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
-      ),
     );
   }
 }

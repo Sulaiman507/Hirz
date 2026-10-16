@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/prayer_time.dart';
 import '../../core/l10n/app_localizations.dart';
+import '../../core/theme/safe_margins.dart';
 import '../providers/settings_providers.dart';
 import '../widgets/luxury_components.dart';
 
@@ -30,11 +31,11 @@ class SettingsScreen extends ConsumerWidget {
             children: <Widget>[
               // صف العنوان + زر الإغلاق
               Padding(
-                // SafeArea يدوية: ارتفاع شريط الحالة + التنفس الأصلي
-                // Manual SafeArea: status-bar height + original breathing room
-                padding: EdgeInsets.fromLTRB(
+                // المسافة الآمنة العلوية المصممة (32) — بديلة لمساحة النظام
+                // Designed top safe margin (32) — replaces the system inset
+                padding: const EdgeInsets.fromLTRB(
                   16,
-                  MediaQuery.paddingOf(context).top + 12,
+                  kSafeMarginTop,
                   8,
                   0,
                 ),
@@ -60,7 +61,14 @@ class SettingsScreen extends ConsumerWidget {
                   physics: const BouncingScrollPhysics(
                     decelerationRate: ScrollDecelerationRate.fast,
                   ),
-                  padding: const EdgeInsets.all(16),
+                  // مسافة سفلية آمنة (24) — العلوية مغطاة برأس الشاشة
+                  // Bottom safe margin (24) — top covered by the header
+                  padding: const EdgeInsets.fromLTRB(
+                    16,
+                    16,
+                    16,
+                    kSafeMarginBottom,
+                  ),
                   children: <Widget>[
                     // ── اللغة / Language ──────────────────────────────
                     LuxurySectionTitle(
