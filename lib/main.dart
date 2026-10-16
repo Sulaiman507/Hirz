@@ -2,6 +2,7 @@
 // ProviderScope → قراءة الإعدادات → MaterialApp مع ثيم ولغة ديناميكيين
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
@@ -13,6 +14,12 @@ import 'presentation/providers/settings_providers.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // شاشة كاملة غامرة: إخفاء شريط الحالة وشريط التنقل نهائياً —
+  // يظهران لحظياً فقط عند السحب من الحافة ثم يختفيان تلقائياً
+  // Immersive fullscreen: hide status + navigation bars —
+  // they peek on edge-swipe, then auto-hide
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   _initTimezone();
   runApp(const ProviderScope(child: HirzApp()));
 }
