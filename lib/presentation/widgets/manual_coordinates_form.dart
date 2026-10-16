@@ -106,7 +106,7 @@ class _ManualCoordinatesFormState extends ConsumerState<ManualCoordinatesForm> {
     // Inherit tz + method from the nearest known city (≤300km) —
     // fixes DST and regional-method loss for manual cities.
     final List<City> known =
-        ref.read(citiesProvider).valueOrNull ?? const <City>[];
+        ref.read(citiesProvider).value ?? const <City>[];
     final NearestCityResult nearestResult = findNearestCity(
       latitude: latitude,
       longitude: longitude,

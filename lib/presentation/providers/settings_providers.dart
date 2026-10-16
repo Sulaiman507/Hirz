@@ -34,7 +34,7 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   }
 
   Future<void> _save(AppSettings next) async {
-    final AppSettings? previous = state.valueOrNull;
+    final AppSettings? previous = state.value;
     // تحديث متفائل: الواجهة تستجيب فوراً، والقرص يلحق في الخلفية
     // Optimistic update: UI responds instantly, disk follows in background
     state = AsyncValue<AppSettings>.data(next);
@@ -52,37 +52,37 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   }
 
   Future<void> updateLanguage(String languageCode) async {
-    final AppSettings? current = state.valueOrNull;
+    final AppSettings? current = state.value;
     if (current == null) return;
     await _save(current.copyWith(languageCode: languageCode));
   }
 
   Future<void> updateTheme(bool isDarkMode) async {
-    final AppSettings? current = state.valueOrNull;
+    final AppSettings? current = state.value;
     if (current == null) return;
     await _save(current.copyWith(isDarkMode: isDarkMode));
   }
 
   Future<void> updateMethod(CalculationMethod method) async {
-    final AppSettings? current = state.valueOrNull;
+    final AppSettings? current = state.value;
     if (current == null) return;
     await _save(current.copyWith(method: method));
   }
 
   Future<void> updateMadhab(Madhab madhab) async {
-    final AppSettings? current = state.valueOrNull;
+    final AppSettings? current = state.value;
     if (current == null) return;
     await _save(current.copyWith(madhab: madhab));
   }
 
   Future<void> updateTimeFormat(bool use24HourFormat) async {
-    final AppSettings? current = state.valueOrNull;
+    final AppSettings? current = state.value;
     if (current == null) return;
     await _save(current.copyWith(use24HourFormat: use24HourFormat));
   }
 
   Future<void> updateIqamahOffset(String prayerKey, int minutes) async {
-    final AppSettings? current = state.valueOrNull;
+    final AppSettings? current = state.value;
     if (current == null) return;
     final Map<String, int> offsets = Map<String, int>.from(
       current.iqamahOffsets,
@@ -92,7 +92,7 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   }
 
   Future<void> updateFontThickness(double thickness) async {
-    final AppSettings? current = state.valueOrNull;
+    final AppSettings? current = state.value;
     if (current == null) return;
     // معاينة حية فورية + حفظ مؤجل 600ms بعد توقف السحب
     // Instant live preview + persist 600ms after the drag settles
@@ -101,7 +101,7 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
     );
     _thicknessPersistTimer?.cancel();
     _thicknessPersistTimer = Timer(const Duration(milliseconds: 600), () async {
-      final AppSettings? latest = state.valueOrNull;
+      final AppSettings? latest = state.value;
       if (latest == null) return;
       try {
         await _persist(latest);
@@ -112,7 +112,7 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   }
 
   Future<void> updateFontFamily(String family) async {
-    final AppSettings? current = state.valueOrNull;
+    final AppSettings? current = state.value;
     if (current == null) return;
     await _save(current.copyWith(fontFamily: family));
   }

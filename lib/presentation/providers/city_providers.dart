@@ -20,9 +20,18 @@ const City defaultCity = City(
   methodId: 'ummAlQura',
 );
 
-/// نص البحث الحالي
-final StateProvider<String> citySearchQueryProvider = StateProvider<String>(
-  (ref) => '',
+/// نص البحث الحالي (Riverpod 3: Notifier بدل StateProvider المحذوفة)
+class CitySearchQueryNotifier extends Notifier<String> {
+  @override
+  String build() => '';
+
+  void setQuery(String value) => state = value;
+  void clear() => state = '';
+}
+
+final NotifierProvider<CitySearchQueryNotifier, String> citySearchQueryProvider =
+    NotifierProvider<CitySearchQueryNotifier, String>(
+  CitySearchQueryNotifier.new,
 );
 
 /// كل المدن المدمجة

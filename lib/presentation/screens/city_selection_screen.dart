@@ -41,7 +41,7 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
     // مفلترة ببحث قديم بينما الحقل فارغ.
     // Clear any stale query from a previous visit — otherwise the list stays
     // filtered by an old search while the field appears empty.
-    ref.read(citySearchQueryProvider.notifier).state = '';
+    ref.read(citySearchQueryProvider.notifier).clear();
   }
 
   @override
@@ -55,7 +55,7 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
   void _onSearchChanged(String value) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 250), () {
-      ref.read(citySearchQueryProvider.notifier).state = value;
+      ref.read(citySearchQueryProvider.notifier).setQuery(value);
     });
   }
 
@@ -117,8 +117,8 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
       filteredCitiesProvider,
     );
     final String languageCode =
-        ref.watch(settingsProvider).valueOrNull?.languageCode ?? 'ar';
-    final int filteredCount = citiesAsync.valueOrNull?.length ?? 0;
+        ref.watch(settingsProvider).value?.languageCode ?? 'ar';
+    final int filteredCount = citiesAsync.value?.length ?? 0;
 
     return Scaffold(
       // شاشة كاملة بدون شريط علوي / fullscreen without top bar

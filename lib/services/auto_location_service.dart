@@ -23,6 +23,10 @@ class LocationResult {
 class AutoLocationService {
   const AutoLocationService();
 
+  // geocoding 5.x: الدوال العلوية أُزيلت — تُستدعى عبر نسخة Geocoding
+  // geocoding 5.x: top-level functions removed — call via a Geocoding instance
+  static final Geocoding _geocoding = Geocoding();
+
   /// إحداثيات الجهاز مع طلب الأذونات / device fix with permission handling
   Future<Position> getCurrentPosition() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -78,7 +82,7 @@ class AutoLocationService {
   /// اسم المنطقة من الإحداثيات (اختياري للعرض) / reverse geocode (optional label)
   Future<String?> areaLabel(double lat, double lon) async {
     try {
-      final List<Placemark> marks = await placemarkFromCoordinates(
+      final List<Placemark> marks = await _geocoding.placemarkFromCoordinates(
         lat,
         lon,
       ).timeout(const Duration(seconds: 8));
