@@ -125,11 +125,11 @@ class _CitySelectionScreenState extends ConsumerState<CitySelectionScreen> {
         children: <Widget>[
           // حقل البحث + زر الإغلاق / search field + close button
           Padding(
-            // SafeArea يدوية: ارتفاع شريط الحالة + التنفس الأصلي
-            // Manual SafeArea: status-bar height + original breathing room
-            padding: EdgeInsets.fromLTRB(
+            // الوضع الغامر: نتجاهل مساحة شريط النظام المخفي — 12px تنفس فقط
+            // Immersive: ignore the hidden system bar's inset — 12px only
+            padding: const EdgeInsets.fromLTRB(
               16,
-              MediaQuery.paddingOf(context).top + 12,
+              12,
               8,
               8,
             ),

@@ -95,9 +95,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
 
     return Scaffold(
-      // شاشة كاملة بدون شريط علوي / fullscreen without top bar
-      body: SafeArea(
-        child: ListView(
+      // الوضع الغامر: شريط النظام مخفي لكن النظام ما زال يبلّغ عن مساحته —
+      // نتجاهلها تماماً، وحشوة القائمة (16) تعطي التنفس الكافي
+      // Immersive: the system still reports the hidden bar's inset — ignore
+      // it entirely; the list's own 16px padding gives enough breathing room
+      body: ListView(
           // تمرير iOS المرن — انزلاق ناعم وارتداد مطاطي عند الأطراف
           // iOS-style elastic scroll — smooth glide + gentle edge bounce
           physics: const BouncingScrollPhysics(
@@ -192,7 +194,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
-      ),
     );
   }
 }
