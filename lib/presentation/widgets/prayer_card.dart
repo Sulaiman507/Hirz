@@ -101,28 +101,30 @@ class PrayerCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          // الإقامة / Iqamah time
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Text(
-                l10n.tr('iqamah'),
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: scheme.onSurface.withValues(alpha: 0.6),
+          // الإقامة — لا تُعرض للشروق (ليس صلاة ذات إقامة)
+          // Iqamah — hidden for sunrise (not a prayer with iqamah)
+          if (prayerTime.prayer != Prayer.sunrise)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Text(
+                  l10n.tr('iqamah'),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: scheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
-              ),
-              Text(
-                formatTime(
-                  prayerTime.iqamahTime,
-                  use24Hour: use24Hour,
-                  languageCode: languageCode,
+                Text(
+                  formatTime(
+                    prayerTime.iqamahTime,
+                    use24Hour: use24Hour,
+                    languageCode: languageCode,
+                  ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurface.withValues(alpha: 0.8),
+                  ),
                 ),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurface.withValues(alpha: 0.8),
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );

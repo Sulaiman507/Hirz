@@ -32,6 +32,10 @@ class _CaptureRepo implements PrayerTimesRepository {
 
   @override
   Duration timeUntilCityMidnight(City city) => const Duration(hours: 1);
+
+  @override
+  Duration cityUtcOffsetNow(City city) =>
+      Duration(minutes: (city.timezoneOffsetHours * 60).round());
 }
 
 void main() {

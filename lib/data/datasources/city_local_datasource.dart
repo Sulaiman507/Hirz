@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../../domain/entities/city.dart';
+import '../../core/utils/format_utils.dart';
 import '../models/city_model.dart';
 
 /// مصدر مدن مدمج: تحميل JSON مرة واحدة ثم بحث في الذاكرة
@@ -28,15 +29,18 @@ class CityLocalDatasource {
   }
 
   /// بحث في الحقول الأربعة (عربي/إنجليزي) / Search all four name fields
+  /// مع تطبيع عربي: الهمزات والألف والتاء المربوطة — "اسطنبول" تجد "إسطنبول"
+  /// With Arabic normalization: hamza/alef/ta-marbuta — "اسطنبول" finds "إسطنبول"
   Future<List<CityModel>> search(String query) async {
     final cities = await loadCities();
     final q = query.trim().toLowerCase();
     if (q.isEmpty) return cities;
+    final String qAr = normalizeArabicSearch(query.trim());
     return cities.where((CityModel city) {
       return city.nameEn.toLowerCase().contains(q) ||
-          city.nameAr.contains(query.trim()) ||
+          normalizeArabicSearch(city.nameAr).contains(qAr) ||
           city.countryEn.toLowerCase().contains(q) ||
-          city.countryAr.contains(query.trim());
+          normalizeArabicSearch(city.countryAr).contains(qAr);
     }).toList();
   }
 

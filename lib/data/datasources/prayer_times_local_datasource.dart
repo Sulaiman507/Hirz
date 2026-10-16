@@ -199,6 +199,15 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     return DateTime.utc(now.year, now.month, now.day + 1).difference(now);
   }
 
+  @override
+  Duration cityUtcOffsetNow(City city) {
+    _ensureTzInitialized();
+    final tz.Location? zone = _zoneOrNull(city);
+    if (zone != null) return tz.TZDateTime.now(zone).timeZoneOffset;
+    // بلا timezoneId: الإزاحة اليدوية الثابتة / no tzid: fixed manual offset
+    return Duration(minutes: (city.timezoneOffsetHours * 60).round());
+  }
+
   /// الإزاحة الفعلية للمدينة في التاريخ المطلوب — تدعم DST تلقائياً
   /// Effective offset for the city on the given date — DST-aware
   Duration _effectiveOffset(City city, DateTime date) {

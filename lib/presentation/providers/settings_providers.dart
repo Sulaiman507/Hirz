@@ -23,6 +23,7 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   @override
   Future<AppSettings> build() async {
     final getSettings = await ref.watch(getSettingsUseCaseProvider.future);
+    ref.onDispose(() => _thicknessPersistTimer?.cancel());
     return getSettings();
   }
 
@@ -33,12 +34,19 @@ class SettingsNotifier extends AsyncNotifier<AppSettings> {
   }
 
   Future<void> _save(AppSettings next) async {
+    final AppSettings? previous = state.valueOrNull;
+    // تحديث متفائل: الواجهة تستجيب فوراً، والقرص يلحق في الخلفية
+    // Optimistic update: UI responds instantly, disk follows in background
+    state = AsyncValue<AppSettings>.data(next);
     try {
       await _persist(next);
-      state = AsyncValue<AppSettings>.data(next);
     } catch (e) {
-      // الفشل يُبقي الإعدادات القديمة — لا نمحو واجهة التطبيق بخطأ
-      // On failure keep the old settings — never blank the app on an error
+      // الفشل يعيد الحالة السابقة — لا نبقي واجهة على وهم غير محفوظ
+      // On failure restore the previous state — never leave the UI on
+      // an unsaved illusion
+      if (previous != null) {
+        state = AsyncValue<AppSettings>.data(previous);
+      }
       _debugLog('Hirz: settings save failed: $e');
     }
   }

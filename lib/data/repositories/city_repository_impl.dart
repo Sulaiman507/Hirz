@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/entities/city.dart';
 import '../../domain/repositories/city_repository.dart';
+import '../../core/utils/format_utils.dart';
 import '../datasources/city_local_datasource.dart';
 import '../prefs_keys.dart';
 import '../models/city_model.dart';
@@ -58,9 +59,11 @@ class CityRepositoryImpl implements CityRepository {
     final String q = query.trim();
     if (q.isNotEmpty) {
       final City? custom = await getSavedCustomCity();
+      // مطابقة عربية مطبّعة أيضاً للمدينة المخصصة / normalized Arabic match too
+      final String qAr = normalizeArabicSearch(q);
       if (custom != null &&
           (custom.nameEn.toLowerCase().contains(q.toLowerCase()) ||
-              custom.nameAr.contains(q))) {
+              normalizeArabicSearch(custom.nameAr).contains(qAr))) {
         // تجنب التكرار / avoid duplicates
         final bool alreadyListed = results.any((City c) => c.id == custom.id);
         if (!alreadyListed) results.insert(0, custom);
