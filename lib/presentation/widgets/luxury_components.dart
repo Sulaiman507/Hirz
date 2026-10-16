@@ -59,6 +59,81 @@ class LuxurySectionTitle extends StatelessWidget {
   }
 }
 
+/// عنوان مجموعة فاخر — كبسولة ذهبية متدرجة يتبعها خط فاصل
+/// Luxury group header — gold gradient capsule followed by a divider line
+class LuxuryGroupHeader extends StatelessWidget {
+  final String title;
+  final IconData icon;
+
+  const LuxuryGroupHeader({
+    super.key,
+    required this.title,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14, top: 6),
+      child: Row(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[Color(0xFFE8C96A), Color(0xFFB8912F)],
+              ),
+              borderRadius: BorderRadius.circular(22),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: AppColors.goldBright.withValues(alpha: 0.35),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(icon, size: 17, color: const Color(0xFF3A2E12)),
+                const SizedBox(width: 7),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF3A2E12),
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Container(
+              height: 1.2,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    AppColors.goldBright.withValues(
+                      alpha: isDark ? 0.45 : 0.55,
+                    ),
+                    AppColors.goldBright.withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// حاوية قسم فاخرة — زجاج بحدود ذهبية خافتة وتدرج علوي مضيء
 /// Luxury section container — glass w/ faint gold border + luminous top
 class LuxuryPanel extends StatelessWidget {
