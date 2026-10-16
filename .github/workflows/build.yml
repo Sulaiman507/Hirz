@@ -3,6 +3,9 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+# يلزم لرفع الـ APK كمرفق في الـ Release / needed to attach the APK to a release
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,6 +39,21 @@ jobs:
       - name: Build APK
         working-directory: scaffold
         run: flutter build apk --release
+      - name: Create release with APK
+        # بعد كل بناء ناجح على main: ينشئ Release تلقائياً ويرفق الـ APK
+        # (بدون مشغّل release لتفادي حلقة لا نهائية: push ← build ← release)
+        # After every successful main build: auto-create a Release with the APK
+        # (no release trigger — avoids an infinite push→build→release loop)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="build-${{ github.run_number }}"
+          gh release create "$TAG" \
+            --title "Hirz build ${{ github.run_number }}" \
+            --notes "بناء تلقائي من main — commit ${{ github.sha }}" \
+            --prerelease \
+            scaffold/build/app/outputs/flutter-apk/app-release.apk
       - uses: actions/upload-artifact@v4
         with:
           name: hirz-release-apk
