@@ -55,7 +55,7 @@ final StreamProvider<DateTime> nowTickProvider =
 /// built with a consistent manual shift, and cityNow applies the same one.
 final Provider<DateTime> cityNowProvider = Provider<DateTime>((Ref ref) {
   ref.watch(nowTickProvider);
-  final City? city = ref.watch(selectedCityProvider).valueOrNull;
+  final City? city = ref.watch(selectedCityProvider).value;
   if (city == null) return DateTime.now();
   return ref.watch(getPrayerTimesFlowProvider).cityNow(city);
 });

@@ -44,7 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// the city may be in a different timezone)
   void _scheduleMidnightRefresh() {
     _midnightTimer?.cancel();
-    final City? city = ref.read(selectedCityProvider).valueOrNull;
+    final City? city = ref.read(selectedCityProvider).value;
     final Duration wait = city == null
         ? _untilDeviceMidnight()
         : ref.read(getPrayerTimesFlowProvider).timeUntilCityMidnight(city);
@@ -85,7 +85,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
 
     final AppSettings settings =
-        settingsAsync.valueOrNull ??
+        settingsAsync.value ??
         AppSettings(
           languageCode: 'ar',
           isDarkMode: false,
@@ -120,7 +120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: <Widget>[
                 Expanded(
                   child: DateHeader(
-                    date: timesAsync.valueOrNull?.date ?? DateTime.now(),
+                    date: timesAsync.value?.date ?? DateTime.now(),
                     languageCode: settings.languageCode,
                   ),
                 ),
@@ -216,7 +216,7 @@ class _CityButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final String languageCode =
-        ref.watch(settingsProvider).valueOrNull?.languageCode ?? 'ar';
+        ref.watch(settingsProvider).value?.languageCode ?? 'ar';
     final String cityName = languageCode == 'ar' ? city.nameAr : city.nameEn;
     final String countryName = languageCode == 'ar'
         ? city.countryAr
