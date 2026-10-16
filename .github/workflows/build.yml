@@ -2,7 +2,12 @@ name: Build Hirz APK
 on:
   push:
     branches: [ main ]
+  release:
+    types: [ published ]
   workflow_dispatch:
+# يلزم لرفع الـ APK كمرفق في الـ Release / needed to attach the APK to a release
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,6 +41,15 @@ jobs:
       - name: Build APK
         working-directory: scaffold
         run: flutter build apk --release
+      - name: Attach APK to release
+        # يعمل فقط عند نشر Release — يرفق الـ APK برابط تحميل مباشر دائم
+        # Runs only on release events — attaches the APK with a permanent direct link
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            scaffold/build/app/outputs/flutter-apk/app-release.apk --clobber
       - uses: actions/upload-artifact@v4
         with:
           name: hirz-release-apk
