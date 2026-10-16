@@ -14,6 +14,9 @@ import 'package:hirz/domain/usecases/get_prayer_times_flow.dart';
 class _CaptureRepo implements PrayerTimesRepository {
   DateTime? lastDate;
 
+  /// "الآن" المزيف بتوقيت المدينة — يُستخدم عندما لا يُحقن now
+  DateTime? fakeCityNow;
+
   @override
   Future<DailyPrayerTimes> getPrayerTimes({
     required City city,
@@ -23,6 +26,12 @@ class _CaptureRepo implements PrayerTimesRepository {
     lastDate = date;
     throw UnimplementedError('capture only');
   }
+
+  @override
+  DateTime cityNow(City city) => fakeCityNow ?? DateTime.now();
+
+  @override
+  Duration timeUntilCityMidnight(City city) => const Duration(hours: 1);
 }
 
 void main() {
@@ -58,29 +67,71 @@ void main() {
     expect(repo.lastDate, now);
   });
 
-  test('tomorrow يمرر اليوم التالي كتاريخ كنداري DST-آمن (آخر الشهر)', () async {
+  test(
+    'tomorrow يمرر اليوم التالي كتاريخ كنداري DST-آمن (آخر الشهر)',
+    () async {
+      final _CaptureRepo repo = _CaptureRepo();
+      final GetPrayerTimesFlow flow = GetPrayerTimesFlow(repo);
+      // 31 كانون الثاني → يجب أن يصبح 1 شباط لا 32/1 (لا انهيار نهاية الشهر)
+      final DateTime now = DateTime(2026, 1, 31, 23, 30);
+
+      await expectLater(
+        flow.tomorrow(city: city, settings: settings, now: now),
+        throwsA(isA<UnimplementedError>()),
+      );
+
+      expect(repo.lastDate, DateTime(2026, 2, 1));
+    },
+  );
+
+  test(
+    'بدون now: today/tomorrow يعملان (ساعة النظام) ولا يفشلان إلا في الـ repo',
+    () async {
+      final _CaptureRepo repo = _CaptureRepo();
+      final GetPrayerTimesFlow flow = GetPrayerTimesFlow(repo);
+
+      await expectLater(
+        flow.today(city: city, settings: settings),
+        throwsA(isA<UnimplementedError>()),
+      );
+      expect(repo.lastDate, isNotNull);
+    },
+  );
+
+  test(
+    'today بدون now: يستخدم "الآن" بتوقيت المدينة لا بتوقيت الجهاز',
+    () async {
+      final _CaptureRepo repo = _CaptureRepo();
+      // كأن الجهاز في منطقة مختلفة: توقيت المدينة = 00:30 يوم 15
+      repo.fakeCityNow = DateTime(2026, 10, 15, 0, 30);
+      final GetPrayerTimesFlow flow = GetPrayerTimesFlow(repo);
+
+      await expectLater(
+        flow.today(city: city, settings: settings),
+        throwsA(isA<UnimplementedError>()),
+      );
+
+      expect(repo.lastDate, repo.fakeCityNow);
+    },
+  );
+
+  test('tomorrow بدون now: الغد بتقويم المدينة', () async {
     final _CaptureRepo repo = _CaptureRepo();
+    repo.fakeCityNow = DateTime(2026, 10, 15, 0, 30);
     final GetPrayerTimesFlow flow = GetPrayerTimesFlow(repo);
-    // 31 كانون الثاني → يجب أن يصبح 1 شباط لا 32/1 (لا انهيار نهاية الشهر)
-    final DateTime now = DateTime(2026, 1, 31, 23, 30);
 
     await expectLater(
-      flow.tomorrow(city: city, settings: settings, now: now),
+      flow.tomorrow(city: city, settings: settings),
       throwsA(isA<UnimplementedError>()),
     );
 
-    expect(repo.lastDate, DateTime(2026, 2, 1));
+    expect(repo.lastDate, DateTime(2026, 10, 16));
   });
 
-  test('بدون now: today/tomorrow يعملان (ساعة النظام) ولا يفشلان إلا في الـ repo',
-      () async {
+  test('timeUntilCityMidnight يفوّض للمستودع', () {
     final _CaptureRepo repo = _CaptureRepo();
     final GetPrayerTimesFlow flow = GetPrayerTimesFlow(repo);
 
-    await expectLater(
-      flow.today(city: city, settings: settings),
-      throwsA(isA<UnimplementedError>()),
-    );
-    expect(repo.lastDate, isNotNull);
+    expect(flow.timeUntilCityMidnight(city), const Duration(hours: 1));
   });
 }

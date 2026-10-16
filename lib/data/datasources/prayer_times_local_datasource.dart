@@ -135,23 +135,68 @@ class PrayerTimesLocalDatasource implements PrayerTimesRepository {
     );
   }
 
-  /// منطقة المدينة (IANA) — صالحة فقط للمدن ذات الـ timezoneId الحقيقي
-  /// Zone is valid only for cities with a real IANA tzid in cities.json or
-  /// manual cities that inherited one from nearestKnownCity (≤300km).
-  /// For rare manual cities with no inherited tzid: returns Etc/UTC (fixed
-  /// offset, DST-agnostic — close enough for offline prayer apps).
+  /// منطقة المدينة: IANA الحقيقي، أو منطقة Etc/GMT ذات إزاحة ثابتة
+  /// (بعكس إشارة POSIX: Etc/GMT-3 == UTC+3) للمدن اليدوية بلا timezoneId،
+  /// أو null للإزاحات الكسرية النادرة بلا timezoneId
+  /// City zone: real IANA id, a fixed-offset Etc/GMT zone (POSIX sign flip:
+  /// Etc/GMT-3 == UTC+3) for manual cities without one, or null for the rare
+  /// fractional-offset case without a timezoneId
+  tz.Location? _zoneOrNull(City city) {
+    final String? tzId = city.timezoneId;
+    if (tzId != null && tzId.isNotEmpty) {
+      try {
+        return tz.getLocation(tzId);
+      } catch (_) {}
+    }
+    final double hours = city.timezoneOffsetHours;
+    if (hours == hours.roundToDouble()) {
+      final int h = hours.round();
+      try {
+        return tz.getLocation('Etc/GMT${h <= 0 ? '+' : '-'}${h.abs()}');
+      } catch (_) {}
+    }
+    return null;
+  }
+
+  /// منطقة المدينة — صالحة دائماً (Etc/UTC كملاذ أخير)
+  /// City zone — always valid (Etc/UTC as last resort)
   tz.Location _locationFor(City city) {
     _ensureTzInitialized();
-    final String? tzId = city.timezoneId;
-    if (tzId == null || tzId.isEmpty) {
-      return tz.getLocation('Etc/UTC'); // تحفظ بدل Etc/GMT (±sign flipped)
+    return _zoneOrNull(city) ?? tz.getLocation('Etc/UTC');
+  }
+
+  @override
+  DateTime cityNow(City city) {
+    _ensureTzInitialized();
+    final tz.Location? zone = _zoneOrNull(city);
+    if (zone != null) return tz.TZDateTime.now(zone);
+    // إزاحة كسرية بلا timezoneId: UTC الآن مزاحاً يدوياً
+    // Fractional offset without tzid: manually shifted UTC now
+    return DateTime.now().toUtc().add(
+      Duration(minutes: (city.timezoneOffsetHours * 60).round()),
+    );
+  }
+
+  @override
+  Duration timeUntilCityMidnight(City city) {
+    _ensureTzInitialized();
+    final tz.Location? zone = _zoneOrNull(city);
+    if (zone != null) {
+      final tz.TZDateTime now = tz.TZDateTime.now(zone);
+      // منتصف الليل القادم بتقويم المدينة (آمن مع DST — لا +24 ساعة)
+      // Next midnight on the city's calendar (DST-safe — not +24h)
+      final tz.TZDateTime midnight = tz.TZDateTime(
+        zone,
+        now.year,
+        now.month,
+        now.day + 1,
+      );
+      return midnight.difference(now);
     }
-    try {
-      return tz.getLocation(tzId);
-    } catch (e) {
-      _debugLog('Hirz: timezone lookup failed for "$tzId": $e');
-      return tz.getLocation('Etc/UTC');
-    }
+    final DateTime now = DateTime.now().toUtc().add(
+      Duration(minutes: (city.timezoneOffsetHours * 60).round()),
+    );
+    return DateTime.utc(now.year, now.month, now.day + 1).difference(now);
   }
 
   /// الإزاحة الفعلية للمدينة في التاريخ المطلوب — تدعم DST تلقائياً
