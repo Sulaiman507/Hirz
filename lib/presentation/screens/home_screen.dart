@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_localizations.dart';
+import '../../core/theme/safe_margins.dart';
 import '../../domain/entities/app_settings.dart';
 import '../../domain/entities/city.dart';
 import '../../domain/entities/prayer_time.dart';
@@ -105,7 +106,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           physics: const BouncingScrollPhysics(
             decelerationRate: ScrollDecelerationRate.fast,
           ),
-          padding: const EdgeInsets.all(16),
+          // المسافة الآمنة العلوية المصممة (32) — بديلة لمساحة النظام
+          // Designed top safe margin (32) — replaces the system inset
+          padding: const EdgeInsets.fromLTRB(
+            16,
+            kSafeMarginTop,
+            16,
+            kSafeMarginBottom,
+          ),
           children: <Widget>[
             // صف التاريخ + زر الإعدادات بجانبه / date row + settings beside it
             Row(
